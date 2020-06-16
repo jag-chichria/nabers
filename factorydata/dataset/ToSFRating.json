@@ -1,0 +1,31 @@
+{
+	"name": "ToSFRating",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "DestinationId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "source_rating_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "building_type",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "To_SF_Rating"
+		}
+	}
+}
