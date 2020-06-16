@@ -1,0 +1,11 @@
+{
+	"name": "akv_connect_staging",
+	"properties": {
+		"description": "Azure Key Vault to Azure SQL connection located in cloud ",
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://connect-sql-staging.vault.azure.net/"
+		}
+	}
+}
