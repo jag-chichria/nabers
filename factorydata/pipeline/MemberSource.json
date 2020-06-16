@@ -1,0 +1,66 @@
+{
+	"name": "MemberSource",
+	"properties": {
+		"activities": [
+			{
+				"name": "dataFromMembersStaging",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_GetRatingHeader]",
+						"storedProcedureParameters": {
+							"batchid": {
+								"type": "Int32",
+								"value": null
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "SalesforceSink",
+						"writeBatchSize": 5000,
+						"writeBehavior": "insert"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": ""
+								},
+								"sink": {
+									"name": "Building_Type__c",
+									"type": "String"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "RatingHeader",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SF_RatingHeaderApi",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}
