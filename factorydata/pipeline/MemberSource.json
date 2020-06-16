@@ -27,9 +27,7 @@
 						"queryTimeout": "02:00:00"
 					},
 					"sink": {
-						"type": "SalesforceSink",
-						"writeBatchSize": 5000,
-						"writeBehavior": "insert"
+						"type": "AzureSqlSink"
 					},
 					"enableStaging": false,
 					"translator": {
@@ -41,8 +39,16 @@
 									"type": "Int32"
 								},
 								"sink": {
-									"name": "Building_Type__c",
+									"name": "source_rating_id"
+								}
+							},
+							{
+								"source": {
+									"name": "PremiseType",
 									"type": "String"
+								},
+								"sink": {
+									"name": "building_type"
 								}
 							}
 						]
@@ -56,7 +62,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "SF_RatingHeaderApi",
+						"referenceName": "ToSFRating",
 						"type": "DatasetReference"
 					}
 				]
