@@ -1,0 +1,15 @@
+{
+	"name": "sfBuildings",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NabersOnline",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SalesforceObject",
+		"schema": [],
+		"typeProperties": {
+			"objectApiName": "NO_Building__c"
+		}
+	}
+}
