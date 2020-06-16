@@ -37,7 +37,8 @@
 						"mappings": [
 							{
 								"source": {
-									"name": ""
+									"name": "RatingHeaderID",
+									"type": "Int32"
 								},
 								"sink": {
 									"name": "Building_Type__c",
