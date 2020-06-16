@@ -1,0 +1,155 @@
+{
+	"name": "RatingHeader",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "RatingHeaderID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RatingReferenceNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "PremiseTypeID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PremiseType",
+				"type": "varchar"
+			},
+			{
+				"name": "PremiseID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PremiseName",
+				"type": "varchar"
+			},
+			{
+				"name": "AssessorID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Assessor",
+				"type": "varchar"
+			},
+			{
+				"name": "CustomerID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Customer",
+				"type": "varchar"
+			},
+			{
+				"name": "RatingPeriodFrom",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "RatingPeriodTo",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "PublicListingFlag",
+				"type": "bit"
+			},
+			{
+				"name": "OfficerID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Officer",
+				"type": "varchar"
+			},
+			{
+				"name": "RatingStatusID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RatingStatus",
+				"type": "varchar"
+			},
+			{
+				"name": "LodgedDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "PaymentStatusID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PaymentStatus",
+				"type": "varchar"
+			},
+			{
+				"name": "PaidDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "CertificateValidFrom",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "CertificateValidTo",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "PremiseNameOnCert",
+				"type": "varchar"
+			},
+			{
+				"name": "CustomerNameOnCert",
+				"type": "varchar"
+			},
+			{
+				"name": "ReplaceFlag",
+				"type": "bit"
+			},
+			{
+				"name": "RenewFlag",
+				"type": "bit"
+			},
+			{
+				"name": "PreviousRatingHeaderID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "NewRatingHeaderID",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "RatingHeaderStage"
+		}
+	}
+}
