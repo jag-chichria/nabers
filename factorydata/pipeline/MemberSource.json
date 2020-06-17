@@ -259,6 +259,26 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "exec createBuilding pipeline",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "forEachRow",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "createBulding",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"annotations": []
