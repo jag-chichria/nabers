@@ -80,6 +80,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@activity('dataFromMembersStaging').output",
+						"type": "Expression"
+					},
 					"isSequential": false,
 					"activities": [
 						{
