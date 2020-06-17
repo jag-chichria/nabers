@@ -1,0 +1,281 @@
+{
+	"name": "createBulding",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_GetBuildingToCreateInSalesForce]",
+						"storedProcedureParameters": {
+							"batchid": {
+								"type": "Int32",
+								"value": "1"
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "SalesforceSink",
+						"writeBatchSize": 5000,
+						"writeBehavior": "insert"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "id",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "Id",
+									"type": "String"
+								}
+							},
+							{
+								"sink": {
+									"name": "OwnerId",
+									"type": "String"
+								}
+							},
+							{
+								"sink": {
+									"name": "IsDeleted",
+									"type": "Boolean"
+								}
+							},
+							{
+								"source": {
+									"name": "name",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Name",
+									"type": "String"
+								}
+							},
+							{
+								"sink": {
+									"name": "CreatedDate",
+									"type": "DateTime"
+								}
+							},
+							{
+								"sink": {
+									"name": "CreatedById",
+									"type": "String"
+								}
+							},
+							{
+								"sink": {
+									"name": "LastModifiedDate",
+									"type": "DateTime"
+								}
+							},
+							{
+								"sink": {
+									"name": "LastModifiedById",
+									"type": "String"
+								}
+							},
+							{
+								"sink": {
+									"name": "SystemModstamp",
+									"type": "DateTime"
+								}
+							},
+							{
+								"sink": {
+									"name": "LastActivityDate",
+									"type": "DateTime"
+								}
+							},
+							{
+								"sink": {
+									"name": "LastViewedDate",
+									"type": "DateTime"
+								}
+							},
+							{
+								"sink": {
+									"name": "LastReferencedDate",
+									"type": "DateTime"
+								}
+							},
+							{
+								"sink": {
+									"name": "Building__c",
+									"type": "String"
+								}
+							},
+							{
+								"sink": {
+									"name": "Country__c",
+									"type": "String"
+								}
+							},
+							{
+								"sink": {
+									"name": "Geo_Coordinates__Latitude__s",
+									"type": "Decimal"
+								}
+							},
+							{
+								"sink": {
+									"name": "Geo_Coordinates__Longitude__s",
+									"type": "Decimal"
+								}
+							},
+							{
+								"sink": {
+									"name": "NOCRM_Asset_Class__c",
+									"type": "String"
+								}
+							},
+							{
+								"sink": {
+									"name": "NOCRM_Energy_star_WoGP__c",
+									"type": "Decimal"
+								}
+							},
+							{
+								"sink": {
+									"name": "NOCRM_Energy_star__c",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "member_premise_id",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "NOCRM_External_ID__c",
+									"type": "Decimal"
+								}
+							},
+							{
+								"sink": {
+									"name": "NOCRM_Rating_Scope__c",
+									"type": "String"
+								}
+							},
+							{
+								"sink": {
+									"name": "NOCRM_Rating_expiry_date__c",
+									"type": "DateTime"
+								}
+							},
+							{
+								"sink": {
+									"name": "NOCRM_Rating_reference__c",
+									"type": "String"
+								}
+							},
+							{
+								"sink": {
+									"name": "NOCRM_Total_NLA__c",
+									"type": "String"
+								}
+							},
+							{
+								"sink": {
+									"name": "Owner_Corporation_Number__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "postcode",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Postcode__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "state",
+									"type": "String"
+								},
+								"sink": {
+									"name": "State__c",
+									"type": "String"
+								}
+							},
+							{
+								"sink": {
+									"name": "Strata_Plan_Number__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "streetname",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Street_Name__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "streetnumber",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Street_Number__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "suburb",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Suburb__c",
+									"type": "String"
+								}
+							},
+							{
+								"sink": {
+									"name": "Building_Address__c",
+									"type": "String"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SalesForceBuildingIds",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sfBuildings",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}
