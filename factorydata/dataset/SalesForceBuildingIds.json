@@ -5,11 +5,6 @@
 			"referenceName": "NABERSStaging",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"batch_id": {
-				"type": "int"
-			}
-		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [
