@@ -1,0 +1,109 @@
+{
+	"name": "lookupByBuildingDetails",
+	"properties": {
+		"activities": [
+			{
+				"name": "lookupByDetails",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"query": {
+							"value": "Select id from NO_Building__c where IsDeleted = false and Postcode__c = '@item().Prem_Postcode' and State__c = '@item().Prem_State' and Suburb__c = '@item().Prem_Suburb' and (Street_Name__c\n+ ' ' + Street_Number__c) =  '@item().AddressLine1' ",
+							"type": "Expression"
+						},
+						"readBehavior": "query"
+					},
+					"dataset": {
+						"referenceName": "sfBuildings",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "ifLookUpExists",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "lookupByDetails",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"ifTrueActivities": [
+						{
+							"name": "insertBuildingDetails",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[usp_InsertLookupPremiseData]",
+								"storedProcedureParameters": {
+									"batch_id": {
+										"value": "1",
+										"type": "Int32"
+									},
+									"member_premise_id": {
+										"type": "Int32"
+									},
+									"name": {
+										"value": "",
+										"type": "String"
+									},
+									"postcode": {
+										"value": "",
+										"type": "String"
+									},
+									"salesforcebuildingId": {
+										"value": "",
+										"type": "String"
+									},
+									"state": {
+										"value": "",
+										"type": "String"
+									},
+									"streetname": {
+										"value": "",
+										"type": "String"
+									},
+									"streetnumber": {
+										"value": "",
+										"type": "String"
+									},
+									"suburb": {
+										"value": "",
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "NABERSStaging",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"annotations": []
+	}
+}
