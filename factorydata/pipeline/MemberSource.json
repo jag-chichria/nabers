@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderStoredProcedureName": "[dbo].[usp_GetRatingHeader]",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_GetRating]",
 						"storedProcedureParameters": {
 							"batchid": {
 								"type": "Int32",
