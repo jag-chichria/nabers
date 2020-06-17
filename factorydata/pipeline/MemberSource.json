@@ -83,7 +83,7 @@
 					"isSequential": false,
 					"activities": [
 						{
-							"name": "Lookup1",
+							"name": "forEachBuildingInMembers",
 							"type": "Lookup",
 							"dependsOn": [],
 							"policy": {
@@ -110,11 +110,11 @@
 							}
 						},
 						{
-							"name": "if_building_exist",
+							"name": "ifBuildingExists",
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "Lookup1",
+									"activity": "forEachBuildingInMembers",
 									"dependencyConditions": [
 										"Succeeded"
 									]
