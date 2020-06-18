@@ -42,6 +42,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"expression": {
+						"value": "@empty(activity('lookupByDetails').output)",
+						"type": "Expression"
+					},
 					"ifFalseActivities": [
 						{
 							"name": "insertPremiseDetails",
@@ -142,10 +146,6 @@
 										"type": "Int32"
 									},
 									"member_premise_id": {
-										"value": {
-											"value": "@item().premiseid",
-											"type": "Expression"
-										},
 										"type": "Int32"
 									},
 									"name": {
