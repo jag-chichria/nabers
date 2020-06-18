@@ -99,21 +99,21 @@
 												},
 												"member_premise_id": {
 													"value": {
-														"value": "@item().premiseid",
+														"value": "@item().PremiseID",
 														"type": "Expression"
 													},
 													"type": "Int32"
 												},
 												"name": {
 													"value": {
-														"value": "@item().premisename",
+														"value": "@item().PremiseName",
 														"type": "Expression"
 													},
 													"type": "String"
 												},
 												"postcode": {
 													"value": {
-														"value": "@item().prem_postcode",
+														"value": "@item().Prem_Postcode",
 														"type": "Expression"
 													},
 													"type": "String"
@@ -124,14 +124,14 @@
 												},
 												"state": {
 													"value": {
-														"value": "@item().prem_state",
+														"value": "@item().Prem_State",
 														"type": "Expression"
 													},
 													"type": "String"
 												},
 												"streetname": {
 													"value": {
-														"value": "@item().prem_addressline1",
+														"value": "@item().Prem_AddressLine1",
 														"type": "Expression"
 													},
 													"type": "String"
