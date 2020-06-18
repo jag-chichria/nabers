@@ -123,6 +123,21 @@
 											"type": "LinkedServiceReference"
 										}
 									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "lookup building by details",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "lookupByBuildingDetails",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true
+										}
+									}
 								]
 							}
 						}

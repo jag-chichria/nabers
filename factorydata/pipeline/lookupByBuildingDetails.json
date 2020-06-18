@@ -74,7 +74,10 @@
 										"type": "String"
 									},
 									"salesforcebuildingId": {
-										"value": "",
+										"value": {
+											"value": "@activity('lookupByDetails').output.id",
+											"type": "Expression"
+										},
 										"type": "String"
 									},
 									"state": {
