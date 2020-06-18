@@ -349,7 +349,8 @@
 					"securityToken": {
 						"type": "SecureString",
 						"value": "[parameters('NabersOnline_securityToken')]"
-					}
+					},
+					"apiVersion": "48.0"
 				},
 				"connectVia": {
 					"referenceName": "integrationRuntime1",
@@ -524,7 +525,7 @@
 										"source": {
 											"type": "SalesforceSource",
 											"query": {
-												"value": "Select id from NO_Building__c where IsDeleted = 0 and Postcode__c = '@item().Prem_Postcode' and State__c = '@item().Prem_State' and Suburb__c = '@item().Prem_Suburb' and (Street_Name__c + ' ' + Street_Number__c) =  '@item().AddressLine1' and Name = '@item.PremiseName'",
+												"value": "Select id from NO_Building__c where IsDeleted = 0 and Postcode__c = '@item().Prem_Postcode' and State__c = '@item().Prem_State' and Suburb__c = '@item().Prem_Suburb' and (Street_Number__c + ' ' + Street_Name__c) =  '@item().AddressLine1' and Name = '@item.PremiseName'",
 												"type": "Expression"
 											},
 											"readBehavior": "query"
