@@ -620,7 +620,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"expression": {
-											"value": "@variables('_sf_buildingRecord').count > 0",
+											"value": "@greater(length(variables('_sf_buildingRecord')), 0)",
 											"type": "Expression"
 										},
 										"ifFalseActivities": [
