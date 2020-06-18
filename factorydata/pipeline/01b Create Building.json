@@ -45,6 +45,74 @@
 									"name": "Name",
 									"type": "String"
 								}
+							},
+							{
+								"source": {
+									"name": "'Australia'"
+								},
+								"sink": {
+									"name": "Country__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "postcode",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Postcode__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "state",
+									"type": "String"
+								},
+								"sink": {
+									"name": "State__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "streetname",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Street_Name__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "streetnumber",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Street_Number__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "suburb",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Suburb__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "'Shopping Centre'"
+								},
+								"sink": {
+									"name": "Building_Type__c",
+									"type": "String"
+								}
 							}
 						]
 					}
