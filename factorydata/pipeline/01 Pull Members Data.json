@@ -180,7 +180,7 @@
 												},
 												"member_premise_id": {
 													"value": {
-														"value": "@activity('usp_GetRating').output.premiseId",
+														"value": "@variables('_currentRatingItem').PremiseID",
 														"type": "Expression"
 													},
 													"type": "Int32"
