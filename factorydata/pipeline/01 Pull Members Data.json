@@ -24,7 +24,14 @@
 						{
 							"name": "Lookup Each Building by Name In Salesforce",
 							"type": "Lookup",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "Set variable1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "7.00:00:00",
 								"retry": 0,
@@ -54,7 +61,7 @@
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "Lookup Each Building by Name In Salesforce",
+									"activity": "Set Variable _sf_buildingRecord",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -63,7 +70,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@empty(activity('Lookup Each Building by Name In Salesforce').output.id)",
+									"value": "@empty(variables('_sf_buildingRecord').id)",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
@@ -218,6 +225,32 @@
 									}
 								]
 							}
+						},
+						{
+							"name": "Set Variable _sf_buildingRecord",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Lookup Each Building by Name In Salesforce",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "_sf_buildingRecord",
+								"value": {
+									"value": "@activity('Lookup Each Building by Name In Salesforce').output.value",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": []
 						}
 					]
 				}
@@ -304,6 +337,12 @@
 		},
 		"variables": {
 			"_ratings": {
+				"type": "Array"
+			},
+			"_sf_buildingRecord": {
+				"type": "Array"
+			},
+			"_currentRatingRecord": {
 				"type": "Array"
 			}
 		},
