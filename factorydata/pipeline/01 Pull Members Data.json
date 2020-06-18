@@ -37,7 +37,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select \nid\nfrom NO_Building__c\nwhere \nIsDeleted = false\nand Name = '@item().PremiseName'",
+										"value": "Select id from NO_Building__c where IsDeleted = false and Postcode__c = '@item().Prem_Postcode' and State__c = '@item().Prem_State' and Suburb__c = '@item().Prem_Suburb' and (Street_Name__c\n+ ' ' + Street_Number__c) =  '@item().AddressLine1' ",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
@@ -141,21 +141,6 @@
 										"linkedServiceName": {
 											"referenceName": "NABERSStaging",
 											"type": "LinkedServiceReference"
-										}
-									}
-								],
-								"ifTrueActivities": [
-									{
-										"name": "lookup building by details",
-										"type": "ExecutePipeline",
-										"dependsOn": [],
-										"userProperties": [],
-										"typeProperties": {
-											"pipeline": {
-												"referenceName": "01a Lookup By Building Details",
-												"type": "PipelineReference"
-											},
-											"waitOnCompletion": true
 										}
 									}
 								]
