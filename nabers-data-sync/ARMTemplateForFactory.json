@@ -310,7 +310,8 @@
 								"referenceName": "RatingHeader",
 								"type": "DatasetReference",
 								"parameters": {}
-							}
+							},
+							"firstRowOnly": false
 						}
 					},
 					{
