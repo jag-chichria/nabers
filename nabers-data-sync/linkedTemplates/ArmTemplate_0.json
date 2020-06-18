@@ -65,35 +65,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/NabersOnline')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "connection to NABERS Online",
-				"annotations": [],
-				"type": "Salesforce",
-				"typeProperties": {
-					"environmentUrl": "[parameters('NabersOnline_properties_typeProperties_environmentUrl')]",
-					"username": "[parameters('NabersOnline_properties_typeProperties_username')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('NabersOnline_password')]"
-					},
-					"securityToken": {
-						"type": "SecureString",
-						"value": "[parameters('NabersOnline_securityToken')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntime1",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/RatingHeader')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -254,42 +225,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ToSFRating')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "DestinationId",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "source_rating_id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "building_type",
-						"type": "varchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "To_SF_Rating"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/SalesForceBuildingIds')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -358,6 +293,71 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ToSFRating')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "DestinationId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "source_rating_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "building_type",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "To_SF_Rating"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NabersOnline')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "connection to NABERS Online",
+				"annotations": [],
+				"type": "Salesforce",
+				"typeProperties": {
+					"environmentUrl": "[parameters('NabersOnline_properties_typeProperties_environmentUrl')]",
+					"username": "[parameters('NabersOnline_properties_typeProperties_username')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('NabersOnline_password')]"
+					},
+					"securityToken": {
+						"type": "SecureString",
+						"value": "[parameters('NabersOnline_securityToken')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntime1",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]"
 			]
 		},
 		{
@@ -633,7 +633,10 @@
 													"storedProcedureName": "[[dbo].[usp_InsertLookupPremiseData]",
 													"storedProcedureParameters": {
 														"batch_id": {
-															"value": "1",
+															"value": {
+																"value": "@pipeline().parameters.batchid",
+																"type": "Expression"
+															},
 															"type": "Int32"
 														},
 														"member_premise_id": {
@@ -711,7 +714,10 @@
 													"storedProcedureName": "[[dbo].[usp_InsertLookupPremiseData]",
 													"storedProcedureParameters": {
 														"batch_id": {
-															"value": "1",
+															"value": {
+																"value": "@pipeline().parameters.batchid",
+																"type": "Expression"
+															},
 															"type": "Int32"
 														},
 														"member_premise_id": {
@@ -802,7 +808,10 @@
 							"storedProcedureName": "[[dbo].[usp_GetRating]",
 							"storedProcedureParameters": {
 								"batchid": {
-									"value": "",
+									"value": {
+										"value": "@pipeline().parameters.batchid",
+										"type": "Expression"
+									},
 									"type": "Int32"
 								}
 							}
@@ -813,6 +822,12 @@
 						}
 					}
 				],
+				"parameters": {
+					"batchid": {
+						"type": "int",
+						"defaultValue": 1
+					}
+				},
 				"annotations": []
 			},
 			"dependsOn": [
