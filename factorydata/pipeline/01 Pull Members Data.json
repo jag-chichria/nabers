@@ -26,7 +26,7 @@
 							"type": "Lookup",
 							"dependsOn": [
 								{
-									"activity": "Set variable1",
+									"activity": "Set variable _currentRatingItem",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -247,12 +247,12 @@
 							}
 						},
 						{
-							"name": "Set variable1",
+							"name": "Set variable _currentRatingItem",
 							"type": "SetVariable",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "_currentRatingRecord",
+								"variableName": "_currentRatingItem",
 								"value": {
 									"value": "@item()",
 									"type": "Expression"
@@ -349,7 +349,7 @@
 			"_sf_buildingRecord": {
 				"type": "Array"
 			},
-			"_currentRatingRecord": {
+			"_currentRatingItem": {
 				"type": "Array"
 			}
 		},
