@@ -22,7 +22,7 @@
 					"isSequential": false,
 					"activities": [
 						{
-							"name": "forEachBuildingInMembers",
+							"name": "Lookup Each Building In Salesforce",
 							"type": "Lookup",
 							"dependsOn": [],
 							"policy": {
@@ -49,11 +49,11 @@
 							}
 						},
 						{
-							"name": "ifBuildingExists",
+							"name": "If Building In Salesforce Exist",
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "forEachBuildingInMembers",
+									"activity": "Lookup Each Building In Salesforce",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -62,7 +62,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@empty(activity('forEachBuildingInMembers').output.id)",
+									"value": "@empty(activity('Lookup Each Building In Salesforce').output.id)",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
@@ -86,17 +86,9 @@
 													"type": "Int32"
 												},
 												"member_premise_id": {
-													"value": {
-														"value": "@activity('forEachBuildingInMembers').output.premiseid",
-														"type": "Expression"
-													},
 													"type": "Int32"
 												},
 												"name": {
-													"value": {
-														"value": "@activity('forEachBuildingInMembers').output.premisename",
-														"type": "Expression"
-													},
 													"type": "String"
 												},
 												"postcode": {
