@@ -1,0 +1,377 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "nabers-data-sync"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/01 Pull Members Data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "forEachRow",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Set Variable Rating",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('_ratings')",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "Lookup Each Building by Name In Salesforce",
+									"type": "Lookup",
+									"dependsOn": [
+										{
+											"activity": "Set variable _currentRatingItem",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SalesforceSource",
+											"query": {
+												"value": "Select id from NO_Building__c where IsDeleted = 0 and Postcode__c = '@item().Prem_Postcode' and State__c = '@item().Prem_State' and Suburb__c = '@item().Prem_Suburb' and (Street_Name__c + ' ' + Street_Number__c) =  '@item().AddressLine1' and Name = '@item.PremiseName'",
+												"type": "Expression"
+											},
+											"readBehavior": "query"
+										},
+										"dataset": {
+											"referenceName": "sfBuildings",
+											"type": "DatasetReference"
+										},
+										"firstRowOnly": false
+									}
+								},
+								{
+									"name": "If Building In Salesforce Exist",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "Set Variable _sf_buildingRecord",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@variables('_sf_buildingRecord').count > 0",
+											"type": "Expression"
+										},
+										"ifFalseActivities": [
+											{
+												"name": "insertPremiseDetails",
+												"description": "Building does not exist",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[dbo].[usp_InsertLookupPremiseData]",
+													"storedProcedureParameters": {
+														"batch_id": {
+															"value": {
+																"value": "@pipeline().parameters.batchid",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"member_premise_id": {
+															"value": {
+																"value": "@item().premiseid",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"name": {
+															"value": {
+																"value": "@item().premisename",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"postcode": {
+															"value": {
+																"value": "@item().prem_postcode",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"salesforcebuildingId": {
+															"value": "",
+															"type": "String"
+														},
+														"state": {
+															"value": {
+																"value": "@item().prem_state",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"streetname": {
+															"value": {
+																"value": "@item().prem_addressline1",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"streetnumber": {
+															"value": "",
+															"type": "String"
+														},
+														"suburb": {
+															"value": {
+																"value": "@item().prem_suburb",
+																"type": "Expression"
+															},
+															"type": "String"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "NABERSStaging",
+													"type": "LinkedServiceReference"
+												}
+											}
+										],
+										"ifTrueActivities": [
+											{
+												"name": "insertBuildingDetails",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[dbo].[usp_InsertLookupPremiseData]",
+													"storedProcedureParameters": {
+														"batch_id": {
+															"value": {
+																"value": "@pipeline().parameters.batchid",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"member_premise_id": {
+															"value": {
+																"value": "@variables('_currentRatingItem').PremiseID",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"name": {
+															"value": "",
+															"type": "String"
+														},
+														"postcode": {
+															"value": "",
+															"type": "String"
+														},
+														"salesforcebuildingId": {
+															"value": {
+																"value": "@activity('Lookup Each Building by Name In Salesforce').output.id",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"state": {
+															"value": "",
+															"type": "String"
+														},
+														"streetname": {
+															"value": "",
+															"type": "String"
+														},
+														"streetnumber": {
+															"value": "",
+															"type": "String"
+														},
+														"suburb": {
+															"value": "",
+															"type": "String"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "NABERSStaging",
+													"type": "LinkedServiceReference"
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "Set Variable _sf_buildingRecord",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Lookup Each Building by Name In Salesforce",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "_sf_buildingRecord",
+										"value": {
+											"value": "@activity('Lookup Each Building by Name In Salesforce').output.value",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set variable _currentRatingItem",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "_currentRatingItem",
+										"value": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "exec createBuilding pipeline",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "forEachRow",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01b Create Building",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true
+						}
+					},
+					{
+						"name": "usp_GetRating",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRating]",
+								"storedProcedureParameters": {
+									"batchid": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.batchid",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "RatingHeader",
+								"type": "DatasetReference"
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "Set Variable Rating",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "usp_GetRating",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "_ratings",
+							"value": [
+								"@activity('usp_GetRating').output.value"
+							]
+						}
+					}
+				],
+				"parameters": {
+					"batchid": {
+						"type": "int",
+						"defaultValue": 1
+					}
+				},
+				"variables": {
+					"_ratings": {
+						"type": "Array"
+					},
+					"_sf_buildingRecord": {
+						"type": "Array"
+					},
+					"_currentRatingItem": {
+						"type": "Array"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		}
+	]
+}
