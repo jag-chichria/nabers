@@ -251,7 +251,10 @@
 					"storedProcedureName": "[dbo].[usp_GetRating]",
 					"storedProcedureParameters": {
 						"batchid": {
-							"value": "",
+							"value": {
+								"value": "@pipeline().parameters.batchid",
+								"type": "Expression"
+							},
 							"type": "Int32"
 						}
 					}
