@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "nabers-data-sync"
+		},
+		"NABERSStaging_connectionString": {
+			"value": ""
+		},
+		"NabersOnline_password": {
+			"value": ""
+		},
+		"NabersOnline_securityToken": {
+			"value": ""
+		},
+		"NabersOnline_properties_typeProperties_environmentUrl": {
+			"value": "https://nabers--datamigdev.my.salesforce.com"
+		},
+		"NabersOnline_properties_typeProperties_username": {
+			"value": "jag.chichria@nabers.gov.au.datamigdev"
+		}
+	}
+}
