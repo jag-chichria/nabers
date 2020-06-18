@@ -136,7 +136,7 @@
 														},
 														"member_premise_id": {
 															"value": {
-																"value": "@variables('_currentRatingItem').PremiseID",
+																"value": "@variables('_currentRatingItem')[0].PremiseID",
 																"type": "Expression"
 															},
 															"type": "Int32"
