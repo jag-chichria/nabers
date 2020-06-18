@@ -45,7 +45,8 @@
 								"dataset": {
 									"referenceName": "sfBuildings",
 									"type": "DatasetReference"
-								}
+								},
+								"firstRowOnly": false
 							}
 						},
 						{
