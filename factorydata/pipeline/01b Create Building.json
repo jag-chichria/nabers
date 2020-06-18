@@ -48,15 +48,6 @@
 							},
 							{
 								"source": {
-									"name": "'Australia'"
-								},
-								"sink": {
-									"name": "Country__c",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
 									"name": "postcode",
 									"type": "String"
 								},
@@ -104,15 +95,6 @@
 									"name": "Suburb__c",
 									"type": "String"
 								}
-							},
-							{
-								"source": {
-									"name": "'Shopping Centre'"
-								},
-								"sink": {
-									"name": "Building_Type__c",
-									"type": "String"
-								}
 							}
 						]
 					}
@@ -131,6 +113,16 @@
 				]
 			}
 		],
+		"variables": {
+			"_defaultCountry": {
+				"type": "String",
+				"defaultValue": "Australia"
+			},
+			"_defaultPremiseType": {
+				"type": "String",
+				"defaultValue": "Shopping Centre"
+			}
+		},
 		"annotations": []
 	}
 }
