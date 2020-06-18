@@ -83,7 +83,10 @@
 											"storedProcedureName": "[dbo].[usp_InsertLookupPremiseData]",
 											"storedProcedureParameters": {
 												"batch_id": {
-													"value": "1",
+													"value": {
+														"value": "@pipeline().parameters.batchid",
+														"type": "Expression"
+													},
 													"type": "Int32"
 												},
 												"member_premise_id": {
@@ -161,7 +164,10 @@
 											"storedProcedureName": "[dbo].[usp_InsertLookupPremiseData]",
 											"storedProcedureParameters": {
 												"batch_id": {
-													"value": "1",
+													"value": {
+														"value": "@pipeline().parameters.batchid",
+														"type": "Expression"
+													},
 													"type": "Int32"
 												},
 												"member_premise_id": {
