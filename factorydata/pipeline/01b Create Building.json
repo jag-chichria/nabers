@@ -48,16 +48,6 @@
 							},
 							{
 								"source": {
-									"name": "member_premise_id",
-									"type": "Int32"
-								},
-								"sink": {
-									"name": "NOCRM_External_ID__c",
-									"type": "Decimal"
-								}
-							},
-							{
-								"source": {
 									"name": "postcode",
 									"type": "String"
 								},
