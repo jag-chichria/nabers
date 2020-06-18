@@ -29,7 +29,9 @@
 					"sink": {
 						"type": "SalesforceSink",
 						"writeBatchSize": 5000,
-						"writeBehavior": "insert"
+						"writeBehavior": "upsert",
+						"externalIdFieldName": "id",
+						"ignoreNullValues": false
 					},
 					"enableStaging": false,
 					"translator": {
