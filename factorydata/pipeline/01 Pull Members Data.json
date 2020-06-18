@@ -152,7 +152,7 @@
 										"userProperties": [],
 										"typeProperties": {
 											"pipeline": {
-												"referenceName": "lookupByBuildingDetails",
+												"referenceName": "01a Lookup By Building Details",
 												"type": "PipelineReference"
 											},
 											"waitOnCompletion": true
@@ -178,7 +178,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "createBulding",
+						"referenceName": "01b Create Building",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
