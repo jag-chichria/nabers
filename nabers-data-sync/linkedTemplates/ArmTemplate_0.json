@@ -565,7 +565,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('usp_GetRating').output",
+								"value": "@activity('usp_GetRating').output.value",
 								"type": "Expression"
 							},
 							"isSequential": false,
