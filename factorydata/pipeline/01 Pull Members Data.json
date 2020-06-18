@@ -262,6 +262,12 @@
 				}
 			}
 		],
+		"parameters": {
+			"batchid": {
+				"type": "int",
+				"defaultValue": 1
+			}
+		},
 		"annotations": []
 	}
 }
