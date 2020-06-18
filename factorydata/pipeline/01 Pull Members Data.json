@@ -22,7 +22,7 @@
 					"isSequential": false,
 					"activities": [
 						{
-							"name": "Lookup Each Building In Salesforce",
+							"name": "Lookup Each Building by Name In Salesforce",
 							"type": "Lookup",
 							"dependsOn": [],
 							"policy": {
@@ -53,7 +53,7 @@
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "Lookup Each Building In Salesforce",
+									"activity": "Lookup Each Building by Name In Salesforce",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -62,12 +62,13 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@empty(activity('Lookup Each Building In Salesforce').output.id)",
+									"value": "@empty(activity('Lookup Each Building by Name In Salesforce').output.id)",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
 									{
 										"name": "insertPremiseDetails",
+										"description": "Building does not exist",
 										"type": "SqlServerStoredProcedure",
 										"dependsOn": [],
 										"policy": {
