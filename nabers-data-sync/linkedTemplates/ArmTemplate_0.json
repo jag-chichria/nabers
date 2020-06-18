@@ -556,7 +556,7 @@
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "usp_GetRating",
+								"activity": "Set Variable Rating",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -565,7 +565,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('usp_GetRating').output.value",
+								"value": "@variables('_ratings')",
 								"type": "Expression"
 							},
 							"isSequential": false,
@@ -794,7 +794,7 @@
 					},
 					{
 						"name": "usp_GetRating",
-						"type": "SqlServerStoredProcedure",
+						"type": "Lookup",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
@@ -805,20 +805,44 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"storedProcedureName": "[[dbo].[usp_GetRating]",
-							"storedProcedureParameters": {
-								"batchid": {
-									"value": {
-										"value": "@pipeline().parameters.batchid",
-										"type": "Expression"
-									},
-									"type": "Int32"
-								}
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRating]",
+								"storedProcedureParameters": {
+									"batchid": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.batchid",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "RatingHeader",
+								"type": "DatasetReference",
+								"parameters": {}
 							}
-						},
-						"linkedServiceName": {
-							"referenceName": "NABERSStaging",
-							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Set Variable Rating",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "usp_GetRating",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "_ratings",
+							"value": [
+								"@activity('usp_GetRating').output.value"
+							]
 						}
 					}
 				],
@@ -828,12 +852,18 @@
 						"defaultValue": 1
 					}
 				},
+				"variables": {
+					"_ratings": {
+						"type": "Array"
+					}
+				},
 				"annotations": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/01b Create Building')]",
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
-				"[concat(variables('factoryId'), '/datasets/sfBuildings')]"
+				"[concat(variables('factoryId'), '/datasets/RatingHeader')]",
+				"[concat(variables('factoryId'), '/datasets/sfBuildings')]",
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
 			]
 		}
 	]
