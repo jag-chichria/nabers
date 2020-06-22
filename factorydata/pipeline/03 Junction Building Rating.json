@@ -188,7 +188,7 @@
 									},
 									"salesforceratingId": {
 										"value": {
-											"value": "@variables('_vsf_buildingRecord').output.value.Id",
+											"value": "@variables('_vsf_buildingRecord')[0].Id",
 											"type": "Expression"
 										},
 										"type": "String"
@@ -236,23 +236,28 @@
 										{
 											"source": {
 												"name": "sf_rating_id",
-												"type": "String",
 												"physicalType": "varchar"
 											},
 											"sink": {
-												"name": "Rating__c",
-												"type": "String"
+												"name": "Rating__c"
 											}
 										},
 										{
 											"source": {
 												"name": "sf_building_id",
-												"type": "String",
 												"physicalType": "varchar"
 											},
 											"sink": {
-												"name": "Building__c",
-												"type": "String"
+												"name": "Building__c"
+											}
+										},
+										{
+											"source": {
+												"name": "sf_rating_id",
+												"physicalType": "varchar"
+											},
+											"sink": {
+												"name": "Name"
 											}
 										}
 									],
