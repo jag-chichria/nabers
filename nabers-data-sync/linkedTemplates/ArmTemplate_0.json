@@ -1922,7 +1922,7 @@
 						"type": "Array"
 					},
 					"_vsf_buildingRecord": {
-						"type": "String"
+						"type": "Array"
 					},
 					"_vnewBuildingInSF": {
 						"type": "Array"
