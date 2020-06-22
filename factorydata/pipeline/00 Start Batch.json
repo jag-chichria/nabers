@@ -75,7 +75,7 @@
 					"waitOnCompletion": true,
 					"parameters": {
 						"pbatch_id": {
-							"value": "int(@variables('vbatch_id'))",
+							"value": "@int(variables('vbatch_id'))",
 							"type": "Expression"
 						}
 					}
