@@ -87,7 +87,7 @@
 						"typeProperties": {
 							"variableName": "vbatch_id",
 							"value": {
-								"value": "string(@activity('usp_StartBatch').output.firstRow.NewBatchId)",
+								"value": "@string(activity('usp_StartBatch').output.firstRow.NewBatchId)",
 								"type": "Expression"
 							}
 						}
@@ -112,7 +112,7 @@
 							"waitOnCompletion": true,
 							"parameters": {
 								"pbatch_id": {
-									"value": "@int(variables('vbatch_id'))",
+									"value": "@activity('usp_StartBatch').output.firstRow.NewBatchId",
 									"type": "Expression"
 								}
 							}
