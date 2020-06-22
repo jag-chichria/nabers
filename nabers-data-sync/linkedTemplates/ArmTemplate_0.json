@@ -1281,7 +1281,12 @@
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
-							"parameters": {}
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
 						}
 					}
 				],
