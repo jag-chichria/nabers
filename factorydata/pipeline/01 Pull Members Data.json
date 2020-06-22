@@ -172,51 +172,18 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"storedProcedureName": "[dbo].[usp_InsertLookupPremiseData]",
+											"storedProcedureName": "[dbo].[usp_UpdateNewSalesforceIdForBuilding]",
 											"storedProcedureParameters": {
 												"batch_id": {
-													"value": {
-														"value": "@pipeline().parameters.pbatch_id",
-														"type": "Expression"
-													},
+													"value": "@pipeline().parameters.pbatch_id",
 													"type": "Int32"
 												},
 												"member_premise_id": {
-													"value": {
-														"value": "@variables('_vcurrentRatingItem')[0].PremiseID",
-														"type": "Expression"
-													},
+													"value": "@variables('_vcurrentRatingItem')[0].PremiseID",
 													"type": "Int32"
 												},
-												"name": {
-													"value": "",
-													"type": "String"
-												},
-												"postcode": {
-													"value": "",
-													"type": "String"
-												},
 												"salesforcebuildingId": {
-													"value": {
-														"value": "@activity('Lookup Each Building by Name In Salesforce').Output.value[0].Id",
-														"type": "Expression"
-													},
-													"type": "String"
-												},
-												"state": {
-													"value": "",
-													"type": "String"
-												},
-												"streetname": {
-													"value": "",
-													"type": "String"
-												},
-												"streetnumber": {
-													"value": "",
-													"type": "String"
-												},
-												"suburb": {
-													"value": "",
+													"value": "@activity('Lookup Each Building by Name In Salesforce').Output.value[0].Id",
 													"type": "String"
 												}
 											}
