@@ -56,7 +56,7 @@
 				}
 			},
 			{
-				"name": "01 Pull Members Data",
+				"name": "01 Pull From Staging",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
