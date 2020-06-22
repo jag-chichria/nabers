@@ -23,18 +23,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderStoredProcedureName": "[dbo].[usp_GetBuildingToCreateInSalesForce]",
-						"storedProcedureParameters": {
-							"batchid": {
-								"type": "Int32",
-								"value": {
-									"value": "@pipeline().parameters.pbatch_id",
-									"type": "Expression"
-								}
-							}
-						},
-						"queryTimeout": "02:00:00"
+						"type": "SalesforceSource",
+						"readBehavior": "query"
 					},
 					"sink": {
 						"type": "SalesforceSink",
@@ -109,6 +99,12 @@
 						]
 					}
 				},
+				"inputs": [
+					{
+						"referenceName": "sf_Buildings",
+						"type": "DatasetReference"
+					}
+				],
 				"outputs": [
 					{
 						"referenceName": "sf_Buildings",
