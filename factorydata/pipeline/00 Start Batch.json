@@ -82,43 +82,49 @@
 				}
 			},
 			{
-				"name": "Update Batch",
-				"type": "SqlServerStoredProcedure",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
+				"name": "01b Transform",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "exec createBuilding pipeline",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[usp_LogBatchDetails]",
-					"storedProcedureParameters": {
-						"batch_id": {
-							"value": {
-								"value": "@variables('vbatch_id')",
-								"type": "Expression"
-							},
-							"type": "Int32"
-						},
-						"process_name": {
-							"value": {
-								"value": "@pipeline().RunId",
-								"type": "Expression"
-							},
-							"type": "String"
-						},
-						"stage": {
-							"value": "In Progress",
-							"type": "String"
+					"pipeline": {
+						"referenceName": "01b Transform Ratings",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "exec createBuilding pipeline",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "01 Pull From Staging",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "01a Create Building",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"pbatch_id": {
+							"value": "@pipeline().parameters.pbatch_id",
+							"type": "Expression"
 						}
 					}
-				},
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
 				}
 			}
 		],
