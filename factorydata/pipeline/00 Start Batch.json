@@ -39,7 +39,7 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "batch_id",
+					"variableName": "vbatch_id",
 					"value": {
 						"value": "@activity('usp_StartBatch').output.first.NewBatchId",
 						"type": "Expression"
@@ -63,18 +63,12 @@
 						"referenceName": "01 Pull Members Data",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"batchid": {
-							"value": "@variables('batch_id')",
-							"type": "Expression"
-						}
-					}
+					"waitOnCompletion": true
 				}
 			}
 		],
 		"variables": {
-			"batch_id": {
+			"vbatch_id": {
 				"type": "String",
 				"defaultValue": "1"
 			}
