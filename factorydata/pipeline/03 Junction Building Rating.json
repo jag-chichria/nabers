@@ -3,116 +3,6 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "createNotFoundBuilding",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Update Batch",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "SalesforceSource",
-						"readBehavior": "query"
-					},
-					"sink": {
-						"type": "SalesforceSink",
-						"writeBatchSize": 5000,
-						"writeBehavior": "insert",
-						"ignoreNullValues": false
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"name": "name",
-									"type": "String"
-								},
-								"sink": {
-									"name": "Name",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "postcode",
-									"type": "String"
-								},
-								"sink": {
-									"name": "Postcode__c",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "state",
-									"type": "String"
-								},
-								"sink": {
-									"name": "State__c",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "streetname",
-									"type": "String"
-								},
-								"sink": {
-									"name": "Street_Name__c",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "streetnumber",
-									"type": "String"
-								},
-								"sink": {
-									"name": "Street_Number__c",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "suburb",
-									"type": "String"
-								},
-								"sink": {
-									"name": "Suburb__c",
-									"type": "String"
-								}
-							}
-						]
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "sf_Buildings",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "sf_Buildings",
-						"type": "DatasetReference"
-					}
-				]
-			},
-			{
 				"name": "Update Batch",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [],
@@ -157,7 +47,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "createNotFoundBuilding",
+						"activity": "Update Batch",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -174,7 +64,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderStoredProcedureName": "[dbo].[usp_GetBuildingToCreateInSalesForce]",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_GetRating]",
 						"storedProcedureParameters": {
 							"batchid": {
 								"type": "Int32",
@@ -213,7 +103,7 @@
 					"isSequential": false,
 					"activities": [
 						{
-							"name": "Lookup Each Building by Name In Salesforce",
+							"name": "Lookup Each Rating by Member Rating Id In Salesforce",
 							"type": "Lookup",
 							"dependsOn": [
 								{
@@ -235,13 +125,13 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from NO_Building__c \nwhere Postcode__c = '@{variables('_vnewBuildingInSF')[0].Postcode}'\nand State__c = '@{variables('_vnewBuildingInSF')[0].State}'\nand Suburb__c = '@{variables('_vnewBuildingInSF')[0].Suburb}'\nand Street_Number__c = '@{variables('_vnewBuildingInSF')[0].StreetNumber}'\nand Street_Name__c = '@{variables('_vnewBuildingInSF')[0].StreetName}'\nand Name = '@{variables('_vnewBuildingInSF')[0].PremiseName}'",
+										"value": "Select id from NO_Rating__c \nwhere NO_Member_Rating_Id__c = '@{variables('_vnewBuildingInSF')[0].RatingHeaderID}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
 								},
 								"dataset": {
-									"referenceName": "sf_Buildings",
+									"referenceName": "sf_Ratings",
 									"type": "DatasetReference"
 								},
 								"firstRowOnly": false
@@ -252,7 +142,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Lookup Each Building by Name In Salesforce",
+									"activity": "Lookup Each Rating by Member Rating Id In Salesforce",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -262,7 +152,7 @@
 							"typeProperties": {
 								"variableName": "_vsf_buildingRecord",
 								"value": {
-									"value": "@activity('Lookup Each Building by Name In Salesforce').output.value",
+									"value": "@activity('Lookup Each Rating by Member Rating Id In Salesforce').output.value",
 									"type": "Expression"
 								}
 							}
@@ -281,8 +171,8 @@
 							}
 						},
 						{
-							"name": "UpdateNewSalesforceIdForBuilding",
-							"type": "SqlServerStoredProcedure",
+							"name": "createRatingBuildingJunction",
+							"type": "Copy",
 							"dependsOn": [
 								{
 									"activity": "Set Variable _sf_buildingRecord",
@@ -300,35 +190,64 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"storedProcedureName": "[usp_UpdateNewSalesforceIdForBuilding]",
-								"storedProcedureParameters": {
-									"batch_id": {
-										"value": {
-											"value": "@pipeline().parameters.pbatch_id",
-											"type": "Expression"
-										},
-										"type": "Int32"
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderStoredProcedureName": "[dbo].[usp_GetTransformedRatings]",
+									"storedProcedureParameters": {
+										"batchid": {
+											"type": "Int32",
+											"value": {
+												"value": "@pipeline().parameters.pbatch_id",
+												"type": "Expression"
+											}
+										}
 									},
-									"member_premise_id": {
-										"value": {
-											"value": "@variables('_vnewBuildingInSF')[0].member_premise_id",
-											"type": "Expression"
+									"queryTimeout": "02:00:00"
+								},
+								"sink": {
+									"type": "SalesforceSink",
+									"writeBatchSize": 5000,
+									"writeBehavior": "insert",
+									"ignoreNullValues": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "building_type",
+												"type": "String"
+											},
+											"sink": {
+												"name": "Building_Type__c",
+												"type": "String"
+											}
 										},
-										"type": "Int32"
-									},
-									"salesforcebuildingId": {
-										"value": {
-											"value": "@variables('_vsf_buildingRecord').output.id",
-											"type": "Expression"
-										},
-										"type": "String"
-									}
+										{
+											"source": {
+												"name": "id",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "NO_Member_Rating_Id__c"
+											}
+										}
+									]
 								}
 							},
-							"linkedServiceName": {
-								"referenceName": "NABERSStaging",
-								"type": "LinkedServiceReference"
-							}
+							"inputs": [
+								{
+									"referenceName": "db_transformed_ratings",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "sf_Ratings",
+									"type": "DatasetReference"
+								}
+							]
 						}
 					]
 				}

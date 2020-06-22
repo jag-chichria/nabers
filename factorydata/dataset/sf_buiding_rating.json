@@ -1,5 +1,5 @@
 {
-	"name": "sf_Ratings",
+	"name": "sf_buiding_rating",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "NabersOnline",
@@ -12,7 +12,7 @@
 		"type": "SalesforceObject",
 		"schema": [],
 		"typeProperties": {
-			"objectApiName": "NO_Rating__c"
+			"objectApiName": "NO_Building_Rating_Relationship__c"
 		}
 	}
 }
