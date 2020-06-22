@@ -1234,7 +1234,7 @@
 									}
 								},
 								{
-									"name": "UpdateNewSalesforceIdForRating",
+									"name": "UpdateNewSalesforceIdForBuilding",
 									"type": "SqlServerStoredProcedure",
 									"dependsOn": [
 										{
@@ -1253,7 +1253,7 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"storedProcedureName": "[[dbo].[usp_UpdateNewSalesforceIdForRating]",
+										"storedProcedureName": "[[dbo].[usp_UpdateNewSalesforceIdForBuilding]",
 										"storedProcedureParameters": {
 											"batch_id": {
 												"value": {
@@ -1262,14 +1262,14 @@
 												},
 												"type": "Int32"
 											},
-											"member_rating_id": {
+											"member_premise_id": {
 												"value": {
-													"value": "@variables('_vnewBuildingInSF')[0].ratingheaderid",
+													"value": "@variables('_vnewBuildingInSF')[0].member_premise_id",
 													"type": "Expression"
 												},
 												"type": "Int32"
 											},
-											"salesforceratingId": {
+											"salesforcebuildingId": {
 												"value": {
 													"value": "@variables('_vsf_buildingRecord').output.id",
 													"type": "Expression"
@@ -1544,8 +1544,7 @@
 									},
 									{
 										"source": {
-											"name": "id",
-											"type": "Int32"
+											"name": "source_rating_id"
 										},
 										"sink": {
 											"name": "NO_Member_Rating_Id__c"
@@ -1759,6 +1758,134 @@
 											"type": "Expression"
 										}
 									}
+								},
+								{
+									"name": "UpdateNewSalesforceIdForRating",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "Set Variable _sf_buildingRecord",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[[dbo].[usp_UpdateNewSalesforceIdForRating]",
+										"storedProcedureParameters": {
+											"batch_id": {
+												"value": {
+													"value": "@pipeline().parameters.pbatch_id",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"member_rating_id": {
+												"value": {
+													"value": "@variables('_vnewBuildingInSF')[0].ratingheaderid",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"salesforceratingId": {
+												"value": {
+													"value": "@variables('_vsf_buildingRecord').output.id",
+													"type": "Expression"
+												},
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "NABERSStaging",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "copyJunctionBuildingRating",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "UpdateNewSalesforceIdForRating",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"queryTimeout": "02:00:00"
+										},
+										"sink": {
+											"type": "SalesforceSink",
+											"writeBatchSize": 5000,
+											"writeBehavior": "insert"
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"name": "sf_rating_id",
+														"type": "String",
+														"physicalType": "varchar"
+													},
+													"sink": {
+														"name": "Rating__c",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"name": "sf_building_id",
+														"type": "String",
+														"physicalType": "varchar"
+													},
+													"sink": {
+														"name": "Building__c",
+														"type": "String"
+													}
+												}
+											],
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "db_transformed_ratings",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "sf_buiding_rating",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
 								}
 							]
 						}
@@ -1778,7 +1905,7 @@
 						"typeProperties": {
 							"variableName": "_vnewBuildingsInSF",
 							"value": {
-								"value": "@activity('usp_GetSalesforce').output.value",
+								"value": "@activity('usp_GetSalesforce').Output.value",
 								"type": "Expression"
 							}
 						}
@@ -1791,19 +1918,11 @@
 					}
 				},
 				"variables": {
-					"_defaultCountry": {
-						"type": "String",
-						"defaultValue": "Australia"
-					},
-					"_defaultPremiseType": {
-						"type": "String",
-						"defaultValue": "Shopping Centre"
-					},
 					"_vnewBuildingsInSF": {
 						"type": "Array"
 					},
 					"_vsf_buildingRecord": {
-						"type": "Array"
+						"type": "String"
 					},
 					"_vnewBuildingInSF": {
 						"type": "Array"
@@ -1814,7 +1933,9 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
 				"[concat(variables('factoryId'), '/datasets/db_members_rating')]",
-				"[concat(variables('factoryId'), '/datasets/sf_Ratings')]"
+				"[concat(variables('factoryId'), '/datasets/sf_Ratings')]",
+				"[concat(variables('factoryId'), '/datasets/db_transformed_ratings')]",
+				"[concat(variables('factoryId'), '/datasets/sf_buiding_rating')]"
 			]
 		},
 		{
