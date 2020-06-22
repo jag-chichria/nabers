@@ -175,7 +175,7 @@
 										"source": {
 											"type": "SalesforceSource",
 											"query": {
-												"value": "Select id from NO_Building__c where IsDeleted = False and Postcode__c = '@item().Postcode' and State__c = '@item().State' and Suburb__c = '@item().Suburb' and Street_Number__c = '@item().StreetNumber' and Street_Name__c = '@item().StreetName' and State__c = '@item.State' and Name = '@item().PremiseName'",
+												"value": "Select id from NO_Building__c \nwhere IsDeleted = False \nand Postcode__c = @item().Postcode\nand State__c = @item().State\nand Suburb__c = @item().Suburb\nand Street_Number__c = @item().StreetNumber\nand Street_Name__c = @item().StreetName\nand State__c = @item.State\nand Name = @item().PremiseName",
 												"type": "Expression"
 											},
 											"readBehavior": "query"
