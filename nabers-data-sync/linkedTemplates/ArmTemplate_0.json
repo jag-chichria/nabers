@@ -951,7 +951,8 @@
 										],
 										"ifTrueActivities": [
 											{
-												"name": "insertBuildingDetails",
+												"name": "insertPremiseDetailsWithSalesForceId",
+												"description": "Building does exist",
 												"type": "SqlServerStoredProcedure",
 												"dependsOn": [],
 												"policy": {
@@ -963,18 +964,66 @@
 												},
 												"userProperties": [],
 												"typeProperties": {
-													"storedProcedureName": "[[dbo].[usp_UpdateNewSalesforceIdForBuilding]",
+													"storedProcedureName": "[[dbo].[usp_InsertLookupPremiseData]",
 													"storedProcedureParameters": {
 														"batch_id": {
-															"value": "@pipeline().parameters.pbatch_id",
+															"value": {
+																"value": "@pipeline().parameters.pbatch_id",
+																"type": "Expression"
+															},
 															"type": "Int32"
 														},
 														"member_premise_id": {
-															"value": "@variables('_vcurrentRatingItem')[0].PremiseID",
+															"value": {
+																"value": "@variables('_vcurrentRatingItem')[0].PremiseID",
+																"type": "Expression"
+															},
 															"type": "Int32"
+														},
+														"name": {
+															"value": {
+																"value": "@variables('_vcurrentRatingItem')[0].PremiseName",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"postcode": {
+															"value": {
+																"value": "@variables('_vcurrentRatingItem')[0].Postcode",
+																"type": "Expression"
+															},
+															"type": "String"
 														},
 														"salesforcebuildingId": {
 															"value": "@activity('Lookup Each Building by Name In Salesforce').Output.value[0].Id",
+															"type": "String"
+														},
+														"state": {
+															"value": {
+																"value": "@variables('_vcurrentRatingItem')[0].State",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"streetname": {
+															"value": {
+																"value": "@variables('_vcurrentRatingItem')[0].StreetName",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"streetnumber": {
+															"value": {
+																"value": "@variables('_vcurrentRatingItem')[0].StreetNumber",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"suburb": {
+															"value": {
+																"value": "@variables('_vcurrentRatingItem')[0].Suburb",
+																"type": "Expression"
+															},
 															"type": "String"
 														}
 													}
