@@ -6,26 +6,6 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "nabers-data-sync"
-		},
-		"NABERSStaging_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'NABERSStaging'"
-		},
-		"NabersOnline_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'NabersOnline'"
-		},
-		"NabersOnline_securityToken": {
-			"type": "secureString",
-			"metadata": "Secure string for 'securityToken' of 'NabersOnline'"
-		},
-		"NabersOnline_properties_typeProperties_environmentUrl": {
-			"type": "string",
-			"defaultValue": "https://nabers--datamigdev.my.salesforce.com"
-		},
-		"NabersOnline_properties_typeProperties_username": {
-			"type": "string",
-			"defaultValue": "jag.chichria@nabers.gov.au.datamigdev"
 		}
 	},
 	"variables": {
@@ -67,8 +47,7 @@
 							},
 							"dataset": {
 								"referenceName": "db_members_rating",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						}
 					},
@@ -295,8 +274,7 @@
 										},
 										"dataset": {
 											"referenceName": "sf_Buildings",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										},
 										"firstRowOnly": false
 									}
@@ -565,8 +543,7 @@
 							},
 							"dataset": {
 								"referenceName": "db_members_rating",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							},
 							"firstRowOnly": false
 						}
@@ -652,7 +629,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/db_members_rating')]",
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
 				"[concat(variables('factoryId'), '/datasets/sf_Buildings')]"
 			]
 		},
@@ -762,15 +738,13 @@
 						"inputs": [
 							{
 								"referenceName": "sf_Buildings",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "sf_Buildings",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					},
@@ -850,8 +824,7 @@
 							},
 							"dataset": {
 								"referenceName": "db_members_rating",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							},
 							"firstRowOnly": false
 						}
@@ -905,8 +878,7 @@
 										},
 										"dataset": {
 											"referenceName": "sf_Buildings",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										},
 										"firstRowOnly": false
 									}
@@ -1047,7 +1019,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/sf_Buildings')]",
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
 				"[concat(variables('factoryId'), '/datasets/db_members_rating')]"
 			]
 		},
@@ -1085,14 +1056,8 @@
 										"value": "@pipeline().parameters.pbatch_id",
 										"type": "Expression"
 									}
-								},
-								"datasetParameters": {
-									"getRatings": {},
-									"getLookupSalesforceBuildings": {},
-									"dumpToSFTransofrmedRatings": {}
 								}
 							},
-							"staging": {},
 							"compute": {
 								"coreCount": 8,
 								"computeType": "General"
@@ -1149,8 +1114,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/01_Transform_Rating')]",
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+				"[concat(variables('factoryId'), '/dataflows/01_Transform_Rating')]"
 			]
 		},
 		{
@@ -1268,15 +1232,13 @@
 						"inputs": [
 							{
 								"referenceName": "db_transformed_ratings",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "sf_Ratings",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					}
@@ -1290,7 +1252,6 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
 				"[concat(variables('factoryId'), '/datasets/db_transformed_ratings')]",
 				"[concat(variables('factoryId'), '/datasets/sf_Ratings')]"
 			]
@@ -1377,8 +1338,7 @@
 							},
 							"dataset": {
 								"referenceName": "db_members_rating",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							},
 							"firstRowOnly": false
 						}
@@ -1432,8 +1392,7 @@
 										},
 										"dataset": {
 											"referenceName": "sf_Ratings",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										},
 										"firstRowOnly": false
 									}
@@ -1523,7 +1482,6 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
 				"[concat(variables('factoryId'), '/datasets/db_members_rating')]",
 				"[concat(variables('factoryId'), '/datasets/sf_Ratings')]"
 			]
@@ -1598,9 +1556,7 @@
 					"table": "Lookup_SalesforceBuildings"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/db_members_rating')]",
@@ -1786,9 +1742,7 @@
 					"table": "RatingHeaderStage"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/db_transformed_ratings')]",
@@ -1838,9 +1792,7 @@
 					"table": "Transformed_Ratings"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/sf_Buildings')]",
@@ -1861,9 +1813,7 @@
 					"objectApiName": "NO_Building__c"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NabersOnline')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/sf_Ratings')]",
@@ -1884,9 +1834,7 @@
 					"objectApiName": "NO_Rating__c"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NabersOnline')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/sf_buiding_rating')]",
@@ -1905,70 +1853,6 @@
 				"schema": [],
 				"typeProperties": {
 					"objectApiName": "NO_Building_Rating_Relationship__c"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NabersOnline')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/NABERSStaging')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('NABERSStaging_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/NabersOnline')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "connection to NABERS Online",
-				"annotations": [],
-				"type": "Salesforce",
-				"typeProperties": {
-					"environmentUrl": "[parameters('NabersOnline_properties_typeProperties_environmentUrl')]",
-					"username": "[parameters('NabersOnline_properties_typeProperties_username')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('NabersOnline_password')]"
-					},
-					"securityToken": {
-						"type": "SecureString",
-						"value": "[parameters('NabersOnline_securityToken')]"
-					},
-					"apiVersion": "48.0"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntime1",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "Managed",
-				"typeProperties": {
-					"computeProperties": {
-						"location": "Australia East",
-						"dataFlowProperties": {
-							"computeType": "General",
-							"coreCount": 8,
-							"timeToLive": 0
-						}
-					}
 				}
 			},
 			"dependsOn": []
