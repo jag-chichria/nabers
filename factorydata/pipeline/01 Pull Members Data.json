@@ -282,7 +282,13 @@
 						"referenceName": "01a Create Building",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"pbatch_id": {
+							"value": "@pipeline().parameters.pbatch_id",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
