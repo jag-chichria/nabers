@@ -242,7 +242,7 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "_sf_buildingRecord",
+								"variableName": "_vsf_buildingRecord",
 								"value": {
 									"value": "@activity('Lookup Each Building by Name In Salesforce').output.value",
 									"type": "Expression"
@@ -255,7 +255,7 @@
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "_currentRatingItem",
+								"variableName": "_vcurrentRatingItem",
 								"value": {
 									"value": "@item()",
 									"type": "Expression"
@@ -332,7 +332,7 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "_ratings",
+					"variableName": "_vratings",
 					"value": [
 						"@activity('usp_GetRating').output.value"
 					]
@@ -380,19 +380,19 @@
 			}
 		],
 		"parameters": {
-			"batch_id": {
+			"pbatch_id": {
 				"type": "int",
 				"defaultValue": 1
 			}
 		},
 		"variables": {
-			"_ratings": {
+			"_vratings": {
 				"type": "Array"
 			},
-			"_sf_buildingRecord": {
+			"_vsf_buildingRecord": {
 				"type": "Array"
 			},
-			"_currentRatingItem": {
+			"_vcurrentRatingItem": {
 				"type": "Array"
 			}
 		},
