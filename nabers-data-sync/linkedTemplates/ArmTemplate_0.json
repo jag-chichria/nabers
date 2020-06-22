@@ -652,7 +652,7 @@
 										"source": {
 											"type": "SalesforceSource",
 											"query": {
-												"value": "Select id from NO_Building__c where IsDeleted = False and Postcode__c = '@item().postcode' and State__c = '@item().state' and Suburb__c = '@item().suburb' and Street_Number__c = '@item().streetnumber' and Street_Name__c = '@item().streetname' and State__c = '@item.state' and Name = '@item().name'",
+												"value": "Select id from NO_Building__c \nwhere Postcode__c = '@{variables('_vnewBuildingInSF')[0].Postcode}'\nand State__c = '@{variables('_vnewBuildingInSF')[0].State}'\nand Suburb__c = '@{variables('_vnewBuildingInSF')[0].Suburb}'\nand Street_Number__c = '@{variables('_vnewBuildingInSF')[0].StreetNumber}'\nand Street_Name__c = '@{variables('_vnewBuildingInSF')[0].StreetName}'\nand Name = '@{variables('_vnewBuildingInSF')[0].PremiseName}'",
 												"type": "Expression"
 											},
 											"readBehavior": "query"
@@ -834,7 +834,7 @@
 										"source": {
 											"type": "SalesforceSource",
 											"query": {
-												"value": "Select id from NO_Building__c \nwhere IsDeleted = False \nand Postcode__c = '@item().Postcode'\nand State__c = '@item().State'\nand Suburb__c = '@item().Suburb'\nand Street_Number__c = '@item().StreetNumber'\nand Street_Name__c = '@item().StreetName'\nand State__c = '@item.State'\nand Name = '@item().PremiseName'",
+												"value": "Select id from NO_Building__c \nwhere Postcode__c = '@{variables('_vcurrentRatingItem')[0].Postcode}'\nand State__c = '@{variables('_vcurrentRatingItem')[0].State}'\nand Suburb__c = '@{variables('_vcurrentRatingItem')[0].Suburb}'\nand Street_Number__c = '@{variables('_vcurrentRatingItem')[0].StreetNumber}'\nand Street_Name__c = '@{variables('_vcurrentRatingItem')[0].StreetName}'\nand Name = '@{variables('_vcurrentRatingItem')[0].PremiseName}'",
 												"type": "Expression"
 											},
 											"readBehavior": "query"
@@ -963,51 +963,18 @@
 												},
 												"userProperties": [],
 												"typeProperties": {
-													"storedProcedureName": "[[dbo].[usp_InsertLookupPremiseData]",
+													"storedProcedureName": "[[dbo].[usp_UpdateNewSalesforceIdForBuilding]",
 													"storedProcedureParameters": {
 														"batch_id": {
-															"value": {
-																"value": "@pipeline().parameters.pbatch_id",
-																"type": "Expression"
-															},
+															"value": "@pipeline().parameters.pbatch_id",
 															"type": "Int32"
 														},
 														"member_premise_id": {
-															"value": {
-																"value": "@variables('_vcurrentRatingItem').PremiseID",
-																"type": "Expression"
-															},
+															"value": "@variables('_vcurrentRatingItem')[0].PremiseID",
 															"type": "Int32"
 														},
-														"name": {
-															"value": "",
-															"type": "String"
-														},
-														"postcode": {
-															"value": "",
-															"type": "String"
-														},
 														"salesforcebuildingId": {
-															"value": {
-																"value": "@activity('Lookup Each Building by Name In Salesforce').output.id",
-																"type": "Expression"
-															},
-															"type": "String"
-														},
-														"state": {
-															"value": "",
-															"type": "String"
-														},
-														"streetname": {
-															"value": "",
-															"type": "String"
-														},
-														"streetnumber": {
-															"value": "",
-															"type": "String"
-														},
-														"suburb": {
-															"value": "",
+															"value": "@activity('Lookup Each Building by Name In Salesforce').Output.value[0].Id",
 															"type": "String"
 														}
 													}

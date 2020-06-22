@@ -6,132 +6,12 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "nabers-data-sync"
-		},
-		"NABERSStaging_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'NABERSStaging'"
-		},
-		"NabersOnline_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'NabersOnline'"
-		},
-		"NabersOnline_securityToken": {
-			"type": "secureString",
-			"metadata": "Secure string for 'securityToken' of 'NabersOnline'"
-		},
-		"NabersOnline_properties_typeProperties_environmentUrl": {
-			"type": "string",
-			"defaultValue": "https://nabers--datamigdev.my.salesforce.com"
-		},
-		"NabersOnline_properties_typeProperties_username": {
-			"type": "string",
-			"defaultValue": "jag.chichria@nabers.gov.au.datamigdev"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/00 Start Batch')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "usp_StartBatch",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderStoredProcedureName": "[[dbo].[usp_StartBatch]",
-								"storedProcedureParameters": {
-									"process_name": {
-										"type": "String",
-										"value": {
-											"value": "@pipeline().Pipeline",
-											"type": "Expression"
-										}
-									}
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"dataset": {
-								"referenceName": "RatingHeader",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						}
-					},
-					{
-						"name": "Batch Id",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "usp_StartBatch",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "vbatch_id",
-							"value": {
-								"value": "@string(activity('usp_StartBatch').output.firstRow.NewBatchId)",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "01 Pull Members Data",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Batch Id",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "01 Pull Members Data",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"pbatch_id": {
-									"value": "@activity('usp_StartBatch').output.firstRow.NewBatchId",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"variables": {
-					"vbatch_id": {
-						"type": "String",
-						"defaultValue": "1"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/RatingHeader')]",
-				"[concat(variables('factoryId'), '/pipelines/01 Pull Members Data')]"
-			]
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/01 Pull Members Data')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -187,8 +67,7 @@
 										},
 										"dataset": {
 											"referenceName": "sfBuildings",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										},
 										"firstRowOnly": false
 									}
@@ -424,8 +303,7 @@
 							},
 							"dataset": {
 								"referenceName": "RatingHeader",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							},
 							"firstRowOnly": false
 						}
@@ -510,10 +388,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/01a Create Building')]",
-				"[concat(variables('factoryId'), '/datasets/RatingHeader')]",
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
-				"[concat(variables('factoryId'), '/datasets/sfBuildings')]"
+				"[concat(variables('factoryId'), '/pipelines/01a Create Building')]"
 			]
 		},
 		{
@@ -632,15 +507,13 @@
 						"inputs": [
 							{
 								"referenceName": "SalesForceBuildingIds",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "sfBuildings",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					},
@@ -720,8 +593,7 @@
 							},
 							"dataset": {
 								"referenceName": "RatingHeader",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						}
 					},
@@ -774,8 +646,7 @@
 										},
 										"dataset": {
 											"referenceName": "sfBuildings",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										},
 										"firstRowOnly": false
 									}
@@ -893,380 +764,6 @@
 					}
 				},
 				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SalesForceBuildingIds')]",
-				"[concat(variables('factoryId'), '/datasets/sfBuildings')]",
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
-				"[concat(variables('factoryId'), '/datasets/RatingHeader')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/RatingHeader')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "RatingHeaderID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "RatingReferenceNumber",
-						"type": "varchar"
-					},
-					{
-						"name": "PremiseTypeID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "PremiseType",
-						"type": "varchar"
-					},
-					{
-						"name": "PremiseID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "PremiseName",
-						"type": "varchar"
-					},
-					{
-						"name": "AssessorID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Assessor",
-						"type": "varchar"
-					},
-					{
-						"name": "CustomerID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Customer",
-						"type": "varchar"
-					},
-					{
-						"name": "RatingPeriodFrom",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "RatingPeriodTo",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "PublicListingFlag",
-						"type": "bit"
-					},
-					{
-						"name": "OfficerID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Officer",
-						"type": "varchar"
-					},
-					{
-						"name": "RatingStatusID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "RatingStatus",
-						"type": "varchar"
-					},
-					{
-						"name": "LodgedDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "PaymentStatusID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "PaymentStatus",
-						"type": "varchar"
-					},
-					{
-						"name": "PaidDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "CertificateValidFrom",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "CertificateValidTo",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "PremiseNameOnCert",
-						"type": "varchar"
-					},
-					{
-						"name": "CustomerNameOnCert",
-						"type": "varchar"
-					},
-					{
-						"name": "ReplaceFlag",
-						"type": "bit"
-					},
-					{
-						"name": "RenewFlag",
-						"type": "bit"
-					},
-					{
-						"name": "PreviousRatingHeaderID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "NewRatingHeaderID",
-						"type": "int",
-						"precision": 10
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "RatingHeaderStage"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SF_RatingHeaderApi')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NabersOnline",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SalesforceObject",
-				"schema": [],
-				"typeProperties": {
-					"objectApiName": "NO_Rating__c"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NabersOnline')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SalesForceBuildingIds')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "salesforcebuildingId",
-						"type": "varchar"
-					},
-					{
-						"name": "name",
-						"type": "varchar"
-					},
-					{
-						"name": "postcode",
-						"type": "varchar"
-					},
-					{
-						"name": "state",
-						"type": "varchar"
-					},
-					{
-						"name": "streetname",
-						"type": "nvarchar"
-					},
-					{
-						"name": "streetnumber",
-						"type": "nvarchar"
-					},
-					{
-						"name": "suburb",
-						"type": "nvarchar"
-					},
-					{
-						"name": "batch_id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "created_on",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "member_premise_id",
-						"type": "int",
-						"precision": 10
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "SalesforceBuildingId"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ToSFRating')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "DestinationId",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "source_rating_id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "building_type",
-						"type": "varchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "To_SF_Rating"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/sfBuildings')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NabersOnline",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SalesforceObject",
-				"schema": [],
-				"typeProperties": {
-					"objectApiName": "NO_Building__c"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NabersOnline')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/NABERSStaging')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('NABERSStaging_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/NabersOnline')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "connection to NABERS Online",
-				"annotations": [],
-				"type": "Salesforce",
-				"typeProperties": {
-					"environmentUrl": "[parameters('NabersOnline_properties_typeProperties_environmentUrl')]",
-					"username": "[parameters('NabersOnline_properties_typeProperties_username')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('NabersOnline_password')]"
-					},
-					"securityToken": {
-						"type": "SecureString",
-						"value": "[parameters('NabersOnline_securityToken')]"
-					},
-					"apiVersion": "48.0"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntime1",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "Managed",
-				"typeProperties": {
-					"computeProperties": {
-						"location": "Australia East",
-						"dataFlowProperties": {
-							"computeType": "General",
-							"coreCount": 8,
-							"timeToLive": 0
-						}
-					}
-				}
 			},
 			"dependsOn": []
 		}
