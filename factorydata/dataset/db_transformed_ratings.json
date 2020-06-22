@@ -29,6 +29,11 @@
 			{
 				"name": "sf_building_id",
 				"type": "varchar"
+			},
+			{
+				"name": "batch_id",
+				"type": "int",
+				"precision": 10
 			}
 		],
 		"typeProperties": {
