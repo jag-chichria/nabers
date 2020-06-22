@@ -1,6 +1,84 @@
 {
 	"name": "00 Start Batch",
 	"properties": {
+		"activities": [
+			{
+				"name": "usp_StartBatch",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_StartBatch]",
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "RatingHeader",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Batch Id",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "usp_StartBatch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "batch_id",
+					"value": {
+						"value": "@activity('usp_StartBatch').output.first.NewBatchId",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "01 Pull Members Data",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Batch Id",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "01 Pull Members Data",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"batchid": {
+							"value": "@variables('batch_id')",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"variables": {
+			"batch_id": {
+				"type": "String",
+				"defaultValue": "1"
+			}
+		},
 		"annotations": []
 	}
 }
