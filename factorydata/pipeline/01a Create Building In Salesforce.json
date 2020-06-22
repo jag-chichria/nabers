@@ -281,7 +281,7 @@
 							}
 						},
 						{
-							"name": "UpdateNewSalesforceIdForRating",
+							"name": "UpdateNewSalesforceIdForBuilding",
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
@@ -300,7 +300,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"storedProcedureName": "[dbo].[usp_UpdateNewSalesforceIdForRating]",
+								"storedProcedureName": "[dbo].[usp_UpdateNewSalesforceIdForBuilding]",
 								"storedProcedureParameters": {
 									"batch_id": {
 										"value": {
@@ -309,14 +309,14 @@
 										},
 										"type": "Int32"
 									},
-									"member_rating_id": {
+									"member_premise_id": {
 										"value": {
-											"value": "@variables('_vnewBuildingInSF')[0].ratingheaderid",
+											"value": "@variables('_vnewBuildingInSF')[0].member_premise_id",
 											"type": "Expression"
 										},
 										"type": "Int32"
 									},
-									"salesforceratingId": {
+									"salesforcebuildingId": {
 										"value": {
 											"value": "@variables('_vsf_buildingRecord').output.id",
 											"type": "Expression"
