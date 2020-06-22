@@ -328,7 +328,7 @@
 		},
 		"variables": {
 			"_vnewBuildingsInSF": {
-				"type": "String"
+				"type": "Array"
 			},
 			"_vsf_buildingRecord": {
 				"type": "String"
