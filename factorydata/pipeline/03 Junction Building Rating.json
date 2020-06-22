@@ -328,13 +328,13 @@
 		},
 		"variables": {
 			"_vnewBuildingsInSF": {
-				"type": "Array"
+				"type": "String"
 			},
 			"_vsf_buildingRecord": {
-				"type": "Array"
+				"type": "String"
 			},
 			"_vnewBuildingInSF": {
-				"type": "Array"
+				"type": "String"
 			}
 		},
 		"annotations": []
