@@ -314,7 +314,7 @@
 				"typeProperties": {
 					"variableName": "_vnewBuildingsInSF",
 					"value": {
-						"value": "@activity('usp_GetSalesforce').output.value",
+						"value": "@activity('usp_GetSalesforce').Output.value",
 						"type": "Expression"
 					}
 				}
