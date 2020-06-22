@@ -98,8 +98,7 @@
 							},
 							{
 								"source": {
-									"name": "id",
-									"type": "Int32"
+									"name": "source_rating_id"
 								},
 								"sink": {
 									"name": "NO_Member_Rating_Id__c"
