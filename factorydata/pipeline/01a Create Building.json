@@ -153,6 +153,12 @@
 				}
 			}
 		],
+		"parameters": {
+			"pbatch_id": {
+				"type": "string",
+				"defaultValue": "1"
+			}
+		},
 		"variables": {
 			"_defaultCountry": {
 				"type": "String",
