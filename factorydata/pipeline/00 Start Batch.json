@@ -98,7 +98,13 @@
 						"referenceName": "01b Transform Ratings",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"pbatch_id": {
+							"value": "@variables('vbatch_id')",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
@@ -121,7 +127,7 @@
 					"waitOnCompletion": true,
 					"parameters": {
 						"pbatch_id": {
-							"value": "@pipeline().parameters.pbatch_id",
+							"value": "@variables('vbatch_id')",
 							"type": "Expression"
 						}
 					}
@@ -170,7 +176,13 @@
 						"referenceName": "03 Junction Building Rating",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"pbatch_id": {
+							"value": "@variables('vbatch_id')",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],
