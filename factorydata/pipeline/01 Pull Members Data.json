@@ -113,7 +113,7 @@
 												},
 												"postcode": {
 													"value": {
-														"value": "@variables('_currentRatingItem')[0].Prem_Postcode",
+														"value": "@variables('_currentRatingItem')[0].Postcode",
 														"type": "Expression"
 													},
 													"type": "String"
@@ -124,25 +124,28 @@
 												},
 												"state": {
 													"value": {
-														"value": "@variables('_currentRatingItem')[0].Prem_State",
+														"value": "@variables('_currentRatingItem')[0].State",
 														"type": "Expression"
 													},
 													"type": "String"
 												},
 												"streetname": {
 													"value": {
-														"value": "@variables('_currentRatingItem')[0].Prem_AddressLine1",
+														"value": "@variables('_currentRatingItem')[0].StreetName",
 														"type": "Expression"
 													},
 													"type": "String"
 												},
 												"streetnumber": {
-													"value": "",
+													"value": {
+														"value": "@variables('_currentRatingItem')[0].StreetNumber",
+														"type": "Expression"
+													},
 													"type": "String"
 												},
 												"suburb": {
 													"value": {
-														"value": "@variables('_currentRatingItem')[0].Prem_Suburb",
+														"value": "@variables('_currentRatingItem')[0].Suburb",
 														"type": "Expression"
 													},
 													"type": "String"
