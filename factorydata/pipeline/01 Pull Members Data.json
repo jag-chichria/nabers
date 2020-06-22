@@ -204,7 +204,10 @@
 													"type": "String"
 												},
 												"salesforcebuildingId": {
-													"value": "@activity('Lookup Each Building by Name In Salesforce').Output.value[0].Id",
+													"value": {
+														"value": "@activity('Lookup Each Building by Name In Salesforce').Output.value[0].Id",
+														"type": "Expression"
+													},
 													"type": "String"
 												},
 												"state": {
@@ -310,7 +313,14 @@
 			{
 				"name": "usp_GetRating",
 				"type": "Lookup",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Update Batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
