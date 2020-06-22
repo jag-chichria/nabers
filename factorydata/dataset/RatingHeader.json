@@ -145,6 +145,31 @@
 				"name": "NewRatingHeaderID",
 				"type": "int",
 				"precision": 10
+			},
+			{
+				"name": "StreetNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "StreetName",
+				"type": "varchar"
+			},
+			{
+				"name": "Suburb",
+				"type": "varchar"
+			},
+			{
+				"name": "Postcode",
+				"type": "varchar"
+			},
+			{
+				"name": "State",
+				"type": "varchar"
+			},
+			{
+				"name": "Batch_Id",
+				"type": "int",
+				"precision": 10
 			}
 		],
 		"typeProperties": {
