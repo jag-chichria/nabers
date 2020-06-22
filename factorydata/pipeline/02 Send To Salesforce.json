@@ -43,7 +43,7 @@
 				}
 			},
 			{
-				"name": "createNotFoundBuilding",
+				"name": "createRating",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -94,6 +94,15 @@
 								"sink": {
 									"name": "Building_Type__c",
 									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "id",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "NO_Member_Rating_Id__c"
 								}
 							}
 						]
