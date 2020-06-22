@@ -198,7 +198,7 @@
 												},
 												"salesforcebuildingId": {
 													"value": {
-														"value": "@activity('Lookup Each Building by Name In Salesforce').Output.Id",
+														"value": "@activity('Lookup Each Building by Name In Salesforce').Output.value.Id",
 														"type": "Expression"
 													},
 													"type": "String"
