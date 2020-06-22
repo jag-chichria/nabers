@@ -105,14 +105,7 @@
 						{
 							"name": "Lookup Each Rating by Member Rating Id In Salesforce",
 							"type": "Lookup",
-							"dependsOn": [
-								{
-									"activity": "Set variable _vsf_buildingRecord",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"policy": {
 								"timeout": "7.00:00:00",
 								"retry": 0,
@@ -125,7 +118,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from NO_Rating__c \nwhere NO_Member_Rating_Id__c = '@{variables('_vnewBuildingInSF')[0].RatingHeaderID}'",
+										"value": "Select id from NO_Rating__c \nwhere NO_Member_Rating_Id__c = '@{item().RatingHeaderID}'\n",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
@@ -153,19 +146,6 @@
 								"variableName": "_vsf_buildingRecord",
 								"value": {
 									"value": "@activity('Lookup Each Rating by Member Rating Id In Salesforce').output.value",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Set variable _vsf_buildingRecord",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "_vnewBuildingInSF",
-								"value": {
-									"value": "@item()",
 									"type": "Expression"
 								}
 							}
