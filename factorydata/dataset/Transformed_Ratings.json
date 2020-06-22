@@ -1,0 +1,39 @@
+{
+	"name": "Transformed_Ratings",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "source_rating_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "building_type",
+				"type": "varchar"
+			},
+			{
+				"name": "lookup_company_id",
+				"type": "varchar"
+			},
+			{
+				"name": "lookup_premise_id",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Transformed_Ratings"
+		}
+	}
+}
