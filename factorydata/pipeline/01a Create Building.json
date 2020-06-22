@@ -199,7 +199,8 @@
 					"dataset": {
 						"referenceName": "RatingHeader",
 						"type": "DatasetReference"
-					}
+					},
+					"firstRowOnly": false
 				}
 			},
 			{
