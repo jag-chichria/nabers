@@ -126,6 +126,52 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "02 Create Ratings",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "01b Transform",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "02 Create Ratings",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"pbatch_id": {
+							"value": "@variables('vbatch_id')",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "03 Junction Building Rating",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "02 Create Ratings",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "03 Junction Building Rating",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"variables": {
