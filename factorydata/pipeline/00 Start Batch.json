@@ -115,7 +115,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "01a Create Building",
+						"referenceName": "01a Create Building In Salesforce",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,

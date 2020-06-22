@@ -1,5 +1,5 @@
 {
-	"name": "02 Send To Salesforce",
+	"name": "02 Create Ratings",
 	"properties": {
 		"activities": [
 			{
