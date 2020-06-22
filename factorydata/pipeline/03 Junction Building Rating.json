@@ -219,6 +219,82 @@
 								"referenceName": "NABERSStaging",
 								"type": "LinkedServiceReference"
 							}
+						},
+						{
+							"name": "copyJunctionBuildingRating",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "UpdateNewSalesforceIdForRating",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"queryTimeout": "02:00:00"
+								},
+								"sink": {
+									"type": "SalesforceSink",
+									"writeBatchSize": 5000,
+									"writeBehavior": "insert"
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "sf_rating_id",
+												"type": "String",
+												"physicalType": "varchar"
+											},
+											"sink": {
+												"name": "Rating__c",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "sf_building_id",
+												"type": "String",
+												"physicalType": "varchar"
+											},
+											"sink": {
+												"name": "Building__c",
+												"type": "String"
+											}
+										}
+									],
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "db_transformed_ratings",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "sf_buiding_rating",
+									"type": "DatasetReference"
+								}
+							]
 						}
 					]
 				}
