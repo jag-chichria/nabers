@@ -345,8 +345,8 @@
 		],
 		"parameters": {
 			"pbatch_id": {
-				"type": "string",
-				"defaultValue": "1"
+				"type": "int",
+				"defaultValue": 1
 			}
 		},
 		"variables": {
