@@ -72,7 +72,13 @@
 						"referenceName": "01 Pull Members Data",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"pbatch_id": {
+							"value": "@variables('vbatch_id')",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],
