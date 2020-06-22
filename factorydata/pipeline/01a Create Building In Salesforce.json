@@ -373,7 +373,7 @@
 				"type": "Array"
 			},
 			"_vsf_buildingRecord": {
-				"type": "Array"
+				"type": "String"
 			},
 			"_vnewBuildingInSF": {
 				"type": "Array"
