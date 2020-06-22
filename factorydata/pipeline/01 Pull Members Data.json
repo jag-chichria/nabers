@@ -380,7 +380,7 @@
 			}
 		],
 		"parameters": {
-			"batchid": {
+			"batch_id": {
 				"type": "int",
 				"defaultValue": 1
 			}
