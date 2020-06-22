@@ -21,7 +21,10 @@
 						"storedProcedureParameters": {
 							"batchid": {
 								"type": "Int32",
-								"value": "1"
+								"value": {
+									"value": "@pipeline().parameters.pbatch_id",
+									"type": "Expression"
+								}
 							}
 						},
 						"queryTimeout": "02:00:00"
@@ -129,7 +132,7 @@
 					"storedProcedureParameters": {
 						"batch_id": {
 							"value": {
-								"value": "@pipeline().parameters.batchid",
+								"value": "@pipeline().parameters.pbatch_id",
 								"type": "Expression"
 							},
 							"type": "Int32"
