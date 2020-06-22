@@ -244,7 +244,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from NO_Building__c where IsDeleted = False and Postcode__c = '@item().postcode' and State__c = '@item().state' and Suburb__c = '@item().suburb' and Street_Number__c = '@item().streetnumber' and Street_Name__c = '@item().streetname' and State__c = '@item.state' and Name = '@item().name'",
+										"value": "Select id from NO_Building__c \nwhere Postcode__c = '@{variables('_vnewBuildingInSF')[0].Postcode}'\nand State__c = '@{variables('_vnewBuildingInSF')[0].State}'\nand Suburb__c = '@{variables('_vnewBuildingInSF')[0].Suburb}'\nand Street_Number__c = '@{variables('_vnewBuildingInSF')[0].StreetNumber}'\nand Street_Name__c = '@{variables('_vnewBuildingInSF')[0].StreetName}'\nand Name = '@{variables('_vnewBuildingInSF')[0].PremiseName}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
