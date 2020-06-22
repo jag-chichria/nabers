@@ -30,7 +30,7 @@
 						"queryTimeout": "02:00:00"
 					},
 					"dataset": {
-						"referenceName": "RatingHeader",
+						"referenceName": "db_members_rating",
 						"type": "DatasetReference"
 					}
 				}

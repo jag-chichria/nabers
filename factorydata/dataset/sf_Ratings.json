@@ -1,5 +1,5 @@
 {
-	"name": "SF_RatingHeaderApi",
+	"name": "sf_Ratings",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "NabersOnline",

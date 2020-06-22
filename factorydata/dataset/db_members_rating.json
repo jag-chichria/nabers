@@ -1,5 +1,5 @@
 {
-	"name": "RatingHeader",
+	"name": "db_members_rating",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "NABERSStaging",

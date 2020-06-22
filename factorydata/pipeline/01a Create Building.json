@@ -109,15 +109,9 @@
 						]
 					}
 				},
-				"inputs": [
-					{
-						"referenceName": "SalesForceBuildingIds",
-						"type": "DatasetReference"
-					}
-				],
 				"outputs": [
 					{
-						"referenceName": "sfBuildings",
+						"referenceName": "sf_Buildings",
 						"type": "DatasetReference"
 					}
 				]
@@ -197,7 +191,7 @@
 						"queryTimeout": "02:00:00"
 					},
 					"dataset": {
-						"referenceName": "RatingHeader",
+						"referenceName": "db_members_rating",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
@@ -251,7 +245,7 @@
 									"readBehavior": "query"
 								},
 								"dataset": {
-									"referenceName": "sfBuildings",
+									"referenceName": "sf_Buildings",
 									"type": "DatasetReference"
 								},
 								"firstRowOnly": false

@@ -1,5 +1,5 @@
 {
-	"name": "sfBuildings",
+	"name": "sf_Buildings",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "NabersOnline",
