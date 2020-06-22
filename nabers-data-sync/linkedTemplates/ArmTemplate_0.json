@@ -1258,7 +1258,7 @@
 						"typeProperties": {
 							"variableName": "vbatch_id",
 							"value": {
-								"value": "@activity('usp_StartBatch').output.first.NewBatchId",
+								"value": "@activity('usp_StartBatch').output.NewBatchId",
 								"type": "Expression"
 							}
 						}
