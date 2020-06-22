@@ -585,7 +585,7 @@
 										"source": {
 											"type": "SalesforceSource",
 											"query": {
-												"value": "Select id from NO_Building__c where IsDeleted = 0 and Postcode__c = '@item().Prem_Postcode' and State__c = '@item().Prem_State' and Suburb__c = '@item().Prem_Suburb' and (Street_Number__c + ' ' + Street_Name__c) =  '@item().AddressLine1' and Name = '@item.PremiseName'",
+												"value": "Select id from NO_Building__c where IsDeleted = False and Postcode__c = '@item().Postcode' and State__c = '@item().State' and Suburb__c = '@item().Suburb' and Street_Number__c = '@item().StreetNumber' and Street_Name__c = '@item().StreetName' and State__c = '@item.State' and Name = '@item().PremiseName'",
 												"type": "Expression"
 											},
 											"readBehavior": "query"
@@ -655,7 +655,7 @@
 														},
 														"postcode": {
 															"value": {
-																"value": "@variables('_currentRatingItem')[0].Prem_Postcode",
+																"value": "@variables('_currentRatingItem')[0].Postcode",
 																"type": "Expression"
 															},
 															"type": "String"
@@ -666,25 +666,28 @@
 														},
 														"state": {
 															"value": {
-																"value": "@variables('_currentRatingItem')[0].Prem_State",
+																"value": "@variables('_currentRatingItem')[0].State",
 																"type": "Expression"
 															},
 															"type": "String"
 														},
 														"streetname": {
 															"value": {
-																"value": "@variables('_currentRatingItem')[0].Prem_AddressLine1",
+																"value": "@variables('_currentRatingItem')[0].StreetName",
 																"type": "Expression"
 															},
 															"type": "String"
 														},
 														"streetnumber": {
-															"value": "",
+															"value": {
+																"value": "@variables('_currentRatingItem')[0].StreetNumber",
+																"type": "Expression"
+															},
 															"type": "String"
 														},
 														"suburb": {
 															"value": {
-																"value": "@variables('_currentRatingItem')[0].Prem_Suburb",
+																"value": "@variables('_currentRatingItem')[0].Suburb",
 																"type": "Expression"
 															},
 															"type": "String"
