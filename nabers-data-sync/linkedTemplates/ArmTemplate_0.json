@@ -754,8 +754,8 @@
 				],
 				"parameters": {
 					"pbatch_id": {
-						"type": "string",
-						"defaultValue": "1"
+						"type": "int",
+						"defaultValue": 1
 					}
 				},
 				"variables": {
@@ -1283,7 +1283,7 @@
 							"waitOnCompletion": true,
 							"parameters": {
 								"pbatch_id": {
-									"value": "@variables('vbatch_id')",
+									"value": "int(@variables('vbatch_id'))",
 									"type": "Expression"
 								}
 							}
