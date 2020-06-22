@@ -188,7 +188,7 @@
 									},
 									"salesforceratingId": {
 										"value": {
-											"value": "@variables('_vsf_buildingRecord').output.id",
+											"value": "@variables('_vsf_buildingRecord').output.value.Id",
 											"type": "Expression"
 										},
 										"type": "String"
