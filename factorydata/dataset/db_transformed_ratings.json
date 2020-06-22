@@ -23,11 +23,11 @@
 				"type": "varchar"
 			},
 			{
-				"name": "lookup_company_id",
+				"name": "sf_company_id",
 				"type": "varchar"
 			},
 			{
-				"name": "lookup_premise_id",
+				"name": "sf_building_id",
 				"type": "varchar"
 			}
 		],
