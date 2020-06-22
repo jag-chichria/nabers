@@ -1,5 +1,5 @@
 {
-	"name": "01_Transform",
+	"name": "01_Transform_Rating",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
