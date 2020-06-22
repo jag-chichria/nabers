@@ -279,7 +279,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "01b Create Building",
+						"referenceName": "01a Create Building",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
