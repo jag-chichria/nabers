@@ -334,7 +334,7 @@
 				"type": "Array"
 			},
 			"_vnewBuildingInSF": {
-				"type": "Array"
+				"type": "String"
 			}
 		},
 		"annotations": []
