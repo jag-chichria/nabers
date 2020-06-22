@@ -305,7 +305,7 @@
 							"batchid": {
 								"type": "Int32",
 								"value": {
-									"value": "@pipeline().parameters.batchid",
+									"value": "@pipeline().parameters.pbatch_id",
 									"type": "Expression"
 								}
 							}
@@ -355,7 +355,7 @@
 					"storedProcedureParameters": {
 						"batch_id": {
 							"value": {
-								"value": "@pipeline().parameters.batchid",
+								"value": "@pipeline().parameters.pbatch_id",
 								"type": "Expression"
 							},
 							"type": "Int32"
