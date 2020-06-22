@@ -181,7 +181,7 @@
 									},
 									"member_rating_id": {
 										"value": {
-											"value": "@variables('_vnewBuildingInSF')[0].ratingheaderid",
+											"value": "@item().ratingheaderid",
 											"type": "Expression"
 										},
 										"type": "Int32"
