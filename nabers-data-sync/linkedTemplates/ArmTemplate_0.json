@@ -559,7 +559,7 @@
 									"type": "String"
 								},
 								"stage": {
-									"value": "'In Progress'",
+									"value": "In Progress",
 									"type": "String"
 								}
 							}
@@ -615,7 +615,7 @@
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "usp_GetSalesforce",
+								"activity": "Set Variable Rating",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -749,6 +749,26 @@
 									}
 								}
 							]
+						}
+					},
+					{
+						"name": "Set Variable Rating",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "usp_GetSalesforce",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "_vnewBuildingsInSF",
+							"value": {
+								"value": "@activity('usp_GetSalesforce').output.value",
+								"type": "Expression"
+							}
 						}
 					}
 				],
