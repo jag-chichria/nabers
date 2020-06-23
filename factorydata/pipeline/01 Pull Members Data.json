@@ -317,7 +317,7 @@
 							}
 						},
 						{
-							"name": "Set Variable _sf_buildingRecord_copy1",
+							"name": "Set Variable _sf_AssessorRecord",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
@@ -341,7 +341,7 @@
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "Set Variable _sf_buildingRecord_copy1",
+									"activity": "Set Variable _sf_AssessorRecord",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -350,12 +350,12 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@greater(length(variables('_vsf_buildingRecord')), 0)",
+									"value": "@greater(length(variables('_vsf_AssessorRecord')), 0)",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
 									{
-										"name": "insertPremiseDetails_copy1",
+										"name": "insertAssessorDetails",
 										"description": "Building does not exist",
 										"type": "SqlServerStoredProcedure",
 										"dependsOn": [],
