@@ -280,6 +280,41 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Lookup Each Assessor by Name In Salesforce",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Set variable _currentRatingItem",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SalesforceSource",
+									"query": {
+										"value": "Select id from NO_Building__c \nwhere Postcode__c = '@{variables('_vcurrentRatingItem')[0].Postcode}'\nand State__c = '@{variables('_vcurrentRatingItem')[0].State}'\nand Suburb__c = '@{variables('_vcurrentRatingItem')[0].Suburb}'\nand Street_Number__c = '@{variables('_vcurrentRatingItem')[0].StreetNumber}'\nand Street_Name__c = '@{variables('_vcurrentRatingItem')[0].StreetName}'\nand Name = '@{variables('_vcurrentRatingItem')[0].PremiseName}'",
+										"type": "Expression"
+									},
+									"readBehavior": "query"
+								},
+								"dataset": {
+									"referenceName": "sf_Buildings",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": false
+							}
 						}
 					]
 				}
@@ -400,6 +435,9 @@
 			},
 			"_vcurrentRatingItem": {
 				"type": "Array"
+			},
+			"_vsf_AssessorRecord": {
+				"type": "String"
 			}
 		},
 		"annotations": []
