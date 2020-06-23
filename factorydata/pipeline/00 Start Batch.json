@@ -86,7 +86,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "exec createBuilding pipeline",
+						"activity": "01a Create Building",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -108,7 +108,7 @@
 				}
 			},
 			{
-				"name": "exec createBuilding pipeline",
+				"name": "01a Create Building",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
