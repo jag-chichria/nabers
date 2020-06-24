@@ -23,8 +23,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SalesforceSource",
-						"readBehavior": "query"
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00"
 					},
 					"sink": {
 						"type": "SalesforceSink",
@@ -101,7 +101,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "sf_Buildings",
+						"referenceName": "db_lookup_sf_buildings_ids",
 						"type": "DatasetReference"
 					}
 				],

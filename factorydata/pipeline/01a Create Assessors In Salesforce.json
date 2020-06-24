@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "createNotFoundBuilding",
+				"name": "createNotFoundAssessors",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -101,7 +101,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "sf_Buildings",
+						"referenceName": "sf_contacts",
 						"type": "DatasetReference"
 					}
 				],
@@ -157,7 +157,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "createNotFoundBuilding",
+						"activity": "createNotFoundAssessors",
 						"dependencyConditions": [
 							"Succeeded"
 						]
