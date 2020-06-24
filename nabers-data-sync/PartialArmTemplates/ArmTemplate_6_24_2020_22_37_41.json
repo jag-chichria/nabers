@@ -1,0 +1,169 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "nabers-data-sync"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/db_lookup_assessors')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "staging"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Assessor_Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "User_Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "FirstName",
+						"type": "varchar"
+					},
+					{
+						"name": "LastName",
+						"type": "varchar"
+					},
+					{
+						"name": "Title",
+						"type": "varchar"
+					},
+					{
+						"name": "Mailing_StreetNumber",
+						"type": "varchar"
+					},
+					{
+						"name": "Mailing_StreetName",
+						"type": "varchar"
+					},
+					{
+						"name": "Mailing_Suburb",
+						"type": "varchar"
+					},
+					{
+						"name": "Mailing_Postcode",
+						"type": "varchar"
+					},
+					{
+						"name": "Mailing_State",
+						"type": "varchar"
+					},
+					{
+						"name": "Billing_StreetNumber",
+						"type": "varchar"
+					},
+					{
+						"name": "Billing_StreetName",
+						"type": "varchar"
+					},
+					{
+						"name": "Billing_Suburb",
+						"type": "varchar"
+					},
+					{
+						"name": "Billing_Postcode",
+						"type": "varchar"
+					},
+					{
+						"name": "Billing_State",
+						"type": "varchar"
+					},
+					{
+						"name": "Phone",
+						"type": "varchar"
+					},
+					{
+						"name": "Email",
+						"type": "varchar"
+					},
+					{
+						"name": "JoinedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "AccreditationDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "AccreditationExpiryDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "AccreditationNumber",
+						"type": "varchar"
+					},
+					{
+						"name": "EnergyFlag",
+						"type": "bit"
+					},
+					{
+						"name": "WaterFlag",
+						"type": "bit"
+					},
+					{
+						"name": "WasteFlag",
+						"type": "bit"
+					},
+					{
+						"name": "batch_id",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "AssessorsStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sf_contacts')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NabersOnline",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "salesforce"
+				},
+				"annotations": [],
+				"type": "SalesforceObject",
+				"schema": [],
+				"typeProperties": {
+					"objectApiName": "Contact"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

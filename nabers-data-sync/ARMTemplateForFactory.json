@@ -2319,6 +2319,9 @@
 					"referenceName": "NABERSStaging",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "staging"
+				},
 				"annotations": [],
 				"type": "AzureSqlTable",
 				"schema": [
@@ -2832,6 +2835,9 @@
 				"linkedServiceName": {
 					"referenceName": "NabersOnline",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "salesforce"
 				},
 				"annotations": [],
 				"type": "SalesforceObject",
