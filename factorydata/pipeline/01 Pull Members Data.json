@@ -443,6 +443,41 @@
 									}
 								]
 							}
+						},
+						{
+							"name": "Lookup Each Company by Name In Salesforce",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Set variable _currentRatingItem",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SalesforceSource",
+									"query": {
+										"value": "Select id from Company\nwhere email= '@{variables('_vcurrentRatingItem')[0].Assessor_Org_ABN}'",
+										"type": "Expression"
+									},
+									"readBehavior": "query"
+								},
+								"dataset": {
+									"referenceName": "sf_company",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": false
+							}
 						}
 					]
 				}
@@ -565,6 +600,9 @@
 				"type": "Array"
 			},
 			"_vsf_AssessorRecord": {
+				"type": "String"
+			},
+			"_vsf_CompanyRecord": {
 				"type": "String"
 			}
 		},
