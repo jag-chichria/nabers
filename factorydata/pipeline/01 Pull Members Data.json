@@ -478,6 +478,134 @@
 								},
 								"firstRowOnly": false
 							}
+						},
+						{
+							"name": "Set Variable _sf_CompanyRecord_copy1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Lookup Each Company by Name In Salesforce",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "_vsf_AssessorRecord",
+								"value": {
+									"value": "@activity('Lookup Each Company by Name In Salesforce').output.value",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "If Company In Salesforce Exist",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Set Variable _sf_CompanyRecord_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@greater(length(variables('_vsf_AssessorRecord')), 0)",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "insertAssessorDetails_copy1",
+										"description": "Building does not exist",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[dbo].[usp_InsertLookupAssessorData]",
+											"storedProcedureParameters": {
+												"batch_id": {
+													"value": {
+														"value": "@pipeline().parameters.pbatch_id",
+														"type": "Expression"
+													},
+													"type": "Int32"
+												},
+												"member_assessor_Id": {
+													"value": {
+														"value": "@activity('usp_GetRating').output.assessor_id",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"salesforce_assessor_Id": {
+													"value": {
+														"value": "@activity('Lookup Each Assessor by Name In Salesforce').output.Id",
+														"type": "Expression"
+													},
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "NABERSStaging",
+											"type": "LinkedServiceReference"
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "insertAssessorDetailsWithSalesForceId_copy1",
+										"description": "Building does exist",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[dbo].[usp_InsertLookupAssessorData]",
+											"storedProcedureParameters": {
+												"batch_id": {
+													"value": {
+														"value": "@pipeline().parameters.pbatch_id",
+														"type": "Expression"
+													},
+													"type": "Int32"
+												},
+												"member_assessor_Id": {
+													"value": {
+														"value": "@activity('usp_GetRating').output.assessor_id",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"salesforce_assessor_Id": {
+													"value": "",
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "NABERSStaging",
+											"type": "LinkedServiceReference"
+										}
+									}
+								]
+							}
 						}
 					]
 				}
