@@ -1,0 +1,15 @@
+{
+	"name": "sf_contacts",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NabersOnline",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SalesforceObject",
+		"schema": [],
+		"typeProperties": {
+			"objectApiName": "Contact"
+		}
+	}
+}
