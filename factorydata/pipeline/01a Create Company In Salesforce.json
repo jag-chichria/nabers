@@ -242,7 +242,7 @@
 				}
 			},
 			{
-				"name": "usp_GetSalesforce",
+				"name": "usp_GetCompany",
 				"type": "Lookup",
 				"dependsOn": [
 					{
@@ -263,7 +263,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderStoredProcedureName": "[dbo].[usp_GetAssessorToCreateInSalesForce]",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_GetCompanyToCreateInSalesForce]",
 						"storedProcedureParameters": {
 							"batchid": {
 								"type": "Int32",
@@ -324,13 +324,13 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from NO_Building__c \nwhere Email = '@{variables('_vnewBuildingInSF')[0].Email}'",
+										"value": "Select id from Company\nwhere ABN= '@{variables('_vnewBuildingInSF')[0].ABN}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
 								},
 								"dataset": {
-									"referenceName": "sf_contacts",
+									"referenceName": "sf_company",
 									"type": "DatasetReference"
 								},
 								"firstRowOnly": false
@@ -389,7 +389,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"storedProcedureName": "[dbo].[usp_UpdateNewSalesforceIdForAssessor]",
+								"storedProcedureName": "[dbo].[usp_UpdateNewSalesforceIdForCompany]",
 								"storedProcedureParameters": {
 									"batch_id": {
 										"value": {
@@ -398,9 +398,9 @@
 										},
 										"type": "Int32"
 									},
-									"member_assessor_id": {
+									"member_company_id": {
 										"value": {
-											"value": "@variables('_vnewBuildingInSF')[0].member_assessor_id",
+											"value": "@variables('_vnewBuildingInSF')[0].member_company_id",
 											"type": "Expression"
 										},
 										"type": "Int32"
@@ -427,7 +427,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "usp_GetSalesforce",
+						"activity": "usp_GetCompany",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -437,7 +437,7 @@
 				"typeProperties": {
 					"variableName": "_vnewBuildingsInSF",
 					"value": {
-						"value": "@activity('usp_GetSalesforce').output.value",
+						"value": "@activity('usp_GetCompany').output.value",
 						"type": "Expression"
 					}
 				}
