@@ -513,7 +513,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@greater(length(variables('_vsf_AssessorRecord')), 0)",
+									"value": "@greater(length(variables('_vsf_CompanyRecord')), 0)",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
@@ -564,8 +564,8 @@
 								],
 								"ifTrueActivities": [
 									{
-										"name": "insertAssessorDetailsWithSalesForceId_copy1",
-										"description": "Building does exist",
+										"name": "insertCompanyDetailsWithSalesForceId_copy1",
+										"description": "Company does exist",
 										"type": "SqlServerStoredProcedure",
 										"dependsOn": [],
 										"policy": {
