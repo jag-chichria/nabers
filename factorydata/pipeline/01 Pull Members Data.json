@@ -304,13 +304,13 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from NO_Building__c \nwhere Postcode__c = '@{variables('_vcurrentRatingItem')[0].Postcode}'\nand State__c = '@{variables('_vcurrentRatingItem')[0].State}'\nand Suburb__c = '@{variables('_vcurrentRatingItem')[0].Suburb}'\nand Street_Number__c = '@{variables('_vcurrentRatingItem')[0].StreetNumber}'\nand Street_Name__c = '@{variables('_vcurrentRatingItem')[0].StreetName}'\nand Name = '@{variables('_vcurrentRatingItem')[0].PremiseName}'",
+										"value": "Select id from Contacts\nwhere email= '@{variables('_vcurrentRatingItem')[0].Assessor_Email}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
 								},
 								"dataset": {
-									"referenceName": "sf_Buildings",
+									"referenceName": "sf_contacts",
 									"type": "DatasetReference"
 								},
 								"firstRowOnly": false
