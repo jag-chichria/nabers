@@ -1,0 +1,126 @@
+{
+	"name": "db_assessors",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Assessor_Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "User_Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FirstName",
+				"type": "varchar"
+			},
+			{
+				"name": "LastName",
+				"type": "varchar"
+			},
+			{
+				"name": "Title",
+				"type": "varchar"
+			},
+			{
+				"name": "Mailing_StreetNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "Mailing_StreetName",
+				"type": "varchar"
+			},
+			{
+				"name": "Mailing_Suburb",
+				"type": "varchar"
+			},
+			{
+				"name": "Mailing_Postcode",
+				"type": "varchar"
+			},
+			{
+				"name": "Mailing_State",
+				"type": "varchar"
+			},
+			{
+				"name": "Billing_StreetNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "Billing_StreetName",
+				"type": "varchar"
+			},
+			{
+				"name": "Billing_Suburb",
+				"type": "varchar"
+			},
+			{
+				"name": "Billing_Postcode",
+				"type": "varchar"
+			},
+			{
+				"name": "Billing_State",
+				"type": "varchar"
+			},
+			{
+				"name": "Phone",
+				"type": "varchar"
+			},
+			{
+				"name": "Email",
+				"type": "varchar"
+			},
+			{
+				"name": "JoinedDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "AccreditationDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "AccreditationExpiryDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "AccreditationNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "EnergyFlag",
+				"type": "bit"
+			},
+			{
+				"name": "WaterFlag",
+				"type": "bit"
+			},
+			{
+				"name": "WasteFlag",
+				"type": "bit"
+			},
+			{
+				"name": "batch_id",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "AssessorsStage"
+		}
+	}
+}
