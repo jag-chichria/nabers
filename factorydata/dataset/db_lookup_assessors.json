@@ -1,5 +1,5 @@
 {
-	"name": "db_assessors",
+	"name": "db_lookup_assessors",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "NABERSStaging",
