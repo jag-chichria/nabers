@@ -5,6 +5,9 @@
 			"referenceName": "NabersOnline",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "salesforce"
+		},
 		"annotations": [],
 		"type": "SalesforceObject",
 		"schema": [],
