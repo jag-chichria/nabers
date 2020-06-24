@@ -284,7 +284,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderStoredProcedureName": "[dbo].[usp_GetBuildingToCreateInSalesForce]",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_GetAssessorToCreateInSalesForce]",
 						"storedProcedureParameters": {
 							"batchid": {
 								"type": "Int32",
@@ -345,13 +345,13 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from NO_Building__c \nwhere Postcode__c = '@{variables('_vnewBuildingInSF')[0].Postcode}'\nand State__c = '@{variables('_vnewBuildingInSF')[0].State}'\nand Suburb__c = '@{variables('_vnewBuildingInSF')[0].Suburb}'\nand Street_Number__c = '@{variables('_vnewBuildingInSF')[0].StreetNumber}'\nand Street_Name__c = '@{variables('_vnewBuildingInSF')[0].StreetName}'\nand Name = '@{variables('_vnewBuildingInSF')[0].PremiseName}'",
+										"value": "Select id from NO_Building__c \nwhere Email = '@{variables('_vnewBuildingInSF')[0].Email}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
 								},
 								"dataset": {
-									"referenceName": "sf_Buildings",
+									"referenceName": "sf_contacts",
 									"type": "DatasetReference"
 								},
 								"firstRowOnly": false
@@ -410,27 +410,21 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"storedProcedureName": "[dbo].[usp_UpdateNewSalesforceIdForBuilding]",
+								"storedProcedureName": "[dbo].[usp_UpdateNewSalesforceIdForAssessor]",
 								"storedProcedureParameters": {
 									"batch_id": {
+										"value": "@pipeline().parameters.pbatch_id",
+										"type": "Int32"
+									},
+									"member_assessor_id": {
 										"value": {
-											"value": "@pipeline().parameters.pbatch_id",
+											"value": "@variables('_vnewBuildingInSF')[0].member_assessor_id",
 											"type": "Expression"
 										},
 										"type": "Int32"
 									},
-									"member_premise_id": {
-										"value": {
-											"value": "@variables('_vnewBuildingInSF')[0].member_premise_id",
-											"type": "Expression"
-										},
-										"type": "Int32"
-									},
-									"salesforcebuildingId": {
-										"value": {
-											"value": "@variables('_vsf_buildingRecord').output.id",
-											"type": "Expression"
-										},
+									"salesforce_assessor_Id": {
+										"value": "@variables('_vsf_buildingRecord').output.id",
 										"type": "String"
 									}
 								}
