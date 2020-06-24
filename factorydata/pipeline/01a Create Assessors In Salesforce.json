@@ -24,6 +24,16 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_GetAssessorToCreateInSalesForce]",
+						"storedProcedureParameters": {
+							"batchid": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.pbatch_id",
+									"type": "Expression"
+								}
+							}
+						},
 						"queryTimeout": "02:00:00"
 					},
 					"sink": {
@@ -38,61 +48,161 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "name",
+									"name": "FirstName",
 									"type": "String"
 								},
 								"sink": {
-									"name": "Name",
+									"name": "FirstName",
 									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "postcode",
+									"name": "LastName",
 									"type": "String"
 								},
 								"sink": {
-									"name": "Postcode__c",
+									"name": "LastName",
 									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "state",
+									"name": "Title",
 									"type": "String"
 								},
 								"sink": {
-									"name": "State__c",
+									"name": "Title",
 									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "streetname",
+									"name": "Mailing_StreetName",
 									"type": "String"
 								},
 								"sink": {
-									"name": "Street_Name__c",
+									"name": "MailingStreet",
 									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "streetnumber",
+									"name": "Mailing_Suburb",
 									"type": "String"
 								},
 								"sink": {
-									"name": "Street_Number__c",
+									"name": "MailingCity",
 									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "suburb",
+									"name": "Mailing_Postcode",
 									"type": "String"
 								},
 								"sink": {
-									"name": "Suburb__c",
+									"name": "MailingPostalCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Mailing_State",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MailingState",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_StreetName",
+									"type": "String"
+								},
+								"sink": {
+									"name": "OtherStreet",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_Suburb",
+									"type": "String"
+								},
+								"sink": {
+									"name": "OtherCity",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_Postcode",
+									"type": "String"
+								},
+								"sink": {
+									"name": "OtherPostalCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_State",
+									"type": "String"
+								},
+								"sink": {
+									"name": "OtherState",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Phone",
+									"type": "String"
+								},
+								"sink": {
+									"name": "OtherPhone",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Email",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Email",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "JoinedDate",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "NO_Join_date__c",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "AccreditationExpiryDate",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "NO_Accreditation_Expiry_Date__c",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "AccreditationNumber",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NO_Accreditation_Number__c",
 									"type": "String"
 								}
 							}
@@ -107,7 +217,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "sf_Buildings",
+						"referenceName": "sf_contacts",
 						"type": "DatasetReference"
 					}
 				]
