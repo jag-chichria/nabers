@@ -577,7 +577,7 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"storedProcedureName": "[dbo].[usp_InsertLookupAssessorData]",
+											"storedProcedureName": "[dbo].[usp_InsertLookupCompanyData]",
 											"storedProcedureParameters": {
 												"batch_id": {
 													"value": {
@@ -586,15 +586,18 @@
 													},
 													"type": "Int32"
 												},
-												"member_assessor_Id": {
+												"member_company_Id": {
 													"value": {
-														"value": "@activity('usp_GetRating').output.assessor_id",
+														"value": "@activity('usp_GetRating').output.assessor_company_id",
 														"type": "Expression"
 													},
 													"type": "String"
 												},
-												"salesforce_assessor_Id": {
-													"value": "",
+												"salesforce_company_Id": {
+													"value": {
+														"value": "@activity('Lookup Each Company by Name In Salesforce').output.value.Id",
+														"type": "Expression"
+													},
 													"type": "String"
 												}
 											}
