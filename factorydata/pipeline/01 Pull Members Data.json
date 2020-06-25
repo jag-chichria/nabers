@@ -542,7 +542,7 @@
 												},
 												"member_assessor_Id": {
 													"value": {
-														"value": "@activity('usp_GetRating').output.assessor_company_id",
+														"value": "@activity('Get Company Details by Assessor Id').output.CompanyId",
 														"type": "Expression"
 													},
 													"type": "String"
