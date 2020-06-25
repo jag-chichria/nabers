@@ -379,7 +379,7 @@
 												},
 												"member_assessor_Id": {
 													"value": {
-														"value": "@activity('usp_GetRating').output.assessor_id",
+														"value": "@activity('Get Assessor Details by Assessor ID').output.value.AssessorId",
 														"type": "Expression"
 													},
 													"type": "String"
