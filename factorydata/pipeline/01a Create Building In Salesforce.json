@@ -112,7 +112,10 @@
 				"inputs": [
 					{
 						"referenceName": "db_lookup_sf_buildings_ids",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"pbatch_id": 1
+						}
 					}
 				],
 				"outputs": [
