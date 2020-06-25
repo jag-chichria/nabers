@@ -414,7 +414,7 @@
 										},
 										"type": "Int32"
 									},
-									"salesforce_assessor_Id": {
+									"salesforce_company_Id": {
 										"value": {
 											"value": "@activity('Lookup Each Building by Name In Salesforce').output.value[0].Id",
 											"type": "Expression"
