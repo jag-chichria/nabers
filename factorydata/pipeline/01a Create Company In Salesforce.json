@@ -366,7 +366,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from Account\nwhere ABN= '@{item().ABN}'",
+										"value": "Select id from Account\nwhere NO_ABN__c = '@{item().ABN}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
@@ -379,31 +379,11 @@
 							}
 						},
 						{
-							"name": "Set Variable _sf_buildingRecord",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Lookup Each Building by Name In Salesforce",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "_vsf_buildingRecord",
-								"value": {
-									"value": "@activity('Lookup Each Building by Name In Salesforce').output.value",
-									"type": "Expression"
-								}
-							}
-						},
-						{
 							"name": "UpdateNewSalesforceIdForBuilding",
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
-									"activity": "Set Variable _sf_buildingRecord",
+									"activity": "Lookup Each Building by Name In Salesforce",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -429,14 +409,14 @@
 									},
 									"member_company_id": {
 										"value": {
-											"value": "@variables('_vnewBuildingInSF')[0].member_company_id",
+											"value": "@item().CompanyID",
 											"type": "Expression"
 										},
 										"type": "Int32"
 									},
 									"salesforce_assessor_Id": {
 										"value": {
-											"value": "@variables('_vsf_buildingRecord').output.id",
+											"value": "@activity('Lookup Each Building by Name In Salesforce').output.value[0].Id",
 											"type": "Expression"
 										},
 										"type": "String"
