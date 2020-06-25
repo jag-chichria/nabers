@@ -877,7 +877,7 @@
 										"source": {
 											"type": "AzureSqlSource",
 											"sqlReaderQuery": {
-												"value": "@Select * from Assessor_Stage where Assessor_Id = 'variables('_vcurrentRatingItem')[0].AssessorID'",
+												"value": "@Select * from Assessor_Stage where Assessor_Id = 'item().AssessorId'",
 												"type": "Expression"
 											},
 											"queryTimeout": "02:00:00"
