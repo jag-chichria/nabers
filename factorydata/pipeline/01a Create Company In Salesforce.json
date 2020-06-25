@@ -118,6 +118,16 @@
 							},
 							{
 								"source": {
+									"name": "Mailing_Postcode",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ShippingPostalCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
 									"name": "Phone",
 									"type": "String"
 								},
@@ -208,11 +218,19 @@
 							},
 							{
 								"source": {
-									"name": "Mailing_Postcode",
-									"type": "String"
+									"name": "Mailing_Country"
 								},
 								"sink": {
-									"name": "ShippingPostalCode",
+									"name": "ShippingCountry",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_Country"
+								},
+								"sink": {
+									"name": "BillingCountry",
 									"type": "String"
 								}
 							}
@@ -335,14 +353,7 @@
 						{
 							"name": "Lookup Each Building by Name In Salesforce",
 							"type": "Lookup",
-							"dependsOn": [
-								{
-									"activity": "Set variable _vsf_buildingRecord",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"policy": {
 								"timeout": "7.00:00:00",
 								"retry": 0,
@@ -355,7 +366,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from Company\nwhere ABN= '@{variables('_vnewBuildingInSF')[0].ABN}'",
+										"value": "Select id from Company\nwhere ABN= '@{item().ABN}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
@@ -383,19 +394,6 @@
 								"variableName": "_vsf_buildingRecord",
 								"value": {
 									"value": "@activity('Lookup Each Building by Name In Salesforce').output.value",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Set variable _vsf_buildingRecord",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "_vnewBuildingInSF",
-								"value": {
-									"value": "@item()",
 									"type": "Expression"
 								}
 							}
