@@ -700,7 +700,7 @@
 							"type": "String"
 						},
 						"stage": {
-							"value": "'In Progress'",
+							"value": "In Progress",
 							"type": "String"
 						}
 					}
