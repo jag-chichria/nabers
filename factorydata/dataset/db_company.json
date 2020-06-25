@@ -1,0 +1,130 @@
+{
+	"name": "db_company",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ABN",
+				"type": "varchar"
+			},
+			{
+				"name": "CompanyName",
+				"type": "varchar"
+			},
+			{
+				"name": "CompanyID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CompanyStatusID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CompanyTypeID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CompanyURL",
+				"type": "varchar"
+			},
+			{
+				"name": "MailingAddressID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Phone",
+				"type": "varchar"
+			},
+			{
+				"name": "PIInsuranceExpiryDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "PLInsuranceExpiryDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "RatingParticipationFlag",
+				"type": "bit"
+			},
+			{
+				"name": "SAPCustomerNo",
+				"type": "varchar"
+			},
+			{
+				"name": "ShortName",
+				"type": "varchar"
+			},
+			{
+				"name": "SoleTraderFlag",
+				"type": "bit"
+			},
+			{
+				"name": "Mailing_StreetNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "Mailing_StreetName",
+				"type": "varchar"
+			},
+			{
+				"name": "Mailing_Suburb",
+				"type": "varchar"
+			},
+			{
+				"name": "Mailing_Postcode",
+				"type": "varchar"
+			},
+			{
+				"name": "Mailing_State",
+				"type": "varchar"
+			},
+			{
+				"name": "Billing_StreetNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "Billing_StreetName",
+				"type": "varchar"
+			},
+			{
+				"name": "Billing_Suburb",
+				"type": "varchar"
+			},
+			{
+				"name": "Billing_Postcode",
+				"type": "varchar"
+			},
+			{
+				"name": "Billing_State",
+				"type": "varchar"
+			},
+			{
+				"name": "Type",
+				"type": "varchar"
+			},
+			{
+				"name": "Batch_Id",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "CompanyStage"
+		}
+	}
+}

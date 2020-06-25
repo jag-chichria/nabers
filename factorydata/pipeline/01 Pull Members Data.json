@@ -449,7 +449,7 @@
 							"type": "Lookup",
 							"dependsOn": [
 								{
-									"activity": "Set variable _currentRatingItem",
+									"activity": "Get Company Details by Assessor Id",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -637,6 +637,41 @@
 								},
 								"dataset": {
 									"referenceName": "db_lookup_assessors",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": false
+							}
+						},
+						{
+							"name": "Get Company Details by Assessor Id",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Set variable _currentRatingItem",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@Select * from Company_Stage where Assessor_Id = 'item().AssessorId'",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00"
+								},
+								"dataset": {
+									"referenceName": "db_company",
 									"type": "DatasetReference"
 								},
 								"firstRowOnly": false
