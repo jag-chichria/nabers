@@ -304,7 +304,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from Contact\nwhere Email= '@{activity('Get Assessor Details by Assessor ID').output.value.Email}'",
+										"value": "Select id from Contact\nwhere Email= '@{activity('Get Assessor Details by Assessor ID').output.value[0].Email}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
@@ -467,7 +467,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from Account\nwhere NO_ABN__c = '@{activity('Get Company Details by Assessor Id').output.value.ABN}'",
+										"value": "Select id from Account\nwhere NO_ABN__c = '@{activity('Get Company Details by Assessor Id').output.value[0].ABN}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
