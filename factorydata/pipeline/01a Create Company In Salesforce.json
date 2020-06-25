@@ -48,51 +48,51 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "ABN",
+									"name": "Type",
 									"type": "String"
 								},
 								"sink": {
-									"name": "NO_ABN__c",
+									"name": "Type",
 									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "CompanyName",
+									"name": "Billing_StreetName",
 									"type": "String"
 								},
 								"sink": {
-									"name": "Name",
+									"name": "BillingStreet",
 									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "CompanyURL",
+									"name": "Billing_Suburb",
 									"type": "String"
 								},
 								"sink": {
-									"name": "Website",
+									"name": "BillingCity",
 									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "Phone",
+									"name": "Billing_State",
 									"type": "String"
 								},
 								"sink": {
-									"name": "Phone",
+									"name": "BillingState",
 									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "ShortName",
+									"name": "Billing_Postcode",
 									"type": "String"
 								},
 								"sink": {
-									"name": "NO_Short_Name__c",
+									"name": "BillingPostalCode",
 									"type": "String"
 								}
 							},
@@ -118,16 +118,6 @@
 							},
 							{
 								"source": {
-									"name": "Mailing_Postcode",
-									"type": "String"
-								},
-								"sink": {
-									"name": "ShippingPostalCode",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
 									"name": "Mailing_State",
 									"type": "String"
 								},
@@ -138,31 +128,21 @@
 							},
 							{
 								"source": {
-									"name": "Billing_StreetName",
+									"name": "Phone",
 									"type": "String"
 								},
 								"sink": {
-									"name": "BillingStreet",
+									"name": "Phone",
 									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "Billing_Postcode",
+									"name": "CompanyURL",
 									"type": "String"
 								},
 								"sink": {
-									"name": "BillingPostalCode",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Billing_State",
-									"type": "String"
-								},
-								"sink": {
-									"name": "BillingState",
+									"name": "Website",
 									"type": "String"
 								}
 							},
@@ -172,7 +152,67 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "Type",
+									"name": "Company_Record_Type__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ABN",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NO_ABN__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PIInsuranceExpiryDate",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "NO_Professional_Indemnity_Expiry_Date__c",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "PLInsuranceExpiryDate",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "NO_Public_Liability_Expiry_Date__c",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "SAPCustomerNo",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NO_SAP_Customer_Number__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ShortName",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NO_Short_Name__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CompanyName",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Name",
 									"type": "String"
 								}
 							}
