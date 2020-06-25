@@ -304,7 +304,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from Contacts\nwhere email= '@{activity('Get Assessor Details by Assessor ID').output.value.Email}'",
+										"value": "Select id from Contact\nwhere Email= '@{activity('Get Assessor Details by Assessor ID').output.value.Email}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
@@ -467,7 +467,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from Company\nwhere ABN= '@{activity('Get Company Details by Assessor Id').output.value.ABN}'",
+										"value": "Select id from Account\nwhere NO_ABN__c = '@{activity('Get Company Details by Assessor Id').output.value.ABN}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
@@ -630,7 +630,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "Select * from AssessorsStage where AssessorId = '@{item()[0].AssessorId}'",
+										"value": "Select Top 1 * from AssessorsStage where AssessorId = '@{item()[0].AssessorId}'",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00"
@@ -665,7 +665,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "Select * from CompanyStage where CompanyId = '@{item()[0].CompanyId}'",
+										"value": "Select Top 1 * from CompanyStage where CompanyId = '@{item()[0].CompanyId}'",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00"
