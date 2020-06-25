@@ -268,7 +268,7 @@
 									"type": "Int32"
 								},
 								"sink": {
-									"name": "\tNO_Id_In_Member__c"
+									"name": "NO_Id_In_Member__c"
 								}
 							}
 						]
@@ -403,7 +403,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "@Select id from Contact\nwhere Id_In_Member__c = 'item()[0].AssessorId'",
+										"value": "Select id from Contact\nwhere NO_Id_In_Member__c = '@{item().member_assessor_id}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
