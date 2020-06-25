@@ -48,16 +48,6 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "Type",
-									"type": "String"
-								},
-								"sink": {
-									"name": "Type",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
 									"name": "Billing_StreetName",
 									"type": "String"
 								},
@@ -213,6 +203,16 @@
 								},
 								"sink": {
 									"name": "Name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Mailing_Postcode",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ShippingPostalCode",
 									"type": "String"
 								}
 							}
