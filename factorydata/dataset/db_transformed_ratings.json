@@ -37,6 +37,14 @@
 				"name": "batch_id",
 				"type": "int",
 				"precision": 10
+			},
+			{
+				"name": "sf_rating_id",
+				"type": "varchar"
+			},
+			{
+				"name": "sf_assessor_id",
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
