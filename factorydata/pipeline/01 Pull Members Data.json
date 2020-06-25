@@ -798,10 +798,10 @@
 				"type": "Array"
 			},
 			"_vsf_AssessorRecord": {
-				"type": "String"
+				"type": "Array"
 			},
 			"_vsf_CompanyRecord": {
-				"type": "String"
+				"type": "Array"
 			}
 		},
 		"annotations": []
