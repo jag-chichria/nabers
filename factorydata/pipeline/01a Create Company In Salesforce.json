@@ -148,15 +148,6 @@
 							},
 							{
 								"source": {
-									"name": "Billing_Suburb",
-									"type": "String"
-								},
-								"sink": {
-									"name": "City"
-								}
-							},
-							{
-								"source": {
 									"name": "Billing_Postcode",
 									"type": "String"
 								},
