@@ -379,16 +379,13 @@
 												},
 												"member_assessor_Id": {
 													"value": {
-														"value": "@activity('Get Assessor Details by Assessor ID').output.value.AssessorId",
+														"value": "@activity('Get Assessor Details by Assessor ID').output.value[0].AssessorId",
 														"type": "Expression"
 													},
 													"type": "String"
 												},
 												"salesforce_assessor_Id": {
-													"value": {
-														"value": "@activity('Lookup Each Assessor by Name In Salesforce').output.Id",
-														"type": "Expression"
-													},
+													"value": null,
 													"type": "String"
 												}
 											}
@@ -431,7 +428,10 @@
 													"type": "String"
 												},
 												"salesforce_assessor_Id": {
-													"value": "",
+													"value": {
+														"value": "@activity('Lookup Each Assessor by Name In Salesforce').output.value.Id",
+														"type": "Expression"
+													},
 													"type": "String"
 												}
 											}
@@ -542,7 +542,7 @@
 												},
 												"member_assessor_Id": {
 													"value": {
-														"value": "@activity('Get Company Details by Assessor Id').output.CompanyId",
+														"value": "@activity('Get Company Details by Assessor Id').output.value[0].CompanyId",
 														"type": "Expression"
 													},
 													"type": "String"
@@ -585,7 +585,7 @@
 												},
 												"member_company_Id": {
 													"value": {
-														"value": "@activity('usp_GetRating').output.assessor_company_id",
+														"value": "@activity('usp_GetRating').output.value[0].CompanyId",
 														"type": "Expression"
 													},
 													"type": "String"
