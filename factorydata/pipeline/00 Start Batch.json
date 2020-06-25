@@ -184,6 +184,32 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "01a Create Assessors",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "01 Pull From Staging",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "01a Create Assessors In Salesforce",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"pbatch_id": {
+							"value": "@variables('vbatch_id')",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"variables": {
