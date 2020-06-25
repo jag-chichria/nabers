@@ -630,7 +630,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "Select * from Assessor_Stage where Assessor_Id = '@{item()[0].AssessorId}'",
+										"value": "Select * from AssessorStage where Assessor_Id = '@{item()[0].AssessorId}'",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00"
@@ -665,7 +665,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "Select * from Company_Stage where Assessor_Id = '@{item()[0].AssessorId}'",
+										"value": "Select * from CompanyStage where Assessor_Id = '@{item()[0].AssessorId}'",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00"
