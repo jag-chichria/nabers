@@ -540,14 +540,14 @@
 													},
 													"type": "Int32"
 												},
-												"member_assessor_Id": {
+												"member_company_Id": {
 													"value": {
 														"value": "@activity('Get Company Details by Assessor Id').output.value[0].CompanyId",
 														"type": "Expression"
 													},
 													"type": "String"
 												},
-												"salesforce_assessor_Id": {
+												"salesforce_company_Id": {
 													"value": null,
 													"type": "String"
 												}
