@@ -48,16 +48,6 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "id",
-									"type": "Int32"
-								},
-								"sink": {
-									"name": "Id",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
 									"name": "LastName",
 									"type": "String"
 								},
@@ -138,7 +128,7 @@
 							},
 							{
 								"source": {
-									"name": "Billing_Suburb",
+									"name": "Mailing_Suburb",
 									"type": "String"
 								},
 								"sink": {
@@ -148,7 +138,7 @@
 							},
 							{
 								"source": {
-									"name": "Billing_State",
+									"name": "Mailing_State",
 									"type": "String"
 								},
 								"sink": {
@@ -158,7 +148,7 @@
 							},
 							{
 								"source": {
-									"name": "Billing_Postcode",
+									"name": "Mailing_Postcode",
 									"type": "String"
 								},
 								"sink": {
@@ -168,7 +158,7 @@
 							},
 							{
 								"source": {
-									"name": "Billing_Country",
+									"name": "Mailing_Country",
 									"type": "String"
 								},
 								"sink": {
