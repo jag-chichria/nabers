@@ -467,7 +467,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from Company\nwhere email= '@{variables('_vcurrentRatingItem')[0].Assessor_Org_ABN}'",
+										"value": "@Select id from Company\nwhere email= 'activity('Get Company Details by Assessor Id').output.ABN}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
