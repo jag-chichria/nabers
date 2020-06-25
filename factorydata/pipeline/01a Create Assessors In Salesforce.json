@@ -48,11 +48,11 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "FirstName",
-									"type": "String"
+									"name": "id",
+									"type": "Int32"
 								},
 								"sink": {
-									"name": "FirstName",
+									"name": "Id",
 									"type": "String"
 								}
 							},
@@ -68,51 +68,11 @@
 							},
 							{
 								"source": {
-									"name": "Title",
+									"name": "FirstName",
 									"type": "String"
 								},
 								"sink": {
-									"name": "Title",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Mailing_StreetName",
-									"type": "String"
-								},
-								"sink": {
-									"name": "MailingStreet",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Mailing_Suburb",
-									"type": "String"
-								},
-								"sink": {
-									"name": "MailingCity",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Mailing_Postcode",
-									"type": "String"
-								},
-								"sink": {
-									"name": "MailingPostalCode",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Mailing_State",
-									"type": "String"
-								},
-								"sink": {
-									"name": "MailingState",
+									"name": "FirstName",
 									"type": "String"
 								}
 							},
@@ -138,16 +98,6 @@
 							},
 							{
 								"source": {
-									"name": "Billing_Postcode",
-									"type": "String"
-								},
-								"sink": {
-									"name": "OtherPostalCode",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
 									"name": "Billing_State",
 									"type": "String"
 								},
@@ -158,11 +108,81 @@
 							},
 							{
 								"source": {
+									"name": "Billing_Postcode",
+									"type": "String"
+								},
+								"sink": {
+									"name": "OtherPostalCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_Country",
+									"type": "String"
+								},
+								"sink": {
+									"name": "OtherCountry",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Mailing_StreetName",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MailingStreet",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_Suburb",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MailingCity",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_State",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MailingState",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_Postcode",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MailingPostalCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_Country",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MailingCountry",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
 									"name": "Phone",
 									"type": "String"
 								},
 								"sink": {
-									"name": "OtherPhone",
+									"name": "Phone",
 									"type": "String"
 								}
 							},
@@ -178,12 +198,12 @@
 							},
 							{
 								"source": {
-									"name": "JoinedDate",
-									"type": "DateTime"
+									"name": "Title",
+									"type": "String"
 								},
 								"sink": {
-									"name": "NO_Join_date__c",
-									"type": "DateTime"
+									"name": "Title",
+									"type": "String"
 								}
 							},
 							{
@@ -203,6 +223,52 @@
 								},
 								"sink": {
 									"name": "NO_Accreditation_Number__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "JoinedDate",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "NO_Join_date__c",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "RatingTypes"
+								},
+								"sink": {
+									"name": "NO_Rating_Types__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Regional"
+								},
+								"sink": {
+									"name": "NO_Regional__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Metropolitan"
+								},
+								"sink": {
+									"name": "NO_Metropolitan__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Accredition"
+								},
+								"sink": {
+									"name": "NO_Accreditation__c",
 									"type": "String"
 								}
 							}
