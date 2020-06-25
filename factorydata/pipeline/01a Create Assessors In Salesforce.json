@@ -261,6 +261,15 @@
 									"name": "NO_Accreditation__c",
 									"type": "String"
 								}
+							},
+							{
+								"source": {
+									"name": "member_assessor_id",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "\tNO_Id_In_Member__c"
+								}
 							}
 						]
 					}
@@ -381,14 +390,7 @@
 						{
 							"name": "Lookup Each Building by Name In Salesforce",
 							"type": "Lookup",
-							"dependsOn": [
-								{
-									"activity": "Set variable _vsf_buildingRecord",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"policy": {
 								"timeout": "7.00:00:00",
 								"retry": 0,
@@ -401,7 +403,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from NO_Building__c \nwhere Email = '@{variables('_vnewBuildingInSF')[0].Email}'",
+										"value": "@Select id from Contact\nwhere Id_In_Member__c = 'item()[0].AssessorId'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
@@ -429,19 +431,6 @@
 								"variableName": "_vsf_buildingRecord",
 								"value": {
 									"value": "@activity('Lookup Each Building by Name In Salesforce').output.value",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Set variable _vsf_buildingRecord",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "_vnewBuildingInSF",
-								"value": {
-									"value": "@item()",
 									"type": "Expression"
 								}
 							}
