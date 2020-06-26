@@ -1385,6 +1385,14 @@
 										"sink": {
 											"name": "NO_Id_In_Member__c"
 										}
+									},
+									{
+										"source": {
+											"name": "salesforce_company_id"
+										},
+										"sink": {
+											"name": "AccountId"
+										}
 									}
 								]
 							}
@@ -1978,7 +1986,7 @@
 												},
 												"type": "Int32"
 											},
-											"salesforcebuildingId": {
+											"salesforce_building_Id": {
 												"value": {
 													"value": "@variables('_vsf_buildingRecord').output.id",
 													"type": "Expression"
