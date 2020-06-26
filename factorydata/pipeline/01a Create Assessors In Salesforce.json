@@ -276,7 +276,7 @@
 									"name": "salesforce_company_id"
 								},
 								"sink": {
-									"name": "AccountId "
+									"name": "AccountId"
 								}
 							}
 						]
