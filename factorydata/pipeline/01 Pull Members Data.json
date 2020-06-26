@@ -338,7 +338,7 @@
 												},
 												"member_assessor_Id": {
 													"value": {
-														"value": "@activity('usp_GetRating').output.assessor_id",
+														"value": "@activity('usp_GetRating').output.value[0].AssessorID",
 														"type": "Expression"
 													},
 													"type": "String"
