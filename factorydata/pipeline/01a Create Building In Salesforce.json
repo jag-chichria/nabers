@@ -228,14 +228,7 @@
 						{
 							"name": "Lookup Each Building by Name In Salesforce",
 							"type": "Lookup",
-							"dependsOn": [
-								{
-									"activity": "Set variable _vsf_buildingRecord",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"policy": {
 								"timeout": "7.00:00:00",
 								"retry": 0,
@@ -248,7 +241,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from NO_Building__c \nwhere Postcode__c = '@{variables('_vnewBuildingInSF')[0].Postcode}'\nand State__c = '@{variables('_vnewBuildingInSF')[0].State}'\nand Suburb__c = '@{variables('_vnewBuildingInSF')[0].Suburb}'\nand Street_Number__c = '@{variables('_vnewBuildingInSF')[0].StreetNumber}'\nand Street_Name__c = '@{variables('_vnewBuildingInSF')[0].StreetName}'\nand Name = '@{variables('_vnewBuildingInSF')[0].PremiseName}'",
+										"value": "Select id from NO_Building__c \nwhere Postcode__c = '@{item().Postcode}'\nand State__c = '@{item().State}'\nand Suburb__c = '@{item().Suburb}'\nand Street_Number__c = '@{item().StreetNumber}'\nand Street_Name__c = '@{item().StreetName}'\nand Name = '@{item().PremiseName}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
@@ -276,19 +269,6 @@
 								"variableName": "_vsf_buildingRecord",
 								"value": {
 									"value": "@activity('Lookup Each Building by Name In Salesforce').output.value",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Set variable _vsf_buildingRecord",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "_vnewBuildingInSF",
-								"value": {
-									"value": "@item()",
 									"type": "Expression"
 								}
 							}
