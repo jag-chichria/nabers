@@ -37,12 +37,6 @@
 									"value": "@pipeline().parameters.pbatch_id",
 									"type": "Expression"
 								}
-							},
-							"updateSalesforceCompanyIds": {
-								"pbatch_id": {
-									"value": "@pipeline().parameters.pbatch_id",
-									"type": "Expression"
-								}
 							}
 						}
 					},
