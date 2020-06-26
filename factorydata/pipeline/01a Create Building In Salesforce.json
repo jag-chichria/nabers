@@ -166,7 +166,7 @@
 				}
 			},
 			{
-				"name": "usp_GetSalesforce",
+				"name": "usp_GetBuildings",
 				"type": "Lookup",
 				"dependsOn": [
 					{
@@ -351,7 +351,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "usp_GetSalesforce",
+						"activity": "usp_GetBuildings",
 						"dependencyConditions": [
 							"Succeeded"
 						]
