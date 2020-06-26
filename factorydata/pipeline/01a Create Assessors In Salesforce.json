@@ -270,6 +270,14 @@
 								"sink": {
 									"name": "NO_Id_In_Member__c"
 								}
+							},
+							{
+								"source": {
+									"name": "salesforce_company_id"
+								},
+								"sink": {
+									"name": "AccountId "
+								}
 							}
 						]
 					}
