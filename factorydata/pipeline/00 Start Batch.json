@@ -196,7 +196,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "01a Create Company",
+						"activity": "01a Transform Company Assessor",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -246,7 +246,14 @@
 			{
 				"name": "01a Transform Company Assessor",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "01a Create Company",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
