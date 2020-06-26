@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "01_Transform_Country_In_Company",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
