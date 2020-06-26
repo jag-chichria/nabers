@@ -519,7 +519,7 @@
 												},
 												"salesforce_company_Id": {
 													"value": {
-														"value": "@activity('Lookup Each Company by Name In Salesforce').output.value.Id",
+														"value": "@activity('Lookup Each Company by Name In Salesforce').output.value[0].Id",
 														"type": "Expression"
 													},
 													"type": "String"
