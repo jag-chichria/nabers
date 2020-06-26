@@ -88,7 +88,7 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"storedProcedureName": "[dbo].[usp_InsertLookupPremiseData]",
+											"storedProcedureName": "[dbo].[usp_InsertLookupBuildingData]",
 											"storedProcedureParameters": {
 												"batch_id": {
 													"value": {
@@ -104,50 +104,8 @@
 													},
 													"type": "Int32"
 												},
-												"name": {
-													"value": {
-														"value": "@variables('_vcurrentRatingItem')[0].PremiseName",
-														"type": "Expression"
-													},
-													"type": "String"
-												},
-												"postcode": {
-													"value": {
-														"value": "@variables('_vcurrentRatingItem')[0].Postcode",
-														"type": "Expression"
-													},
-													"type": "String"
-												},
-												"salesforcebuildingId": {
+												"salesforce_building_Id": {
 													"value": "",
-													"type": "String"
-												},
-												"state": {
-													"value": {
-														"value": "@variables('_vcurrentRatingItem')[0].State",
-														"type": "Expression"
-													},
-													"type": "String"
-												},
-												"streetname": {
-													"value": {
-														"value": "@variables('_vcurrentRatingItem')[0].StreetName",
-														"type": "Expression"
-													},
-													"type": "String"
-												},
-												"streetnumber": {
-													"value": {
-														"value": "@variables('_vcurrentRatingItem')[0].StreetNumber",
-														"type": "Expression"
-													},
-													"type": "String"
-												},
-												"suburb": {
-													"value": {
-														"value": "@variables('_vcurrentRatingItem')[0].Suburb",
-														"type": "Expression"
-													},
 													"type": "String"
 												}
 											}
@@ -173,7 +131,7 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"storedProcedureName": "[dbo].[usp_InsertLookupPremiseData]",
+											"storedProcedureName": "[dbo].[usp_InsertLookupBuildingData]",
 											"storedProcedureParameters": {
 												"batch_id": {
 													"value": {
@@ -189,51 +147,9 @@
 													},
 													"type": "Int32"
 												},
-												"name": {
-													"value": {
-														"value": "@variables('_vcurrentRatingItem')[0].PremiseName",
-														"type": "Expression"
-													},
-													"type": "String"
-												},
-												"postcode": {
-													"value": {
-														"value": "@variables('_vcurrentRatingItem')[0].Postcode",
-														"type": "Expression"
-													},
-													"type": "String"
-												},
-												"salesforcebuildingId": {
+												"salesforce_building_Id": {
 													"value": {
 														"value": "@activity('Lookup Each Building by Name In Salesforce').Output.value[0].Id",
-														"type": "Expression"
-													},
-													"type": "String"
-												},
-												"state": {
-													"value": {
-														"value": "@variables('_vcurrentRatingItem')[0].State",
-														"type": "Expression"
-													},
-													"type": "String"
-												},
-												"streetname": {
-													"value": {
-														"value": "@variables('_vcurrentRatingItem')[0].StreetName",
-														"type": "Expression"
-													},
-													"type": "String"
-												},
-												"streetnumber": {
-													"value": {
-														"value": "@variables('_vcurrentRatingItem')[0].StreetNumber",
-														"type": "Expression"
-													},
-													"type": "String"
-												},
-												"suburb": {
-													"value": {
-														"value": "@variables('_vcurrentRatingItem')[0].Suburb",
 														"type": "Expression"
 													},
 													"type": "String"
