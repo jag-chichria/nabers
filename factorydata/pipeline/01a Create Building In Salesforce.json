@@ -149,7 +149,7 @@
 						},
 						"process_name": {
 							"value": {
-								"value": "@pipeline().RunId",
+								"value": "@pipeline().Pipeline",
 								"type": "Expression"
 							},
 							"type": "String"
@@ -166,7 +166,7 @@
 				}
 			},
 			{
-				"name": "usp_GetBuildings",
+				"name": "usp_GetSalesforce",
 				"type": "Lookup",
 				"dependsOn": [
 					{
@@ -351,7 +351,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "usp_GetBuildings",
+						"activity": "usp_GetSalesforce",
 						"dependencyConditions": [
 							"Succeeded"
 						]

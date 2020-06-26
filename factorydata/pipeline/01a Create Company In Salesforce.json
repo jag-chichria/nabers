@@ -274,7 +274,7 @@
 						},
 						"process_name": {
 							"value": {
-								"value": "@pipeline().RunId",
+								"value": "@pipeline().Pipeline",
 								"type": "Expression"
 							},
 							"type": "String"
