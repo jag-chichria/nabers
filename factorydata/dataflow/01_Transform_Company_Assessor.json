@@ -1,0 +1,39 @@
+{
+	"name": "01_Transform_Company_Assessor",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "db_lookup_sf_company_ids",
+						"type": "DatasetReference"
+					},
+					"name": "getCompany"
+				},
+				{
+					"dataset": {
+						"referenceName": "db_lookup_sf_assessors_ids",
+						"type": "DatasetReference"
+					},
+					"name": "getAssessor"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "db_lookup_sf_assessors_ids",
+						"type": "DatasetReference"
+					},
+					"name": "updateSalesforceCompanyIds"
+				}
+			],
+			"transformations": [
+				{
+					"name": "combineSet"
+				}
+			],
+			"script": "source(output(\n\t\tid as integer,\n\t\tsalesforce_company_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_company_id as integer,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getCompany\nsource(output(\n\t\tid as integer,\n\t\tsalesforce_assessor_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_assessor_id as integer,\n\t\tsalesforce_company_id as integer,\n\t\tmember_company_id as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getAssessor\ngetCompany, getAssessor join(getCompany@member_company_id == getAssessor@member_company_id,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> combineSet\ncombineSet sink(input(\n\t\tid as integer,\n\t\tsalesforce_assessor_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_assessor_id as integer,\n\t\tsalesforce_company_id as integer,\n\t\tmember_company_id as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['member_company_id','member_assessor_id'],\n\tformat: 'table',\n\tmapColumn(\n\t\tsalesforce_company_id = getCompany@salesforce_company_Id\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> updateSalesforceCompanyIds"
+		}
+	}
+}
