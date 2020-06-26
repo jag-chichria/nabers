@@ -44,8 +44,7 @@
 			},
 			{
 				"name": "salesforce_company_id",
-				"type": "int",
-				"precision": 10
+				"type": "varchar"
 			},
 			{
 				"name": "member_company_id",
