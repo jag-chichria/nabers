@@ -592,7 +592,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "Select Top 1 * from CompanyStage where CompanyId = '@{item()[0].CompanyId}'",
+										"value": "Select Top 1 * from CompanyStage where CompanyId = @{item()[0].CompanyId}",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00"
