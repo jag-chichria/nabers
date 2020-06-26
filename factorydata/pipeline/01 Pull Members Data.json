@@ -303,6 +303,10 @@
 												"salesforce_assessor_Id": {
 													"value": null,
 													"type": "String"
+												},
+												"member_company_id": {
+													"value": "@activity('Get Assessor Details by Assessor ID').output.value[0].CompanyId",
+													"type": "Int32"
 												}
 											}
 										},
@@ -349,6 +353,13 @@
 														"type": "Expression"
 													},
 													"type": "String"
+												},
+												"member_company_id": {
+													"value": {
+														"value": "@activity('Get Assessor Details by Assessor ID').output.value[0].CompanyId",
+														"type": "Expression"
+													},
+													"type": "Int32"
 												}
 											}
 										},
