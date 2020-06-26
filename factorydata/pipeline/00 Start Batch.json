@@ -96,12 +96,6 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
-					},
-					{
-						"activity": "01a Create Company",
-						"dependencyConditions": [
-							"Succeeded"
-						]
 					}
 				],
 				"userProperties": [],
@@ -202,7 +196,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "01 Pull From Staging",
+						"activity": "01a Create Company",
 						"dependencyConditions": [
 							"Succeeded"
 						]
