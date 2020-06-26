@@ -419,7 +419,7 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "_vsf_AssessorRecord",
+								"variableName": "_vsf_CompanyRecord",
 								"value": {
 									"value": "@activity('Lookup Each Company by Name In Salesforce').output.value",
 									"type": "Expression"
