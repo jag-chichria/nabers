@@ -154,10 +154,10 @@
 							},
 							{
 								"source": {
-									"name": "rating_main_purpose"
+									"name": "status"
 								},
 								"sink": {
-									"name": "Main_purpose_of_rating__c"
+									"name": "Status__c"
 								}
 							},
 							{
