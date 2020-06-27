@@ -157,7 +157,7 @@
 									"name": "status"
 								},
 								"sink": {
-									"name": "Status__c"
+									"name": "Main_purpose_of_rating__c"
 								}
 							},
 							{
