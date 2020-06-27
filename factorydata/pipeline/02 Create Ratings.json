@@ -138,22 +138,6 @@
 							},
 							{
 								"source": {
-									"name": "rating_type"
-								},
-								"sink": {
-									"name": "Rating_Type__c"
-								}
-							},
-							{
-								"source": {
-									"name": "rating_main_purpose"
-								},
-								"sink": {
-									"name": "Main_purpose_of_rating__c"
-								}
-							},
-							{
-								"source": {
 									"name": "cert_valid_from"
 								},
 								"sink": {
