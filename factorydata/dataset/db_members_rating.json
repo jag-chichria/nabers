@@ -44,16 +44,43 @@
 				"precision": 10
 			},
 			{
-				"name": "Assessor",
+				"name": "Assessor_firstname",
 				"type": "varchar"
 			},
 			{
-				"name": "CustomerID",
-				"type": "int",
-				"precision": 10
+				"name": "Assessor_lastname",
+				"type": "varchar"
 			},
 			{
-				"name": "Customer",
+				"name": "AssessorEmail",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer_Name",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer_TradingName",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer_Mailing_StreeNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer_Mailing_StreetName",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer_Mailing_Suburb",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer_Mailing_Postcode",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer_Mailing_State",
 				"type": "varchar"
 			},
 			{
@@ -132,6 +159,10 @@
 				"type": "varchar"
 			},
 			{
+				"name": "Certificate_Customer_Email",
+				"type": "varchar"
+			},
+			{
 				"name": "ReplaceFlag",
 				"type": "bit"
 			},
@@ -170,7 +201,7 @@
 				"type": "varchar"
 			},
 			{
-				"name": "Batch_Id",
+				"name": "batch_id",
 				"type": "int",
 				"precision": 10
 			}
