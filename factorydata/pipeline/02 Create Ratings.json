@@ -154,7 +154,7 @@
 							},
 							{
 								"source": {
-									"name": "status"
+									"name": "rating_main_purpose"
 								},
 								"sink": {
 									"name": "Main_purpose_of_rating__c"
