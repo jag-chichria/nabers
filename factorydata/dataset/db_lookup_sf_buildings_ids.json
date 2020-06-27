@@ -23,32 +23,8 @@
 				"precision": 10
 			},
 			{
-				"name": "salesforcebuildingId",
+				"name": "salesforce_building_Id",
 				"type": "varchar"
-			},
-			{
-				"name": "name",
-				"type": "varchar"
-			},
-			{
-				"name": "postcode",
-				"type": "varchar"
-			},
-			{
-				"name": "state",
-				"type": "varchar"
-			},
-			{
-				"name": "streetname",
-				"type": "nvarchar"
-			},
-			{
-				"name": "streetnumber",
-				"type": "nvarchar"
-			},
-			{
-				"name": "suburb",
-				"type": "nvarchar"
 			},
 			{
 				"name": "batch_id",
