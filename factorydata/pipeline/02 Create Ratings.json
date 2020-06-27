@@ -146,7 +146,7 @@
 							},
 							{
 								"source": {
-									"name": "rating_main_purspose"
+									"name": "rating_main_purpose"
 								},
 								"sink": {
 									"name": "Main_purpose_of_rating__c"
