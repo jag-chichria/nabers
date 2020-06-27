@@ -204,6 +204,18 @@
 				"name": "batch_id",
 				"type": "int",
 				"precision": 10
+			},
+			{
+				"name": "RatingTypes",
+				"type": "varchar"
+			},
+			{
+				"name": "RatingMainPurpose",
+				"type": "varchar"
+			},
+			{
+				"name": "HasCinema",
+				"type": "bit"
 			}
 		],
 		"typeProperties": {
