@@ -105,6 +105,12 @@
 			{
 				"name": "rating_ref_number",
 				"type": "varchar"
+			},
+			{
+				"name": "lodged_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
 			}
 		],
 		"typeProperties": {
