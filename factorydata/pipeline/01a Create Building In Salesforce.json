@@ -241,7 +241,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from NO_Building__c \nwhere Postcode__c = '@{item().Postcode}'\nand State__c = '@{item().State}'\nand Suburb__c = '@{item().Suburb}'\nand Street_Number__c = '@{item().StreetNumber}'\nand Street_Name__c = '@{item().StreetName}'\nand Name = '@{item().PremiseName}'",
+										"value": "Select id from NO_Building__c \nwhere Postcode__c = '@{item().Postcode}'\nand State__c = '@{item().State}'\nand Suburb__c = '@{item().Suburb}'\nand Street_Number__c = '@{item().StreetNumber}'\nand Street_Name__c = '@{item().StreetName}'\nand Name = '@{item().Name}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
@@ -254,31 +254,11 @@
 							}
 						},
 						{
-							"name": "Set Variable _sf_buildingRecord",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Lookup Each Building by Name In Salesforce",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "_vsf_buildingRecord",
-								"value": {
-									"value": "@activity('Lookup Each Building by Name In Salesforce').output.value",
-									"type": "Expression"
-								}
-							}
-						},
-						{
 							"name": "UpdateNewSalesforceIdForBuilding",
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
-									"activity": "Set Variable _sf_buildingRecord",
+									"activity": "Lookup Each Building by Name In Salesforce",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -311,7 +291,7 @@
 									},
 									"salesforce_building_Id": {
 										"value": {
-											"value": "@variables('_vsf_buildingRecord').output.id",
+											"value": "@activity('Lookup Each Building by Name In Salesforce').output.value[0].Id",
 											"type": "Expression"
 										},
 										"type": "String"
