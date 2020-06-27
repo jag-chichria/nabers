@@ -30,6 +30,14 @@
 								"value": "@pipeline().parameters.pbatch_id",
 								"type": "Expression"
 							}
+						},
+						"datasetParameters": {
+							"getLookupSalesforceBuildings": {
+								"pbatch_id": 1
+							},
+							"getLookupSalesforceAssessors": {
+								"pbatch_id": 1
+							}
 						}
 					},
 					"compute": {
