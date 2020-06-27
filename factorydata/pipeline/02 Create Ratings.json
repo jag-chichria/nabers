@@ -183,6 +183,22 @@
 								"sink": {
 									"name": "Rating_Start_Date__c"
 								}
+							},
+							{
+								"source": {
+									"name": "has_cinema"
+								},
+								"sink": {
+									"name": "hasCinema__c"
+								}
+							},
+							{
+								"source": {
+									"name": "rating_ref_number"
+								},
+								"sink": {
+									"name": "NO_Member_Rating_Ref_Number__c"
+								}
 							}
 						]
 					}
