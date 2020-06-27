@@ -284,7 +284,7 @@
 									},
 									"member_premise_id": {
 										"value": {
-											"value": "@variables('_vnewBuildingInSF')[0].member_premise_id",
+											"value": "@item().member_premise_id",
 											"type": "Expression"
 										},
 										"type": "Int32"
