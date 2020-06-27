@@ -45,6 +45,34 @@
 			{
 				"name": "sf_assessor_id",
 				"type": "varchar"
+			},
+			{
+				"name": "assessor_email",
+				"type": "varchar"
+			},
+			{
+				"name": "customer_email",
+				"type": "varchar"
+			},
+			{
+				"name": "cert_building_name",
+				"type": "varchar"
+			},
+			{
+				"name": "cert_customer_name",
+				"type": "varchar"
+			},
+			{
+				"name": "rating_type",
+				"type": "varchar"
+			},
+			{
+				"name": "rating_main_purspose",
+				"type": "varchar"
+			},
+			{
+				"name": "has_cinema",
+				"type": "bit"
 			}
 		],
 		"typeProperties": {
