@@ -101,6 +101,10 @@
 				"type": "datetime",
 				"precision": 23,
 				"scale": 3
+			},
+			{
+				"name": "rating_ref_number",
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
