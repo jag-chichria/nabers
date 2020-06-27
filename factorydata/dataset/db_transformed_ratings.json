@@ -67,7 +67,7 @@
 				"type": "varchar"
 			},
 			{
-				"name": "rating_main_purspose",
+				"name": "rating_main_purpose",
 				"type": "varchar"
 			},
 			{
@@ -89,6 +89,18 @@
 			{
 				"name": "status",
 				"type": "varchar"
+			},
+			{
+				"name": "cert_valid_from",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "cert_valid_to",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
 			}
 		],
 		"typeProperties": {
