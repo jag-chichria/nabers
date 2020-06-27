@@ -106,7 +106,74 @@
 							},
 							{
 								"source": {
-									"name": ""
+									"name": "assessor_email"
+								},
+								"sink": {
+									"name": "Assessor_Email__c"
+								}
+							},
+							{
+								"source": {
+									"name": "customer_email"
+								},
+								"sink": {
+									"name": "Customer_Email__c"
+								}
+							},
+							{
+								"source": {
+									"name": "cert_building_name"
+								},
+								"sink": {
+									"name": "Building_Name_On_Certificate__c"
+								}
+							},
+							{
+								"source": {
+									"name": "cert_customer_name"
+								},
+								"sink": {
+									"name": "Customer_Name_On_Certificate__c"
+								}
+							},
+							{
+								"source": {
+									"name": "rating_type"
+								},
+								"sink": {
+									"name": "Rating_Type__c"
+								}
+							},
+							{
+								"source": {
+									"name": "rating_main_purspose"
+								},
+								"sink": {
+									"name": "Main_purpose_of_rating__c"
+								}
+							},
+							{
+								"source": {
+									"name": "period_from"
+								},
+								"sink": {
+									"name": "Valid_From_Date__c"
+								}
+							},
+							{
+								"source": {
+									"name": "period_to"
+								},
+								"sink": {
+									"name": "Valid_To_Date__c"
+								}
+							},
+							{
+								"source": {
+									"name": "status"
+								},
+								"sink": {
+									"name": "Status__c"
 								}
 							}
 						]
