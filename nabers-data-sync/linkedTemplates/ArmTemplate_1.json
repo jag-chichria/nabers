@@ -1362,6 +1362,14 @@
 										"sink": {
 											"name": "NO_Member_Rating_Ref_Number__c"
 										}
+									},
+									{
+										"source": {
+											"name": "lodged_date"
+										},
+										"sink": {
+											"name": "Lodge_Date__c"
+										}
 									}
 								]
 							}
