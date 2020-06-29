@@ -585,7 +585,7 @@
 								},
 								"ifFalseActivities": [
 									{
-										"name": "Insert Officer Null Anomaly",
+										"name": "Insert Anomaly",
 										"type": "SqlServerStoredProcedure",
 										"dependsOn": [],
 										"policy": {
@@ -615,7 +615,7 @@
 												},
 												"anamoly_desc": {
 													"value": {
-														"value": "Either Officer ID is null or empty, moving on.",
+														"value": "No Tech Officer found for this Rating header. Ignoring",
 														"type": "Expression"
 													},
 													"type": "String"
@@ -713,55 +713,6 @@
 												"value": "@greater(length(variables('_vsf_TechOfficerRecord')), 0)",
 												"type": "Expression"
 											},
-											"ifFalseActivities": [
-												{
-													"name": "Insert Anomaly",
-													"type": "SqlServerStoredProcedure",
-													"dependsOn": [],
-													"policy": {
-														"timeout": "7.00:00:00",
-														"retry": 0,
-														"retryIntervalInSeconds": 30,
-														"secureOutput": false,
-														"secureInput": false
-													},
-													"userProperties": [],
-													"typeProperties": {
-														"storedProcedureName": "dbo.usp_InsertDataSyncAnomalies",
-														"storedProcedureParameters": {
-															"batch_id": {
-																"value": {
-																	"value": "@pipeline().parameters.pbatch_id",
-																	"type": "Expression"
-																},
-																"type": "Int32"
-															},
-															"process_name": {
-																"value": {
-																	"value": "@pipeline().Pipeline",
-																	"type": "Expression"
-																},
-																"type": "String"
-															},
-															"anamoly_desc": {
-																"value": {
-																	"value": "@concat('No Tech Officer found for this email address -', activity('Get Tech Officer Details by Officer Id').output.value[0].Email)",
-																	"type": "Expression"
-																},
-																"type": "String"
-															},
-															"anamoly_type": {
-																"value": "Error",
-																"type": "String"
-															}
-														}
-													},
-													"linkedServiceName": {
-														"referenceName": "NABERSStaging",
-														"type": "LinkedServiceReference"
-													}
-												}
-											],
 											"ifTrueActivities": [
 												{
 													"name": "insertOfficerDetailsWithSalesForceId",
