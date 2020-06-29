@@ -25,6 +25,9 @@
 					"dataflow": {
 						"referenceName": "01_Transform_Country_In_Company",
 						"type": "DataFlowReference",
+						"parameters": {
+							"pbatch_id": "1"
+						},
 						"datasetParameters": {
 							"source1": {
 								"pbatch_id": 1
