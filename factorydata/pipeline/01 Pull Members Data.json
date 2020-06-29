@@ -332,7 +332,7 @@
 												},
 												"salesforce_assessor_Id": {
 													"value": {
-														"value": "@activity('Lookup Each Assessor by Email In Salesforce').output.value[0].Id",
+														"value": "@activity('Lookup Each Assessor by Email In Salesforce').output.value.Id",
 														"type": "Expression"
 													},
 													"type": "String"
@@ -471,7 +471,7 @@
 								],
 								"ifTrueActivities": [
 									{
-										"name": "insertCompanyDetailsWithSalesForceId_copy1",
+										"name": "insertCompanyDetailswithSalesforceId",
 										"description": "Company does exist",
 										"type": "SqlServerStoredProcedure",
 										"dependsOn": [],
@@ -502,7 +502,7 @@
 												},
 												"salesforce_company_Id": {
 													"value": {
-														"value": "@activity('Lookup Each Company by ABN In Salesforce').output.value[0].Id",
+														"value": "@activity('Lookup Each Company by ABN In Salesforce').output.value.Id",
 														"type": "Expression"
 													},
 													"type": "String"
