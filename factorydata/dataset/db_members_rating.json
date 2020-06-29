@@ -44,14 +44,6 @@
 				"precision": 10
 			},
 			{
-				"name": "Assessor_firstname",
-				"type": "varchar"
-			},
-			{
-				"name": "Assessor_lastname",
-				"type": "varchar"
-			},
-			{
 				"name": "AssessorEmail",
 				"type": "varchar"
 			},
@@ -103,10 +95,6 @@
 				"name": "OfficerID",
 				"type": "int",
 				"precision": 10
-			},
-			{
-				"name": "Officer",
-				"type": "varchar"
 			},
 			{
 				"name": "RatingStatusID",
