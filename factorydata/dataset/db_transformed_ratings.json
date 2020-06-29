@@ -115,6 +115,10 @@
 			{
 				"name": "rating_scope",
 				"type": "varchar"
+			},
+			{
+				"name": "publicly_listed",
+				"type": "bit"
 			}
 		],
 		"typeProperties": {
