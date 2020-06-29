@@ -630,7 +630,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "Select Top 1 * from TechOfficerStage where [AdministratorID]= @{item()[0].OfficerId}",
+										"value": "Select Top 1 * from TechOfficersStage where [AdministratorID]= @{item()[0].OfficerId}",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00"
@@ -665,7 +665,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from User\nwhere SenderEmail = '@{activity('Get Tech Officer Details by Officer Id').output.value[0].Email}'",
+										"value": "Select id from User\nwhere Email like '%@{activity('Get Tech Officer Details by Officer Id').output.value[0].Email}%'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
@@ -678,7 +678,7 @@
 							}
 						},
 						{
-							"name": "If Company In Salesforce Exist_copy1",
+							"name": "If User In Salesforce Exist",
 							"type": "IfCondition",
 							"dependsOn": [
 								{
@@ -935,6 +935,9 @@
 			},
 			"_vsf_TechOfficerRecord": {
 				"type": "Array"
+			},
+			"_dummy": {
+				"type": "String"
 			}
 		},
 		"annotations": []
