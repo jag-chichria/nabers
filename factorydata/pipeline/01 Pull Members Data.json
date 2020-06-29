@@ -749,6 +749,10 @@
 																	"type": "Expression"
 																},
 																"type": "String"
+															},
+															"anamoly_type": {
+																"value": "Error",
+																"type": "String"
 															}
 														}
 													},
