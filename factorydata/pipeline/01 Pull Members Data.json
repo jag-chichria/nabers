@@ -708,7 +708,7 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"storedProcedureName": "[dbo].[usp_LogBatchDetails]",
+											"storedProcedureName": "dbo.usp_InsertDataSyncAnamolies",
 											"storedProcedureParameters": {
 												"batch_id": {
 													"value": {
@@ -724,8 +724,11 @@
 													},
 													"type": "String"
 												},
-												"stage": {
-													"value": "In Progress",
+												"anamoly_desc": {
+													"value": {
+														"value": "@concat('No Tech Officer found for this email address -', activity('Get Tech Officer Details by Officer Id').output.value[0].Email)",
+														"type": "Expression"
+													},
 													"type": "String"
 												}
 											}
