@@ -204,6 +204,12 @@
 			{
 				"name": "HasCinema",
 				"type": "bit"
+			},
+			{
+				"name": "LastActionDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
 			}
 		],
 		"typeProperties": {
