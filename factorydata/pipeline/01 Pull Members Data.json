@@ -613,14 +613,14 @@
 													},
 													"type": "String"
 												},
-												"anamoly_desc": {
+												"anomaly_desc": {
 													"value": {
 														"value": "No Tech Officer found for this Rating header. Ignoring",
 														"type": "Expression"
 													},
 													"type": "String"
 												},
-												"anamoly_type": {
+												"anomaly_type": {
 													"value": "Warning",
 													"type": "String"
 												}
