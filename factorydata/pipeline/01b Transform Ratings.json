@@ -43,6 +43,9 @@
 									"value": "@pipeline().parameters.pbatch_id",
 									"type": "Expression"
 								}
+							},
+							"getLookupSalesforceTechOfficer": {
+								"pbatch_id": 1
 							}
 						}
 					},
