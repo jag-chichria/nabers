@@ -123,6 +123,12 @@
 			{
 				"name": "sf_officer_id",
 				"type": "varchar"
+			},
+			{
+				"name": "last_update_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
 			}
 		],
 		"typeProperties": {
