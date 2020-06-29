@@ -234,7 +234,7 @@
 							},
 							{
 								"source": {
-									"name": "sf_customer_id"
+									"name": "sf_company_id"
 								},
 								"sink": {
 									"name": "Customer__c"
