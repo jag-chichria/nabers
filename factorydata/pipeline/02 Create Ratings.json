@@ -226,14 +226,6 @@
 							},
 							{
 								"source": {
-									"name": "sf_assessor_id"
-								},
-								"sink": {
-									"name": "OwnerId"
-								}
-							},
-							{
-								"source": {
 									"name": "sf_company_id"
 								},
 								"sink": {
