@@ -580,7 +580,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@greater(length(item().OfficerId), 0)",
+									"value": "@greater(item().OfficerId, 0)",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
