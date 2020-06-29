@@ -227,7 +227,7 @@
 							"typeProperties": {
 								"variableName": "_vsf_AssessorRecord",
 								"value": {
-									"value": "@activity('Lookup Each Assessor by Email In Salesforce').output.firstRow",
+									"value": "@{activity('Lookup Each Assessor by Email In Salesforce').output.firstRow}",
 									"type": "Expression"
 								}
 							}
