@@ -119,6 +119,10 @@
 			{
 				"name": "publicly_listed",
 				"type": "bit"
+			},
+			{
+				"name": "sf_officer_id",
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
