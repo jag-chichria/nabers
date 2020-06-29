@@ -585,7 +585,7 @@
 								},
 								"ifFalseActivities": [
 									{
-										"name": "Insert Anomaly_copy1",
+										"name": "Insert Officer Null Anomaly",
 										"type": "SqlServerStoredProcedure",
 										"dependsOn": [],
 										"policy": {
@@ -615,7 +615,7 @@
 												},
 												"anamoly_desc": {
 													"value": {
-														"value": "@concat('No Tech Officer found for this email address -', activity('Get Tech Officer Details by Officer Id').output.value[0].Email)",
+														"value": "Either Officer ID is null or empty, moving on.",
 														"type": "Expression"
 													},
 													"type": "String"
