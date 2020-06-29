@@ -471,7 +471,7 @@
 								],
 								"ifTrueActivities": [
 									{
-										"name": "insertCompanyDetailswithSalesforceId",
+										"name": "insertCompanyDetailswithSalesforceIdx",
 										"description": "Company does exist",
 										"type": "SqlServerStoredProcedure",
 										"dependsOn": [],
