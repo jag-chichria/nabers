@@ -696,7 +696,7 @@
 								},
 								"ifFalseActivities": [
 									{
-										"name": "Insert Anamoly",
+										"name": "Insert Anomaly",
 										"type": "SqlServerStoredProcedure",
 										"dependsOn": [],
 										"policy": {
@@ -708,7 +708,7 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"storedProcedureName": "dbo.usp_InsertDataSyncAnamolies",
+											"storedProcedureName": "dbo.usp_InsertDataSyncAnomalies",
 											"storedProcedureParameters": {
 												"batch_id": {
 													"value": {
