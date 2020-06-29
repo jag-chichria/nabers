@@ -665,7 +665,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from User\nwhere Email like '%@{activity('Get Tech Officer Details by Officer Id').output.value[0].Email}%'",
+										"value": "Select id from User\nwhere Email like '%@{variables('_dummy')}%'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
@@ -691,7 +691,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@greater(length(variables('_vsf_CompanyRecord')), 0)",
+									"value": "@greater(length(variables('_vsf_TechOfficerRecord')), 0)",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
