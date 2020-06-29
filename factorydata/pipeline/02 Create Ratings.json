@@ -239,6 +239,14 @@
 								"sink": {
 									"name": "Last_Status_Update__c"
 								}
+							},
+							{
+								"source": {
+									"name": "renew_replace"
+								},
+								"sink": {
+									"name": "Renew_Replace__c"
+								}
 							}
 						]
 					}
