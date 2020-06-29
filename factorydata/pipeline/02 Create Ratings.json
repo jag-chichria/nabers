@@ -199,6 +199,14 @@
 								"sink": {
 									"name": "Main_purpose_of_rating__c"
 								}
+							},
+							{
+								"source": {
+									"name": "publicly_listed"
+								},
+								"sink": {
+									"name": "Rating_Publicly_Listed__c"
+								}
 							}
 						]
 					}
