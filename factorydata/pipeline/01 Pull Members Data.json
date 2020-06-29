@@ -7,7 +7,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Set Variable Rating",
+						"activity": "usp_GetRating",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@variables('_vratings')",
+						"value": "@activity('usp_GetRating').output.value",
 						"type": "Expression"
 					},
 					"isSequential": false,
@@ -849,25 +849,6 @@
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
-				}
-			},
-			{
-				"name": "Set Variable Rating",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "usp_GetRating",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "_vratings",
-					"value": [
-						"@activity('usp_GetRating').output.value"
-					]
 				}
 			},
 			{
