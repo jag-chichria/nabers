@@ -619,6 +619,10 @@
 														"type": "Expression"
 													},
 													"type": "String"
+												},
+												"anamoly_type": {
+													"value": "Warning",
+													"type": "String"
 												}
 											}
 										},
