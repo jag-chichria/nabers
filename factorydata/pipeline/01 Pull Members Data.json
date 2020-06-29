@@ -352,7 +352,7 @@
 												},
 												"salesforce_assessor_Id": {
 													"value": {
-														"value": "@activity('Lookup Each Assessor by Name In Salesforce').output.value[0].Id",
+														"value": "@activity('Lookup Each Assessor by Email In Salesforce').output.value[0].Id",
 														"type": "Expression"
 													},
 													"type": "String"
