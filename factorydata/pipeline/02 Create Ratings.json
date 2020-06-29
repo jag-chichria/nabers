@@ -223,6 +223,14 @@
 								"sink": {
 									"name": "Rating_Scope__c"
 								}
+							},
+							{
+								"source": {
+									"name": "sf_assessor_id"
+								},
+								"sink": {
+									"name": "OwnerId"
+								}
 							}
 						]
 					}
