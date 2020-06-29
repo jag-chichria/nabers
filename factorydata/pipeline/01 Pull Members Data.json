@@ -610,7 +610,14 @@
 						{
 							"name": "Get Tech Officer Details by Officer Id",
 							"type": "Lookup",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "Set variable _currentRatingItem",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "7.00:00:00",
 								"retry": 0,
@@ -689,8 +696,7 @@
 								},
 								"ifFalseActivities": [
 									{
-										"name": "insertCompanyDetails_copy1",
-										"description": "Company does not exist",
+										"name": "Insert Anamoly",
 										"type": "SqlServerStoredProcedure",
 										"dependsOn": [],
 										"policy": {
@@ -702,7 +708,7 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"storedProcedureName": "[dbo].[usp_InsertLookupCompanyData]",
+											"storedProcedureName": "[dbo].[usp_LogBatchDetails]",
 											"storedProcedureParameters": {
 												"batch_id": {
 													"value": {
@@ -711,15 +717,15 @@
 													},
 													"type": "Int32"
 												},
-												"member_company_Id": {
+												"process_name": {
 													"value": {
-														"value": "@activity('Get Company Details by Company Id').output.value[0].CompanyId",
+														"value": "@pipeline().Pipeline",
 														"type": "Expression"
 													},
 													"type": "String"
 												},
-												"salesforce_company_Id": {
-													"value": null,
+												"stage": {
+													"value": "In Progress",
 													"type": "String"
 												}
 											}
