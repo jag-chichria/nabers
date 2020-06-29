@@ -46,7 +46,7 @@
 									"referenceName": "sf_Buildings",
 									"type": "DatasetReference"
 								},
-								"firstRowOnly": false
+								"firstRowOnly": true
 							}
 						},
 						{
@@ -209,7 +209,7 @@
 									"referenceName": "sf_contacts",
 									"type": "DatasetReference"
 								},
-								"firstRowOnly": false
+								"firstRowOnly": true
 							}
 						},
 						{
@@ -386,7 +386,7 @@
 									"referenceName": "sf_company",
 									"type": "DatasetReference"
 								},
-								"firstRowOnly": false
+								"firstRowOnly": true
 							}
 						},
 						{
@@ -542,7 +542,7 @@
 									"referenceName": "db_lookup_assessors",
 									"type": "DatasetReference"
 								},
-								"firstRowOnly": false
+								"firstRowOnly": true
 							}
 						},
 						{
@@ -570,7 +570,7 @@
 									"referenceName": "db_company",
 									"type": "DatasetReference"
 								},
-								"firstRowOnly": false
+								"firstRowOnly": true
 							}
 						},
 						{
@@ -658,7 +658,7 @@
 												"referenceName": "db_company",
 												"type": "DatasetReference"
 											},
-											"firstRowOnly": false
+											"firstRowOnly": true
 										}
 									},
 									{
@@ -693,7 +693,7 @@
 												"referenceName": "sf_users",
 												"type": "DatasetReference"
 											},
-											"firstRowOnly": false
+											"firstRowOnly": true
 										}
 									},
 									{
