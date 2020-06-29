@@ -226,14 +226,6 @@
 							},
 							{
 								"source": {
-									"name": "sf_company_id"
-								},
-								"sink": {
-									"name": "Customer__c"
-								}
-							},
-							{
-								"source": {
 									"name": "sf_officer_id"
 								},
 								"sink": {
