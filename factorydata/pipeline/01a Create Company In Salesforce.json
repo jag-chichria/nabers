@@ -416,7 +416,7 @@
 									},
 									"salesforce_company_Id": {
 										"value": {
-											"value": "@activity('Lookup Each Building by Name In Salesforce').output.value[0].Id",
+											"value": "@activity('Lookup Each Building by Name In Salesforce').firstrow.Id",
 											"type": "Expression"
 										},
 										"type": "String"
