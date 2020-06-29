@@ -129,6 +129,10 @@
 				"type": "datetime",
 				"precision": 23,
 				"scale": 3
+			},
+			{
+				"name": "renew_replace",
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
