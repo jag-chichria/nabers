@@ -194,14 +194,6 @@
 							},
 							{
 								"source": {
-									"name": "rating_type"
-								},
-								"sink": {
-									"name": "Rating_Type__c"
-								}
-							},
-							{
-								"source": {
 									"name": "rating_main_purpose"
 								},
 								"sink": {
