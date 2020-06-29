@@ -22,7 +22,7 @@
 					"isSequential": false,
 					"activities": [
 						{
-							"name": "Lookup Each Building by Name In Salesforce",
+							"name": "Lookup Each Building by Address In Salesforce",
 							"type": "Lookup",
 							"dependsOn": [
 								{
@@ -169,7 +169,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Lookup Each Building by Name In Salesforce",
+									"activity": "Lookup Each Building by Address In Salesforce",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -198,7 +198,7 @@
 							}
 						},
 						{
-							"name": "Lookup Each Assessor by Name In Salesforce",
+							"name": "Lookup Each Assessor by Email In Salesforce",
 							"type": "Lookup",
 							"dependsOn": [
 								{
@@ -237,7 +237,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Lookup Each Assessor by Name In Salesforce",
+									"activity": "Lookup Each Assessor by Email In Salesforce",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -247,7 +247,7 @@
 							"typeProperties": {
 								"variableName": "_vsf_AssessorRecord",
 								"value": {
-									"value": "@activity('Lookup Each Assessor by Name In Salesforce').output.value",
+									"value": "@activity('Lookup Each Assessor by Email In Salesforce').output.value",
 									"type": "Expression"
 								}
 							}
@@ -375,11 +375,11 @@
 							}
 						},
 						{
-							"name": "Lookup Each Company by Name In Salesforce",
+							"name": "Lookup Each Company by ABN In Salesforce",
 							"type": "Lookup",
 							"dependsOn": [
 								{
-									"activity": "Get Company Details by Assessor Id",
+									"activity": "Get Company Details by Company Id",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -397,7 +397,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from Account\nwhere NO_ABN__c = '@{activity('Get Company Details by Assessor Id').output.value[0].ABN}'",
+										"value": "Select id from Account\nwhere NO_ABN__c = '@{activity('Get Company Details by Company Id').output.value[0].ABN}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
@@ -410,11 +410,11 @@
 							}
 						},
 						{
-							"name": "Set Variable _sf_CompanyRecord_copy1",
+							"name": "Set Variable _sf_CompanyRecord",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Lookup Each Company by Name In Salesforce",
+									"activity": "Lookup Each Company by ABN In Salesforce",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -424,7 +424,7 @@
 							"typeProperties": {
 								"variableName": "_vsf_CompanyRecord",
 								"value": {
-									"value": "@activity('Lookup Each Company by Name In Salesforce').output.value",
+									"value": "@activity('Lookup Each Company by ABN In Salesforce').output.value",
 									"type": "Expression"
 								}
 							}
@@ -434,7 +434,7 @@
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "Set Variable _sf_CompanyRecord_copy1",
+									"activity": "Set Variable _sf_CompanyRecord",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -472,7 +472,7 @@
 												},
 												"member_company_Id": {
 													"value": {
-														"value": "@activity('Get Company Details by Assessor Id').output.value[0].CompanyId",
+														"value": "@activity('Get Company Details by Company Id').output.value[0].CompanyId",
 														"type": "Expression"
 													},
 													"type": "String"
@@ -522,7 +522,7 @@
 												},
 												"salesforce_company_Id": {
 													"value": {
-														"value": "@activity('Lookup Each Company by Name In Salesforce').output.value[0].Id",
+														"value": "@activity('Lookup Each Company by ABN In Salesforce').output.value[0].Id",
 														"type": "Expression"
 													},
 													"type": "String"
@@ -573,7 +573,7 @@
 							}
 						},
 						{
-							"name": "Get Company Details by Assessor Id",
+							"name": "Get Company Details by Company Id",
 							"type": "Lookup",
 							"dependsOn": [
 								{
