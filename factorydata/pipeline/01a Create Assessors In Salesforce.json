@@ -420,7 +420,7 @@
 									"referenceName": "sf_contacts",
 									"type": "DatasetReference"
 								},
-								"firstRowOnly": false
+								"firstRowOnly": true
 							}
 						},
 						{
@@ -461,7 +461,7 @@
 									},
 									"salesforce_assessor_Id": {
 										"value": {
-											"value": "@activity('Lookup Each Building by Name In Salesforce').output.value[0].Id",
+											"value": "@activity('Lookup Each Building by Name In Salesforce').firstrow.Id",
 											"type": "Expression"
 										},
 										"type": "String"
