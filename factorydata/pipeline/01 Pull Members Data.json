@@ -63,7 +63,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@greater(length(variables('_vsf_buildingRecord')), 0)",
+									"value": "@activity('Lookup Each Building by Address In Salesforce').output.contains('firstRow')",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
