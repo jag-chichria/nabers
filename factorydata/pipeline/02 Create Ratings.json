@@ -231,6 +231,14 @@
 								"sink": {
 									"name": "OwnerId"
 								}
+							},
+							{
+								"source": {
+									"name": "sf_customer_id"
+								},
+								"sink": {
+									"name": "Customer__c"
+								}
 							}
 						]
 					}
