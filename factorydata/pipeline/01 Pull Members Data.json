@@ -54,7 +54,7 @@
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "Set Variable _sf_buildingRecord",
+									"activity": "Lookup Each Building by Address In Salesforce",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -158,26 +158,6 @@
 							}
 						},
 						{
-							"name": "Set Variable _sf_buildingRecord",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Lookup Each Building by Address In Salesforce",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "_vsf_buildingRecord",
-								"value": {
-									"value": "@activity('Lookup Each Building by Address In Salesforce').output.firstRow",
-									"type": "Expression"
-								}
-							}
-						},
-						{
 							"name": "Lookup Each Assessor by Email In Salesforce",
 							"type": "Lookup",
 							"dependsOn": [
@@ -213,8 +193,8 @@
 							}
 						},
 						{
-							"name": "Set Variable _sf_AssessorRecord",
-							"type": "SetVariable",
+							"name": "If Assessor In Salesforce Exist",
+							"type": "IfCondition",
 							"dependsOn": [
 								{
 									"activity": "Lookup Each Assessor by Email In Salesforce",
@@ -225,28 +205,8 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "_vsf_AssessorRecord",
-								"value": {
-									"value": "@{activity('Lookup Each Assessor by Email In Salesforce').output.firstRow}",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "If Assessor In Salesforce Exist",
-							"type": "IfCondition",
-							"dependsOn": [
-								{
-									"activity": "Set Variable _sf_AssessorRecord",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
 								"expression": {
-									"value": "@greater(length(variables('_vsf_AssessorRecord')), 0)",
+									"value": "@activity('Lookup Each Assessor by Email In Salesforce').output.contains('firstRow')",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
@@ -390,8 +350,8 @@
 							}
 						},
 						{
-							"name": "Set Variable _sf_CompanyRecord",
-							"type": "SetVariable",
+							"name": "If Company In Salesforce Exist",
+							"type": "IfCondition",
 							"dependsOn": [
 								{
 									"activity": "Lookup Each Company by ABN In Salesforce",
@@ -402,28 +362,8 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "_vsf_CompanyRecord",
-								"value": {
-									"value": "@activity('Lookup Each Company by ABN In Salesforce').output.firstRow",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "If Company In Salesforce Exist",
-							"type": "IfCondition",
-							"dependsOn": [
-								{
-									"activity": "Set Variable _sf_CompanyRecord",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
 								"expression": {
-									"value": "@greater(length(variables('_vsf_CompanyRecord')), 0)",
+									"value": "@activity('Lookup Each Company by ABN In Salesforce').output.contains('firstRow')",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
