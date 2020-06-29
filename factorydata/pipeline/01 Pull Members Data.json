@@ -149,7 +149,7 @@
 												},
 												"salesforce_building_Id": {
 													"value": {
-														"value": "@activity('Lookup Each Building by Name In Salesforce').Output.value[0].Id",
+														"value": "@activity('Lookup Each Building by Address In Salesforce').Output.value[0].Id",
 														"type": "Expression"
 													},
 													"type": "String"
@@ -179,7 +179,7 @@
 							"typeProperties": {
 								"variableName": "_vsf_buildingRecord",
 								"value": {
-									"value": "@activity('Lookup Each Building by Name In Salesforce').output.value",
+									"value": "@activity('Lookup Each Building by Address In Salesforce').output.value",
 									"type": "Expression"
 								}
 							}
