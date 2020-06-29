@@ -597,7 +597,7 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"storedProcedureName": "dbo.usp_InsertDataSyncAnomalies",
+											"storedProcedureName": "[dbo].[usp_InsertDataSyncAnomalies]",
 											"storedProcedureParameters": {
 												"batch_id": {
 													"value": {
