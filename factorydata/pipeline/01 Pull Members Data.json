@@ -142,7 +142,7 @@
 												},
 												"salesforce_building_Id": {
 													"value": {
-														"value": "@activity('Lookup Each Building by Address In Salesforce').firstrow.Id",
+														"value": "@activity('Lookup Each Building by Address In Salesforce').output.firstrow.Id",
 														"type": "Expression"
 													},
 													"type": "String"
@@ -172,7 +172,7 @@
 							"typeProperties": {
 								"variableName": "_vsf_buildingRecord",
 								"value": {
-									"value": "@activity('Lookup Each Building by Address In Salesforce').firstRow",
+									"value": "@activity('Lookup Each Building by Address In Salesforce').output.firstRow",
 									"type": "Expression"
 								}
 							}
@@ -200,7 +200,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from Contact\nwhere Email= '@{activity('Get Assessor Details by Assessor ID').firstRow.Email}'",
+										"value": "Select id from Contact\nwhere Email= '@{activity('Get Assessor Details by Assessor ID').output.firstRow.Email}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
@@ -227,7 +227,7 @@
 							"typeProperties": {
 								"variableName": "_vsf_AssessorRecord",
 								"value": {
-									"value": "@activity('Lookup Each Assessor by Email In Salesforce').firstRow",
+									"value": "@activity('Lookup Each Assessor by Email In Salesforce').output.firstRow",
 									"type": "Expression"
 								}
 							}
@@ -275,7 +275,7 @@
 												},
 												"member_assessor_Id": {
 													"value": {
-														"value": "@activity('Get Assessor Details by Assessor ID').firstrow.AssessorId",
+														"value": "@activity('Get Assessor Details by Assessor ID').output.firstrow.AssessorId",
 														"type": "Expression"
 													},
 													"type": "String"
@@ -286,7 +286,7 @@
 												},
 												"member_company_id": {
 													"value": {
-														"value": "@activity('Get Assessor Details by Assessor ID').firstrow.CompanyId",
+														"value": "@activity('Get Assessor Details by Assessor ID').output.firstrow.CompanyId",
 														"type": "Expression"
 													},
 													"type": "Int32"
@@ -325,21 +325,21 @@
 												},
 												"member_assessor_Id": {
 													"value": {
-														"value": "@activity('Get Assessor Details by Assessor ID').firstRow.AssessorID",
+														"value": "@activity('Get Assessor Details by Assessor ID').output.firstRow.AssessorID",
 														"type": "Expression"
 													},
 													"type": "String"
 												},
 												"salesforce_assessor_Id": {
 													"value": {
-														"value": "@activity('Lookup Each Assessor by Email In Salesforce').firstRow.Id",
+														"value": "@activity('Lookup Each Assessor by Email In Salesforce').output.firstRow.Id",
 														"type": "Expression"
 													},
 													"type": "String"
 												},
 												"member_company_id": {
 													"value": {
-														"value": "@activity('Get Assessor Details by Assessor ID').firstRow.CompanyId",
+														"value": "@activity('Get Assessor Details by Assessor ID').output.firstRow.CompanyId",
 														"type": "Expression"
 													},
 													"type": "Int32"
@@ -377,7 +377,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from Account\nwhere NO_ABN__c = '@{activity('Get Company Details by Company Id').firstRow.ABN}'",
+										"value": "Select id from Account\nwhere NO_ABN__c = '@{activity('Get Company Details by Company Id').output.firstRow.ABN}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
@@ -404,7 +404,7 @@
 							"typeProperties": {
 								"variableName": "_vsf_CompanyRecord",
 								"value": {
-									"value": "@activity('Lookup Each Company by ABN In Salesforce').firstRow",
+									"value": "@activity('Lookup Each Company by ABN In Salesforce').output.firstRow",
 									"type": "Expression"
 								}
 							}
@@ -452,7 +452,7 @@
 												},
 												"member_company_Id": {
 													"value": {
-														"value": "@activity('Get Company Details by Company Id').firstrow.CompanyId",
+														"value": "@activity('Get Company Details by Company Id').output.firstrow.CompanyId",
 														"type": "Expression"
 													},
 													"type": "String"
@@ -495,14 +495,14 @@
 												},
 												"member_company_Id": {
 													"value": {
-														"value": "@activity('Get Company Details by Company Id').firstrow.CompanyId",
+														"value": "@activity('Get Company Details by Company Id').output.firstrow.CompanyId",
 														"type": "Expression"
 													},
 													"type": "String"
 												},
 												"salesforce_company_Id": {
 													"value": {
-														"value": "@activity('Lookup Each Company by ABN In Salesforce').firstrow.Id",
+														"value": "@activity('Lookup Each Company by ABN In Salesforce').output.firstrow.Id",
 														"type": "Expression"
 													},
 													"type": "String"
@@ -684,7 +684,7 @@
 											"source": {
 												"type": "SalesforceSource",
 												"query": {
-													"value": "Select id from User\nwhere Email like '%@{activity('Get Tech Officer Details by Officer Id').firstrow.Email}%'",
+													"value": "Select id from User\nwhere Email like '%@{activity('Get Tech Officer Details by Officer Id').output.firstrow.Email}%'",
 													"type": "Expression"
 												},
 												"readBehavior": "query"
@@ -735,7 +735,7 @@
 												},
 												"salesforce_user_Id": {
 													"value": {
-														"value": "@activity('Lookup Each Tech Officer by Email In Salesforce').firstrow.Id",
+														"value": "@activity('Lookup Each Tech Officer by Email In Salesforce').output.firstrow.Id",
 														"type": "Expression"
 													},
 													"type": "String"
