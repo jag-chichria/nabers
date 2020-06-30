@@ -461,7 +461,7 @@
 									},
 									"salesforce_assessor_Id": {
 										"value": {
-											"value": "@activity('Lookup Each Building by Name In Salesforce').firstrow.Id",
+											"value": "@activity('Lookup Each Building by Name In Salesforce').output.firstrow.Id",
 											"type": "Expression"
 										},
 										"type": "String"
