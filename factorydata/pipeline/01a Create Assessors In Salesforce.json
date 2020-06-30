@@ -504,10 +504,6 @@
 			}
 		},
 		"variables": {
-			"_defaultCountry": {
-				"type": "String",
-				"defaultValue": "Australia"
-			},
 			"_defaultPremiseType": {
 				"type": "String",
 				"defaultValue": "Shopping Centre"
