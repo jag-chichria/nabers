@@ -406,7 +406,7 @@
 											"type": "DatasetReference",
 											"parameters": {}
 										},
-										"firstRowOnly": false
+										"firstRowOnly": true
 									}
 								},
 								{
@@ -414,7 +414,7 @@
 									"type": "IfCondition",
 									"dependsOn": [
 										{
-											"activity": "Set Variable _sf_buildingRecord",
+											"activity": "Lookup Each Building by Address In Salesforce",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -423,7 +423,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"expression": {
-											"value": "@greater(length(variables('_vsf_buildingRecord')), 0)",
+											"value": "@contains(string(activity('Lookup Each Building by Address In Salesforce').output), 'firstRow')",
 											"type": "Expression"
 										},
 										"ifFalseActivities": [
@@ -502,7 +502,7 @@
 														},
 														"salesforce_building_Id": {
 															"value": {
-																"value": "@activity('Lookup Each Building by Address In Salesforce').Output.value[0].Id",
+																"value": "@activity('Lookup Each Building by Address In Salesforce').output.firstrow.Id",
 																"type": "Expression"
 															},
 															"type": "String"
@@ -515,26 +515,6 @@
 												}
 											}
 										]
-									}
-								},
-								{
-									"name": "Set Variable _sf_buildingRecord",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Lookup Each Building by Address In Salesforce",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "_vsf_buildingRecord",
-										"value": {
-											"value": "@activity('Lookup Each Building by Address In Salesforce').output.value",
-											"type": "Expression"
-										}
 									}
 								},
 								{
@@ -560,7 +540,7 @@
 										"source": {
 											"type": "SalesforceSource",
 											"query": {
-												"value": "Select id from Contact\nwhere Email= '@{activity('Get Assessor Details by Assessor ID').output.value[0].Email}'",
+												"value": "Select id from Contact\nwhere Email= '@{activity('Get Assessor Details by Assessor ID').output.firstRow.Email}'",
 												"type": "Expression"
 											},
 											"readBehavior": "query"
@@ -570,12 +550,12 @@
 											"type": "DatasetReference",
 											"parameters": {}
 										},
-										"firstRowOnly": false
+										"firstRowOnly": true
 									}
 								},
 								{
-									"name": "Set Variable _sf_AssessorRecord",
-									"type": "SetVariable",
+									"name": "If Assessor In Salesforce Exist",
+									"type": "IfCondition",
 									"dependsOn": [
 										{
 											"activity": "Lookup Each Assessor by Email In Salesforce",
@@ -586,28 +566,8 @@
 									],
 									"userProperties": [],
 									"typeProperties": {
-										"variableName": "_vsf_AssessorRecord",
-										"value": {
-											"value": "@activity('Lookup Each Assessor by Email In Salesforce').output.value",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "If Assessor In Salesforce Exist",
-									"type": "IfCondition",
-									"dependsOn": [
-										{
-											"activity": "Set Variable _sf_AssessorRecord",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
 										"expression": {
-											"value": "@greater(length(variables('_vsf_AssessorRecord')), 0)",
+											"value": "@contains(string(activity('Lookup Each Assessor by Email In Salesforce').output), 'firstRow')",
 											"type": "Expression"
 										},
 										"ifFalseActivities": [
@@ -636,7 +596,7 @@
 														},
 														"member_assessor_Id": {
 															"value": {
-																"value": "@activity('Get Assessor Details by Assessor ID').output.value[0].AssessorId",
+																"value": "@activity('Get Assessor Details by Assessor ID').output.firstrow.AssessorId",
 																"type": "Expression"
 															},
 															"type": "String"
@@ -647,7 +607,7 @@
 														},
 														"member_company_id": {
 															"value": {
-																"value": "@activity('Get Assessor Details by Assessor ID').output.value[0].CompanyId",
+																"value": "@activity('Get Assessor Details by Assessor ID').output.firstrow.CompanyId",
 																"type": "Expression"
 															},
 															"type": "Int32"
@@ -686,21 +646,21 @@
 														},
 														"member_assessor_Id": {
 															"value": {
-																"value": "@activity('usp_GetRating').output.value[0].AssessorID",
+																"value": "@activity('Get Assessor Details by Assessor ID').output.firstRow.AssessorID",
 																"type": "Expression"
 															},
 															"type": "String"
 														},
 														"salesforce_assessor_Id": {
 															"value": {
-																"value": "@activity('Lookup Each Assessor by Email In Salesforce').output.value[0].Id",
+																"value": "@activity('Lookup Each Assessor by Email In Salesforce').output.firstRow.Id",
 																"type": "Expression"
 															},
 															"type": "String"
 														},
 														"member_company_id": {
 															"value": {
-																"value": "@activity('Get Assessor Details by Assessor ID').output.value[0].CompanyId",
+																"value": "@activity('Get Assessor Details by Assessor ID').output.firstRow.CompanyId",
 																"type": "Expression"
 															},
 															"type": "Int32"
@@ -738,7 +698,7 @@
 										"source": {
 											"type": "SalesforceSource",
 											"query": {
-												"value": "Select id from Account\nwhere NO_ABN__c = '@{activity('Get Company Details by Company Id').output.value[0].ABN}'",
+												"value": "Select id from Account\nwhere NO_ABN__c = '@{activity('Get Company Details by Company Id').output.firstRow.ABN}'",
 												"type": "Expression"
 											},
 											"readBehavior": "query"
@@ -748,12 +708,12 @@
 											"type": "DatasetReference",
 											"parameters": {}
 										},
-										"firstRowOnly": false
+										"firstRowOnly": true
 									}
 								},
 								{
-									"name": "Set Variable _sf_CompanyRecord",
-									"type": "SetVariable",
+									"name": "If Company In Salesforce Exist",
+									"type": "IfCondition",
 									"dependsOn": [
 										{
 											"activity": "Lookup Each Company by ABN In Salesforce",
@@ -764,28 +724,8 @@
 									],
 									"userProperties": [],
 									"typeProperties": {
-										"variableName": "_vsf_CompanyRecord",
-										"value": {
-											"value": "@activity('Lookup Each Company by ABN In Salesforce').output.value",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "If Company In Salesforce Exist",
-									"type": "IfCondition",
-									"dependsOn": [
-										{
-											"activity": "Set Variable _sf_CompanyRecord",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
 										"expression": {
-											"value": "@greater(length(variables('_vsf_CompanyRecord')), 0)",
+											"value": "@contains(string(activity('Lookup Each Company by ABN In Salesforce').output), 'firstRow')",
 											"type": "Expression"
 										},
 										"ifFalseActivities": [
@@ -814,7 +754,7 @@
 														},
 														"member_company_Id": {
 															"value": {
-																"value": "@activity('Get Company Details by Company Id').output.value[0].CompanyId",
+																"value": "@activity('Get Company Details by Company Id').output.firstrow.CompanyId",
 																"type": "Expression"
 															},
 															"type": "String"
@@ -833,7 +773,7 @@
 										],
 										"ifTrueActivities": [
 											{
-												"name": "insertCompanyDetailsWithSalesForceId_copy1",
+												"name": "insertCompanyDetailswithSalesforceIdx",
 												"description": "Company does exist",
 												"type": "SqlServerStoredProcedure",
 												"dependsOn": [],
@@ -857,14 +797,14 @@
 														},
 														"member_company_Id": {
 															"value": {
-																"value": "@activity('usp_GetRating').output.value[0].CompanyId",
+																"value": "@activity('Get Company Details by Company Id').output.firstrow.CompanyId",
 																"type": "Expression"
 															},
 															"type": "String"
 														},
 														"salesforce_company_Id": {
 															"value": {
-																"value": "@activity('Lookup Each Company by ABN In Salesforce').output.value[0].Id",
+																"value": "@activity('Lookup Each Company by ABN In Salesforce').output.firstrow.Id",
 																"type": "Expression"
 															},
 															"type": "String"
@@ -905,7 +845,7 @@
 											"type": "DatasetReference",
 											"parameters": {}
 										},
-										"firstRowOnly": false
+										"firstRowOnly": true
 									}
 								},
 								{
@@ -934,7 +874,7 @@
 											"type": "DatasetReference",
 											"parameters": {}
 										},
-										"firstRowOnly": false
+										"firstRowOnly": true
 									}
 								},
 								{
@@ -944,7 +884,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"expression": {
-											"value": "@greater(length(item().OfficerId), 0)",
+											"value": "@not(empty(string(item().OfficerId)))",
 											"type": "Expression"
 										},
 										"ifFalseActivities": [
@@ -961,7 +901,7 @@
 												},
 												"userProperties": [],
 												"typeProperties": {
-													"storedProcedureName": "dbo.usp_InsertDataSyncAnomalies",
+													"storedProcedureName": "[[dbo].[usp_InsertDataSyncAnomalies]",
 													"storedProcedureParameters": {
 														"batch_id": {
 															"value": {
@@ -977,14 +917,14 @@
 															},
 															"type": "String"
 														},
-														"anamoly_desc": {
+														"anomaly_desc": {
 															"value": {
 																"value": "No Tech Officer found for this Rating header. Ignoring",
 																"type": "Expression"
 															},
 															"type": "String"
 														},
-														"anamoly_type": {
+														"anomaly_type": {
 															"value": "Warning",
 															"type": "String"
 														}
@@ -1023,7 +963,7 @@
 														"type": "DatasetReference",
 														"parameters": {}
 													},
-													"firstRowOnly": false
+													"firstRowOnly": true
 												}
 											},
 											{
@@ -1049,7 +989,7 @@
 													"source": {
 														"type": "SalesforceSource",
 														"query": {
-															"value": "Select id from User\nwhere Email like '%@{activity('Get Tech Officer Details by Officer Id').output.value[0].Email}%'",
+															"value": "Select id from User\nwhere Email like '%@{activity('Get Tech Officer Details by Officer Id').output.firstrow.Email}%'",
 															"type": "Expression"
 														},
 														"readBehavior": "query"
@@ -1059,7 +999,7 @@
 														"type": "DatasetReference",
 														"parameters": {}
 													},
-													"firstRowOnly": false
+													"firstRowOnly": true
 												}
 											},
 											{
@@ -1101,7 +1041,7 @@
 														},
 														"salesforce_user_Id": {
 															"value": {
-																"value": "@activity('Lookup Each Tech Officer by Email In Salesforce').output.value[0].Id",
+																"value": "@activity('Lookup Each Tech Officer by Email In Salesforce').output.firstrow.Id",
 																"type": "Expression"
 															},
 															"type": "String"
@@ -1672,7 +1612,7 @@
 											"type": "DatasetReference",
 											"parameters": {}
 										},
-										"firstRowOnly": false
+										"firstRowOnly": true
 									}
 								},
 								{
@@ -1713,7 +1653,7 @@
 											},
 											"salesforce_assessor_Id": {
 												"value": {
-													"value": "@activity('Lookup Each Building by Name In Salesforce').output.value[0].Id",
+													"value": "@activity('Lookup Each Building by Name In Salesforce').output.firstrow.Id",
 													"type": "Expression"
 												},
 												"type": "String"
@@ -1756,10 +1696,6 @@
 					}
 				},
 				"variables": {
-					"_defaultCountry": {
-						"type": "String",
-						"defaultValue": "Australia"
-					},
 					"_defaultPremiseType": {
 						"type": "String",
 						"defaultValue": "Shopping Centre"
@@ -1909,7 +1845,7 @@
 								"referenceName": "db_lookup_sf_buildings_ids",
 								"type": "DatasetReference",
 								"parameters": {
-									"pbatch_id": 1
+									"pbatch_id": "@pipeline().parameters.pbatch_id"
 								}
 							}
 						],
@@ -2048,7 +1984,7 @@
 											"type": "DatasetReference",
 											"parameters": {}
 										},
-										"firstRowOnly": false
+										"firstRowOnly": true
 									}
 								},
 								{
@@ -2089,7 +2025,7 @@
 											},
 											"salesforce_building_Id": {
 												"value": {
-													"value": "@activity('Lookup Each Building by Name In Salesforce').output.value[0].Id",
+													"value": "@activity('Lookup Each Building by Name In Salesforce').output.firstrow.Id",
 													"type": "Expression"
 												},
 												"type": "String"
@@ -2583,7 +2519,7 @@
 											},
 											"salesforce_company_Id": {
 												"value": {
-													"value": "@activity('Lookup Each Building by Name In Salesforce').output.value[0].Id",
+													"value": "@activity('Lookup Each Building by Name In Salesforce').output.firstrow.Id",
 													"type": "Expression"
 												},
 												"type": "String"
