@@ -63,7 +63,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@{greater(activity('Lookup Each Building by Address In Salesforce').output.contains('firstRow'),0)}",
+									"value": "@greater(length(activity('Lookup Each Building by Address In Salesforce').output?.firstRow), 0)",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
@@ -206,7 +206,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@activity('Lookup Each Assessor by Email In Salesforce').output.contains('firstRow')",
+									"value": "@greater(length(activity('Lookup Each Assessor by Email In Salesforce').output.output?.firstRow), 0)",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
@@ -363,7 +363,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@activity('Lookup Each Company by ABN In Salesforce').output.contains('firstRow')",
+									"value": "@greater(length(activity('Lookup Each Company by ABN In Salesforce').output.output?.firstRow), 0)",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
