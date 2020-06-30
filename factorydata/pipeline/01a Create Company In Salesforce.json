@@ -375,7 +375,7 @@
 									"referenceName": "sf_company",
 									"type": "DatasetReference"
 								},
-								"firstRowOnly": false
+								"firstRowOnly": true
 							}
 						},
 						{
