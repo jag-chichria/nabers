@@ -63,7 +63,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@bool(activity('Lookup Each Building by Address In Salesforce').output.contains('firstRow'))",
+									"value": "@{greater(activity('Lookup Each Building by Address In Salesforce').output.contains('firstRow'),0)}",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
