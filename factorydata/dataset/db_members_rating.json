@@ -5,12 +5,6 @@
 			"referenceName": "NABERSStaging",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"dbatch_id": {
-				"type": "int",
-				"defaultValue": 1
-			}
-		},
 		"folder": {
 			"name": "staging"
 		},
