@@ -239,7 +239,7 @@
 				"scale": 3
 			},
 			{
-				"name": "total_dieselConsumption",
+				"name": "total_diesel_consumption",
 				"type": "decimal",
 				"precision": 12,
 				"scale": 3
