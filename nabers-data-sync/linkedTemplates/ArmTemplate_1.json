@@ -2116,7 +2116,7 @@
 											"type": "DatasetReference",
 											"parameters": {}
 										},
-										"firstRowOnly": false
+										"firstRowOnly": true
 									}
 								},
 								{
@@ -2157,7 +2157,7 @@
 											},
 											"salesforce_company_Id": {
 												"value": {
-													"value": "@activity('Lookup Each Building by Name In Salesforce').output.firstrow.Id",
+													"value": "@activity('Lookup Each Building by Name In Salesforce').output.firstRow.Id",
 													"type": "Expression"
 												},
 												"type": "String"

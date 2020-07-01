@@ -6,26 +6,6 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "nabers-data-sync"
-		},
-		"NABERSStaging_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'NABERSStaging'"
-		},
-		"NabersOnline_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'NabersOnline'"
-		},
-		"NabersOnline_securityToken": {
-			"type": "secureString",
-			"metadata": "Secure string for 'securityToken' of 'NabersOnline'"
-		},
-		"NabersOnline_properties_typeProperties_environmentUrl": {
-			"type": "string",
-			"defaultValue": "https://nabers--datamigdev.my.salesforce.com"
-		},
-		"NabersOnline_properties_typeProperties_username": {
-			"type": "string",
-			"defaultValue": "jag.chichria@nabers.gov.au.datamigdev"
 		}
 	},
 	"variables": {
@@ -33,548 +13,490 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/NABERSStaging')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"name": "[concat(parameters('factoryName'), '/01a Create Company In Salesforce')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('NABERSStaging_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "Managed",
-				"typeProperties": {
-					"computeProperties": {
-						"location": "Australia East",
-						"dataFlowProperties": {
-							"computeType": "General",
-							"coreCount": 8,
-							"timeToLive": 0
+				"activities": [
+					{
+						"name": "createNotFoundCompany",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Update Batch",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetCompanyToCreateInSalesForce]",
+								"storedProcedureParameters": {
+									"batchid": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "SalesforceSink",
+								"writeBatchSize": 5000,
+								"writeBehavior": "insert",
+								"ignoreNullValues": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Billing_StreetName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "BillingStreet",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Billing_Suburb",
+											"type": "String"
+										},
+										"sink": {
+											"name": "BillingCity",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Billing_State",
+											"type": "String"
+										},
+										"sink": {
+											"name": "BillingState",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Billing_Postcode",
+											"type": "String"
+										},
+										"sink": {
+											"name": "BillingPostalCode",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Mailing_StreetName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ShippingStreet",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Mailing_Suburb",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ShippingCity",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Mailing_State",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ShippingState",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Mailing_Postcode",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ShippingPostalCode",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Phone",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Phone",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CompanyURL",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Website",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Type",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Company_Record_Type__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ABN",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NO_ABN__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PIInsuranceExpiryDate",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "NO_Professional_Indemnity_Expiry_Date__c",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "PLInsuranceExpiryDate",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "NO_Public_Liability_Expiry_Date__c",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "SAPCustomerNo",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NO_SAP_Customer_Number__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ShortName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NO_Short_Name__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CompanyName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Name",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Mailing_Country"
+										},
+										"sink": {
+											"name": "ShippingCountry",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Billing_Country"
+										},
+										"sink": {
+											"name": "BillingCountry",
+											"type": "String"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "db_lookup_assessors",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sf_company",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "Update Batch",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
+							"storedProcedureParameters": {
+								"batch_id": {
+									"value": {
+										"value": "@pipeline().parameters.pbatch_id",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"process_name": {
+									"value": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"stage": {
+									"value": "In Progress",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "NABERSStaging",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "usp_GetCompany",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "createNotFoundCompany",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetCompanyToCreateInSalesForce]",
+								"storedProcedureParameters": {
+									"batchid": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "db_members_rating",
+								"type": "DatasetReference"
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "forEachRow",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Set Variable Rating",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('_vnewBuildingsInSF')",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "Lookup Each Building by Name In Salesforce",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SalesforceSource",
+											"query": {
+												"value": "Select id from Account\nwhere NO_ABN__c = '@{item().ABN}'",
+												"type": "Expression"
+											},
+											"readBehavior": "query"
+										},
+										"dataset": {
+											"referenceName": "sf_company",
+											"type": "DatasetReference"
+										},
+										"firstRowOnly": true
+									}
+								},
+								{
+									"name": "UpdateNewSalesforceIdForBuilding",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "Lookup Each Building by Name In Salesforce",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[[dbo].[usp_UpdateNewSalesforceIdForCompany]",
+										"storedProcedureParameters": {
+											"batch_id": {
+												"value": {
+													"value": "@pipeline().parameters.pbatch_id",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"member_company_id": {
+												"value": {
+													"value": "@item().CompanyID",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"salesforce_company_Id": {
+												"value": {
+													"value": "@activity('Lookup Each Building by Name In Salesforce').output.firstRow.Id",
+													"type": "Expression"
+												},
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "NABERSStaging",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Set Variable Rating",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "usp_GetCompany",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "_vnewBuildingsInSF",
+							"value": {
+								"value": "@activity('usp_GetCompany').output.value",
+								"type": "Expression"
+							}
 						}
 					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/db_company')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "staging"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "ABN",
-						"type": "varchar"
-					},
-					{
-						"name": "CompanyName",
-						"type": "varchar"
-					},
-					{
-						"name": "CompanyID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "CompanyStatusID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "CompanyTypeID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "CompanyURL",
-						"type": "varchar"
-					},
-					{
-						"name": "MailingAddressID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Phone",
-						"type": "varchar"
-					},
-					{
-						"name": "PIInsuranceExpiryDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "PLInsuranceExpiryDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "RatingParticipationFlag",
-						"type": "bit"
-					},
-					{
-						"name": "SAPCustomerNo",
-						"type": "varchar"
-					},
-					{
-						"name": "ShortName",
-						"type": "varchar"
-					},
-					{
-						"name": "SoleTraderFlag",
-						"type": "bit"
-					},
-					{
-						"name": "Mailing_StreetNumber",
-						"type": "varchar"
-					},
-					{
-						"name": "Mailing_StreetName",
-						"type": "varchar"
-					},
-					{
-						"name": "Mailing_Suburb",
-						"type": "varchar"
-					},
-					{
-						"name": "Mailing_Postcode",
-						"type": "varchar"
-					},
-					{
-						"name": "Mailing_State",
-						"type": "varchar"
-					},
-					{
-						"name": "Billing_StreetNumber",
-						"type": "varchar"
-					},
-					{
-						"name": "Billing_StreetName",
-						"type": "varchar"
-					},
-					{
-						"name": "Billing_Suburb",
-						"type": "varchar"
-					},
-					{
-						"name": "Billing_Postcode",
-						"type": "varchar"
-					},
-					{
-						"name": "Billing_State",
-						"type": "varchar"
-					},
-					{
-						"name": "Type",
-						"type": "varchar"
-					},
-					{
-						"name": "Batch_Id",
-						"type": "int",
-						"precision": 10
-					}
 				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "CompanyStage"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/db_lookup_assessors')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "staging"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "Assessor_Id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "User_Id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "FirstName",
-						"type": "varchar"
-					},
-					{
-						"name": "LastName",
-						"type": "varchar"
-					},
-					{
-						"name": "Title",
-						"type": "varchar"
-					},
-					{
-						"name": "Mailing_StreetNumber",
-						"type": "varchar"
-					},
-					{
-						"name": "Mailing_StreetName",
-						"type": "varchar"
-					},
-					{
-						"name": "Mailing_Suburb",
-						"type": "varchar"
-					},
-					{
-						"name": "Mailing_Postcode",
-						"type": "varchar"
-					},
-					{
-						"name": "Mailing_State",
-						"type": "varchar"
-					},
-					{
-						"name": "Billing_StreetNumber",
-						"type": "varchar"
-					},
-					{
-						"name": "Billing_StreetName",
-						"type": "varchar"
-					},
-					{
-						"name": "Billing_Suburb",
-						"type": "varchar"
-					},
-					{
-						"name": "Billing_Postcode",
-						"type": "varchar"
-					},
-					{
-						"name": "Billing_State",
-						"type": "varchar"
-					},
-					{
-						"name": "Phone",
-						"type": "varchar"
-					},
-					{
-						"name": "Email",
-						"type": "varchar"
-					},
-					{
-						"name": "JoinedDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "AccreditationDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "AccreditationExpiryDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "AccreditationNumber",
-						"type": "varchar"
-					},
-					{
-						"name": "EnergyFlag",
-						"type": "bit"
-					},
-					{
-						"name": "WaterFlag",
-						"type": "bit"
-					},
-					{
-						"name": "WasteFlag",
-						"type": "bit"
-					},
-					{
-						"name": "batch_id",
-						"type": "int",
-						"precision": 10
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "AssessorsStage"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/db_lookup_sf_assessors_ids')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
-				},
 				"parameters": {
 					"pbatch_id": {
 						"type": "int",
 						"defaultValue": 1
 					}
 				},
-				"folder": {
-					"name": "staging"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "id",
-						"type": "int",
-						"precision": 10
+				"variables": {
+					"_defaultCountry": {
+						"type": "String",
+						"defaultValue": "Australia"
 					},
-					{
-						"name": "salesforce_assessor_Id",
-						"type": "varchar"
+					"_defaultPremiseType": {
+						"type": "String",
+						"defaultValue": "Shopping Centre"
 					},
-					{
-						"name": "batch_id",
-						"type": "int",
-						"precision": 10
+					"_vnewBuildingsInSF": {
+						"type": "Array"
 					},
-					{
-						"name": "created_on",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
+					"_vsf_buildingRecord": {
+						"type": "String"
 					},
-					{
-						"name": "member_assessor_id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "salesforce_company_id",
-						"type": "varchar"
-					},
-					{
-						"name": "member_company_id",
-						"type": "int",
-						"precision": 10
+					"_vnewBuildingInSF": {
+						"type": "Array"
 					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "Lookup_SalesforceAssessors"
-				}
+				},
+				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/db_lookup_sf_buildings_ids')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"pbatch_id": {
-						"type": "int",
-						"defaultValue": 1
-					}
-				},
-				"folder": {
-					"name": "staging"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "salesforce_building_Id",
-						"type": "varchar"
-					},
-					{
-						"name": "batch_id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "created_on",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "member_premise_id",
-						"type": "int",
-						"precision": 10
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "Lookup_SalesforceBuildings"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/db_lookup_sf_company_ids')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"pbatch_id": {
-						"type": "int",
-						"defaultValue": 1
-					}
-				},
-				"folder": {
-					"name": "staging"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "salesforce_company_Id",
-						"type": "varchar"
-					},
-					{
-						"name": "batch_id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "created_on",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "member_company_id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Mailing_Country",
-						"type": "varchar"
-					},
-					{
-						"name": "Billing_Country",
-						"type": "varchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "Lookup_SalesforceCompany"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/db_lookup_sf_officer_ids')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"pbatch_id": {
-						"type": "int",
-						"defaultValue": 1
-					}
-				},
-				"folder": {
-					"name": "staging"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "salesforce_user_Id",
-						"type": "varchar"
-					},
-					{
-						"name": "member_officer_id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "batch_id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "created_on",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "Lookup_SalesforceUsers"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+				"[concat(variables('factoryId'), '/datasets/db_members_rating')]"
 			]
 		},
 		{
@@ -987,9 +909,7 @@
 					"table": "RatingHeaderStage"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/db_transformed_ratings')]",
@@ -1355,265 +1275,7 @@
 					"table": "Transformed_Ratings"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/NabersOnline')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "connection to NABERS Online",
-				"annotations": [],
-				"type": "Salesforce",
-				"typeProperties": {
-					"environmentUrl": "[parameters('NabersOnline_properties_typeProperties_environmentUrl')]",
-					"username": "[parameters('NabersOnline_properties_typeProperties_username')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('NabersOnline_password')]"
-					},
-					"securityToken": {
-						"type": "SecureString",
-						"value": "[parameters('NabersOnline_securityToken')]"
-					},
-					"apiVersion": "48.0"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntime1",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/sf_Buildings')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NabersOnline",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "salesforce"
-				},
-				"annotations": [],
-				"type": "SalesforceObject",
-				"schema": [],
-				"typeProperties": {
-					"objectApiName": "NO_Building__c"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NabersOnline')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/sf_Ratings')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NabersOnline",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "salesforce"
-				},
-				"annotations": [],
-				"type": "SalesforceObject",
-				"schema": [],
-				"typeProperties": {
-					"objectApiName": "NO_Rating__c"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NabersOnline')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/sf_buiding_rating')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NabersOnline",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "salesforce"
-				},
-				"annotations": [],
-				"type": "SalesforceObject",
-				"schema": [],
-				"typeProperties": {
-					"objectApiName": "NO_Building_Rating_Relationship__c"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NabersOnline')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/sf_company')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NabersOnline",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "salesforce"
-				},
-				"annotations": [],
-				"type": "SalesforceObject",
-				"schema": [],
-				"typeProperties": {
-					"objectApiName": "Account"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NabersOnline')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/sf_contacts')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NabersOnline",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "salesforce"
-				},
-				"annotations": [],
-				"type": "SalesforceObject",
-				"schema": [],
-				"typeProperties": {
-					"objectApiName": "Contact"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NabersOnline')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/sf_users')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NabersOnline",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "salesforce"
-				},
-				"annotations": [],
-				"type": "SalesforceObject",
-				"schema": [],
-				"typeProperties": {
-					"objectApiName": "User"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NabersOnline')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/01_Transform_Company_Assessor')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "db_lookup_sf_company_ids",
-								"type": "DatasetReference"
-							},
-							"name": "getCompany"
-						},
-						{
-							"dataset": {
-								"referenceName": "db_lookup_sf_assessors_ids",
-								"type": "DatasetReference"
-							},
-							"name": "getAssessor"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "db_lookup_sf_assessors_ids",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Join1"
-						},
-						{
-							"name": "AlterRow1"
-						}
-					],
-					"script": "source(output(\n\t\tid as integer,\n\t\tsalesforce_company_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_company_id as integer,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getCompany\nsource(output(\n\t\tid as integer,\n\t\tsalesforce_assessor_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_assessor_id as integer,\n\t\tsalesforce_company_id as string,\n\t\tmember_company_id as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getAssessor\ngetAssessor, getCompany join(getAssessor@member_company_id == getCompany@member_company_id,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Join1\nJoin1 alterRow(updateIf(isNull(getAssessor@salesforce_company_id))) ~> AlterRow1\nAlterRow1 sink(input(\n\t\tid as integer,\n\t\tsalesforce_assessor_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_assessor_id as integer,\n\t\tsalesforce_company_id as string,\n\t\tmember_company_id as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['id'],\n\tformat: 'table',\n\tmapColumn(\n\t\tsalesforce_company_id = getCompany@salesforce_company_Id,\n\t\tid = getAssessor@id\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/db_lookup_sf_company_ids')]",
-				"[concat(variables('factoryId'), '/datasets/db_lookup_sf_assessors_ids')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/01_Transform_Country_In_Company')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "db_lookup_sf_company_ids",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "db_lookup_sf_company_ids",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AlterRow2"
-						},
-						{
-							"name": "DerivedColumn1"
-						}
-					],
-					"script": "parameters{\n\tpbatch_id as integer (1)\n}\nsource(output(\n\t\tid as integer,\n\t\tsalesforce_company_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_company_id as integer,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source1\nsource1 alterRow(updateIf(isNull(Mailing_Country)||isNull(Billing_Country))) ~> AlterRow2\nAlterRow2 derive(DefaultMailingCountry = \"Australia\",\n\t\tDefaultBillingCountry = \"Australia\",\n\t\tid = id) ~> DerivedColumn1\nDerivedColumn1 sink(input(\n\t\tid as integer,\n\t\tsalesforce_company_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_company_id as integer,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['id'],\n\tformat: 'table',\n\tmapColumn(\n\t\tMailing_Country = DefaultMailingCountry,\n\t\tBilling_Country = DefaultBillingCountry,\n\t\tid\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/db_lookup_sf_company_ids')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/01_Transform_Rating')]",
@@ -1692,9 +1354,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/db_members_rating')]",
-				"[concat(variables('factoryId'), '/datasets/db_lookup_sf_buildings_ids')]",
-				"[concat(variables('factoryId'), '/datasets/db_lookup_sf_assessors_ids')]",
-				"[concat(variables('factoryId'), '/datasets/db_lookup_sf_officer_ids')]",
 				"[concat(variables('factoryId'), '/datasets/db_transformed_ratings')]"
 			]
 		}
