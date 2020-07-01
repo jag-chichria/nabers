@@ -346,37 +346,37 @@
 				"scale": 3
 			},
 			{
-				"name": "No_GreenPower_GHG_Intensity_Scope_12__c",
+				"name": "NoGreenPowerGHGIntensityScope12",
 				"type": "decimal",
 				"precision": 12,
 				"scale": 3
 			},
 			{
-				"name": "No_GreenPower_GHG_Intensity_Scope_123__c",
+				"name": "NoGreenPowerGHGIntensityScope123",
 				"type": "decimal",
 				"precision": 12,
 				"scale": 3
 			},
 			{
-				"name": "No_GreenPower_GHG_Emissions_Scope_12__c",
+				"name": "NoGreenPowerGHGEmissionsScope12",
 				"type": "decimal",
 				"precision": 12,
 				"scale": 3
 			},
 			{
-				"name": "No_GreenPower_GHG_Emissions_Scope_123__c",
+				"name": "NoGreenPowerGHGEmissionsScope123",
 				"type": "decimal",
 				"precision": 12,
 				"scale": 3
 			},
 			{
-				"name": "Greenhouse_Gas_Intensity_Scope_123__c",
+				"name": "GreenhouseGasIntensityScope123",
 				"type": "decimal",
 				"precision": 12,
 				"scale": 3
 			},
 			{
-				"name": "Greenhouse_Gas_Emissions_Scope_123__c",
+				"name": "GreenhouseGasEmissionsScope123",
 				"type": "decimal",
 				"precision": 12,
 				"scale": 3
