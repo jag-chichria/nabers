@@ -133,6 +133,226 @@
 			{
 				"name": "renew_replace",
 				"type": "varchar"
+			},
+			{
+				"name": "sync_status",
+				"type": "varchar"
+			},
+			{
+				"name": "review_summary_page",
+				"type": "varchar"
+			},
+			{
+				"name": "using_latest_rules",
+				"type": "varchar"
+			},
+			{
+				"name": "rating_information_page",
+				"type": "varchar"
+			},
+			{
+				"name": "lodge_rating_page",
+				"type": "varchar"
+			},
+			{
+				"name": "rating_details_page",
+				"type": "varchar"
+			},
+			{
+				"name": "parking_space_page",
+				"type": "varchar"
+			},
+			{
+				"name": "water_page",
+				"type": "varchar"
+			},
+			{
+				"name": "has_parking_space",
+				"type": "varchar"
+			},
+			{
+				"name": "has_gym",
+				"type": "varchar"
+			},
+			{
+				"name": "has_food_court",
+				"type": "varchar"
+			},
+			{
+				"name": "conflict_of_interest",
+				"type": "varchar"
+			},
+			{
+				"name": "compliant_with_current_rules",
+				"type": "varchar"
+			},
+			{
+				"name": "relodged_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "rating_data_complete",
+				"type": "varchar"
+			},
+			{
+				"name": "assessor_declaration",
+				"type": "varchar"
+			},
+			{
+				"name": "customer_aware_of_star_rating",
+				"type": "varchar"
+			},
+			{
+				"name": "water_star_rating_with_recycle",
+				"type": "varchar"
+			},
+			{
+				"name": "water_star_rating_without_recycle",
+				"type": "varchar"
+			},
+			{
+				"name": "energy_star_rating_with_recycle",
+				"type": "varchar"
+			},
+			{
+				"name": "energy_star_rating_with_recycle3",
+				"type": "varchar"
+			},
+			{
+				"name": "total_energy_consumption",
+				"type": "decimal",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "weekly_core_hours_of_Service",
+				"type": "decimal",
+				"precision": 8,
+				"scale": 2
+			},
+			{
+				"name": "total_electricity_consumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "total_dieselConsumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "water_consumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "recycle_normalised_water_consumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "total_water_consumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "total_recycled_water_percent",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "total_gas_consumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "rating_lodgement_fees",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "predicted_greenhouse_gas_intensity",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "predicted_average_water_use",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "number_of_trading_days",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "no_recycle_predicted_average_water_use",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "no_greenpower_ghg_intensity_scope_12",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "no_greenpower_ghg_intensity_scope_123",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "no_greenpower_ghg_emissions_scope_12",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "no_greenpower_ghg_emissions_scope_123",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "greenhouse_gas_intensity_scope_123",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "greenhouse_gas_emissions_scope_123",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "energy_intensity",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "explain_why_not_compliant",
+				"type": "varchar"
+			},
+			{
+				"name": "is_small_shopping_centre",
+				"type": "bit"
 			}
 		],
 		"typeProperties": {
