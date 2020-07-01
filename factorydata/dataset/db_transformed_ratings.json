@@ -217,7 +217,7 @@
 				"type": "varchar"
 			},
 			{
-				"name": "energy_star_rating_with_recycle3",
+				"name": "energy_star_rating_without_recycle",
 				"type": "varchar"
 			},
 			{
