@@ -12,12 +12,17 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
-				"name": "Assessor_Id",
+				"name": "companyid",
 				"type": "int",
 				"precision": 10
 			},
 			{
-				"name": "User_Id",
+				"name": "AssessorId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "UserId",
 				"type": "int",
 				"precision": 10
 			},
