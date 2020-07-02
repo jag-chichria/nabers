@@ -29,7 +29,9 @@
 							"pbatch_id": {
 								"value": "@pipeline().parameters.pbatch_id",
 								"type": "Expression"
-							}
+							},
+							"vDefaultComplete": "'Complete'",
+							"vDefaultYes": "'Yes'"
 						},
 						"datasetParameters": {
 							"getLookupSalesforceBuildings": {
