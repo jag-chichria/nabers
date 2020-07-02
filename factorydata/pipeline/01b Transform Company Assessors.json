@@ -37,6 +37,9 @@
 									"value": "@pipeline().parameters.pbatch_id",
 									"type": "Expression"
 								}
+							},
+							"sink1": {
+								"pbatch_id": 1
 							}
 						}
 					},
