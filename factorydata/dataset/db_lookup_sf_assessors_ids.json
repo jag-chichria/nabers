@@ -50,6 +50,18 @@
 				"name": "member_company_id",
 				"type": "int",
 				"precision": 10
+			},
+			{
+				"name": "sync_status",
+				"type": "varchar"
+			},
+			{
+				"name": "Mailing_Country",
+				"type": "varchar"
+			},
+			{
+				"name": "Billing_Country",
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
