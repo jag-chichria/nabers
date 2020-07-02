@@ -130,6 +130,43 @@
 				"name": "batch_id",
 				"type": "int",
 				"precision": 10
+			},
+			{
+				"name": "RequireSupervisionSC",
+				"type": "bit"
+			},
+			{
+				"name": "Metropolitan",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Regional",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RetailFlag",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HospitalFlag",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HotelFlag",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OfficeFlag",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ApartmentBuildingFlag",
+				"type": "int",
+				"precision": 10
 			}
 		],
 		"typeProperties": {
