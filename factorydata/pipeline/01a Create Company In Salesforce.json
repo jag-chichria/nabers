@@ -239,7 +239,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "db_lookup_assessors",
+						"referenceName": "db_stage_assessors",
 						"type": "DatasetReference"
 					}
 				],

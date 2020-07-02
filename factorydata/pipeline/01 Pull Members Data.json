@@ -479,7 +479,7 @@
 									"queryTimeout": "02:00:00"
 								},
 								"dataset": {
-									"referenceName": "db_lookup_assessors",
+									"referenceName": "db_stage_assessors",
 									"type": "DatasetReference"
 								},
 								"firstRowOnly": true
