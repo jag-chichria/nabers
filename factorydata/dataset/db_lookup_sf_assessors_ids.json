@@ -56,11 +56,15 @@
 				"type": "varchar"
 			},
 			{
-				"name": "Mailing_Country",
+				"name": "mailing_country",
 				"type": "varchar"
 			},
 			{
-				"name": "Billing_Country",
+				"name": "billing_country",
+				"type": "varchar"
+			},
+			{
+				"name": "accredition",
 				"type": "varchar"
 			}
 		],
