@@ -66,6 +66,14 @@
 			{
 				"name": "accredition",
 				"type": "varchar"
+			},
+			{
+				"name": "rating_type",
+				"type": "varchar"
+			},
+			{
+				"name": "regional_cleaned",
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
