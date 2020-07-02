@@ -48,119 +48,11 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "LastName",
-									"type": "String"
-								},
-								"sink": {
-									"name": "LastName",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
 									"name": "FirstName",
 									"type": "String"
 								},
 								"sink": {
 									"name": "FirstName",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Billing_StreetName",
-									"type": "String"
-								},
-								"sink": {
-									"name": "OtherStreet",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Billing_Suburb",
-									"type": "String"
-								},
-								"sink": {
-									"name": "OtherCity",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Billing_State",
-									"type": "String"
-								},
-								"sink": {
-									"name": "OtherState",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Billing_Postcode",
-									"type": "String"
-								},
-								"sink": {
-									"name": "OtherPostalCode",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Billing_Country"
-								},
-								"sink": {
-									"name": "OtherCountry",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Mailing_StreetName",
-									"type": "String"
-								},
-								"sink": {
-									"name": "MailingStreet",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Mailing_Suburb",
-									"type": "String"
-								},
-								"sink": {
-									"name": "MailingCity",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Mailing_State",
-									"type": "String"
-								},
-								"sink": {
-									"name": "MailingState",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Mailing_Postcode",
-									"type": "String"
-								},
-								"sink": {
-									"name": "MailingPostalCode",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Mailing_Country"
-								},
-								"sink": {
-									"name": "MailingCountry",
 									"type": "String"
 								}
 							},
@@ -181,16 +73,6 @@
 								},
 								"sink": {
 									"name": "Email",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Title",
-									"type": "String"
-								},
-								"sink": {
-									"name": "Title",
 									"type": "String"
 								}
 							},
@@ -224,59 +106,7 @@
 									"type": "DateTime"
 								}
 							},
-							{
-								"source": {
-									"name": "RatingTypes"
-								},
-								"sink": {
-									"name": "NO_Rating_Types__c",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Regional"
-								},
-								"sink": {
-									"name": "NO_Regional__c",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Metropolitan"
-								},
-								"sink": {
-									"name": "NO_Metropolitan__c",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "Accredition"
-								},
-								"sink": {
-									"name": "NO_Accreditation__c",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "member_assessor_id",
-									"type": "Int32"
-								},
-								"sink": {
-									"name": "NO_Id_In_Member__c"
-								}
-							},
-							{
-								"source": {
-									"name": "salesforce_company_id"
-								},
-								"sink": {
-									"name": "AccountId"
-								}
-							}
+							null
 						]
 					}
 				},
