@@ -108,8 +108,7 @@
 							},
 							{
 								"source": {
-									"name": "Billing_Country",
-									"type": "String"
+									"name": "Billing_Country"
 								},
 								"sink": {
 									"name": "OtherCountry",
@@ -158,8 +157,7 @@
 							},
 							{
 								"source": {
-									"name": "Mailing_Country",
-									"type": "String"
+									"name": "Mailing_Country"
 								},
 								"sink": {
 									"name": "MailingCountry",
