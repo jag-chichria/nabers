@@ -48,16 +48,6 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "FirstName",
-									"type": "String"
-								},
-								"sink": {
-									"name": "FirstName",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
 									"name": "Phone",
 									"type": "String"
 								},
@@ -106,7 +96,168 @@
 									"type": "DateTime"
 								}
 							},
-							null
+							{
+								"source": {
+									"name": "accredition"
+								},
+								"sink": {
+									"name": "NO_Accreditation__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Regional"
+								},
+								"sink": {
+									"name": "NO_Regional__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Metropolitan"
+								},
+								"sink": {
+									"name": "NO_Metropolitan__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "member_assessor_id"
+								},
+								"sink": {
+									"name": "NO_Id_In_Member__c",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "salesforce_company_id"
+								},
+								"sink": {
+									"name": "AccountId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "FirstName"
+								},
+								"sink": {
+									"name": "FirstName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LastName"
+								},
+								"sink": {
+									"name": "LastName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Title"
+								},
+								"sink": {
+									"name": "Salutation",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Mailing_StreetName"
+								},
+								"sink": {
+									"name": "MailingStreet",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Mailing_Suburb"
+								},
+								"sink": {
+									"name": "MailingCity",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Mailing_State"
+								},
+								"sink": {
+									"name": "MailingState",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Mailing_Postcode"
+								},
+								"sink": {
+									"name": "MailingPostalCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Mailing_Country"
+								},
+								"sink": {
+									"name": "MailingCountry",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_StreetName"
+								},
+								"sink": {
+									"name": "OtherStreet",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_Suburb"
+								},
+								"sink": {
+									"name": "OtherCity",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_State"
+								},
+								"sink": {
+									"name": "OtherState",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_Postcode"
+								},
+								"sink": {
+									"name": "OtherPostalCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_Country"
+								},
+								"sink": {
+									"name": "OtherCountry",
+									"type": "String"
+								}
+							}
 						]
 					}
 				},
