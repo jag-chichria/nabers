@@ -257,6 +257,14 @@
 									"name": "OtherCountry",
 									"type": "String"
 								}
+							},
+							{
+								"source": {
+									"name": "rating_type"
+								},
+								"sink": {
+									"name": "NO_Rating_Types__c"
+								}
 							}
 						]
 					}
