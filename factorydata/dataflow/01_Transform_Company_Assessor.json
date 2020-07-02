@@ -9,14 +9,14 @@
 						"referenceName": "db_lookup_sf_company_ids",
 						"type": "DatasetReference"
 					},
-					"name": "getCompany"
+					"name": "getLookupCompany"
 				},
 				{
 					"dataset": {
 						"referenceName": "db_lookup_sf_assessors_ids",
 						"type": "DatasetReference"
 					},
-					"name": "getAssessor"
+					"name": "getLookupAssessor"
 				},
 				{
 					"dataset": {
@@ -37,16 +37,22 @@
 			],
 			"transformations": [
 				{
-					"name": "Join1"
+					"name": "joinLookupAssessorCompany"
 				},
 				{
 					"name": "AlterRow1"
 				},
 				{
 					"name": "DerivedColumn1"
+				},
+				{
+					"name": "getForCurrentBatch"
+				},
+				{
+					"name": "joinStagedAssessors"
 				}
 			],
-			"script": "parameters{\n\tpDefaultCountry as string ('Australia')\n}\nsource(output(\n\t\tid as integer,\n\t\tsalesforce_company_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_company_id as integer,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getCompany\nsource(output(\n\t\tid as integer,\n\t\tsalesforce_assessor_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_assessor_id as integer,\n\t\tsalesforce_company_id as string,\n\t\tmember_company_id as integer,\n\t\tsync_status as string,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getAssessor\nsource(output(\n\t\tcompanyid as integer,\n\t\tAssessorId as integer,\n\t\tUserId as integer,\n\t\tFirstName as string,\n\t\tLastName as string,\n\t\tTitle as string,\n\t\tMailing_StreetNumber as string,\n\t\tMailing_StreetName as string,\n\t\tMailing_Suburb as string,\n\t\tMailing_Postcode as string,\n\t\tMailing_State as string,\n\t\tBilling_StreetNumber as string,\n\t\tBilling_StreetName as string,\n\t\tBilling_Suburb as string,\n\t\tBilling_Postcode as string,\n\t\tBilling_State as string,\n\t\tPhone as string,\n\t\tEmail as string,\n\t\tJoinedDate as timestamp,\n\t\tAccreditationDate as timestamp,\n\t\tAccreditationExpiryDate as timestamp,\n\t\tAccreditationNumber as string,\n\t\tEnergyFlag as boolean,\n\t\tWaterFlag as boolean,\n\t\tWasteFlag as boolean,\n\t\tbatch_id as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getStageAssessors\ngetAssessor, getCompany join(getAssessor@member_company_id == getCompany@member_company_id,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Join1\nDerivedColumn1 alterRow(updateIf(isNull(getAssessor@salesforce_company_id))) ~> AlterRow1\nJoin1 derive(D_DefaultMailingCountry = $pDefaultCountry,\n\t\tD_DefaultBillingCountry = $pDefaultCountry,\n\t\tD_RatingTypes = $pDefaultCountry) ~> DerivedColumn1\nAlterRow1 sink(input(\n\t\tid as integer,\n\t\tsalesforce_assessor_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_assessor_id as integer,\n\t\tsalesforce_company_id as string,\n\t\tmember_company_id as integer,\n\t\tsync_status as string,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['id'],\n\tformat: 'table',\n\tmapColumn(\n\t\tsalesforce_company_id = getCompany@salesforce_company_Id,\n\t\tid = getAssessor@id,\n\t\tMailing_Country = D_DefaultMailingCountry,\n\t\tBilling_Country = D_DefaultBillingCountry\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+			"script": "parameters{\n\tpDefaultCountry as string ('Australia'),\n\tpbatch_id as integer\n}\nsource(output(\n\t\tid as integer,\n\t\tsalesforce_company_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_company_id as integer,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getLookupCompany\nsource(output(\n\t\tid as integer,\n\t\tsalesforce_assessor_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_assessor_id as integer,\n\t\tsalesforce_company_id as string,\n\t\tmember_company_id as integer,\n\t\tsync_status as string,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getLookupAssessor\nsource(output(\n\t\tcompanyid as integer,\n\t\tAssessorId as integer,\n\t\tUserId as integer,\n\t\tFirstName as string,\n\t\tLastName as string,\n\t\tTitle as string,\n\t\tMailing_StreetNumber as string,\n\t\tMailing_StreetName as string,\n\t\tMailing_Suburb as string,\n\t\tMailing_Postcode as string,\n\t\tMailing_State as string,\n\t\tBilling_StreetNumber as string,\n\t\tBilling_StreetName as string,\n\t\tBilling_Suburb as string,\n\t\tBilling_Postcode as string,\n\t\tBilling_State as string,\n\t\tPhone as string,\n\t\tEmail as string,\n\t\tJoinedDate as timestamp,\n\t\tAccreditationDate as timestamp,\n\t\tAccreditationExpiryDate as timestamp,\n\t\tAccreditationNumber as string,\n\t\tEnergyFlag as boolean,\n\t\tWaterFlag as boolean,\n\t\tWasteFlag as boolean,\n\t\tbatch_id as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getStageAssessors\ngetLookupAssessor, getLookupCompany join(getLookupAssessor@member_company_id == getLookupCompany@member_company_id,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> joinLookupAssessorCompany\nDerivedColumn1 alterRow(updateIf(isNull(getLookupAssessor@salesforce_company_id))) ~> AlterRow1\njoinStagedAssessors derive(D_DefaultMailingCountry = $pDefaultCountry,\n\t\tD_DefaultBillingCountry = $pDefaultCountry,\n\t\tD_RatingTypes = iif(true() == EnergyFlag, 'Energy', '')\r\n+ iif(true() == WasteFlag, iif(true() == EnergyFlag, '; Waste', 'Waste'), '')) ~> DerivedColumn1\ngetStageAssessors filter(equals(batch_id, $pbatch_id)) ~> getForCurrentBatch\njoinLookupAssessorCompany, getStageAssessors join(member_assessor_id == AssessorId,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> joinStagedAssessors\nAlterRow1 sink(input(\n\t\tid as integer,\n\t\tsalesforce_assessor_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_assessor_id as integer,\n\t\tsalesforce_company_id as string,\n\t\tmember_company_id as integer,\n\t\tsync_status as string,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['id'],\n\tformat: 'table',\n\tmapColumn(\n\t\tsalesforce_company_id = getLookupCompany@salesforce_company_Id,\n\t\tid = getLookupAssessor@id,\n\t\tMailing_Country = D_DefaultMailingCountry,\n\t\tBilling_Country = D_DefaultBillingCountry\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
 		}
 	}
 }
