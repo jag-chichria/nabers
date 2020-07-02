@@ -206,7 +206,7 @@
 							},
 							{
 								"source": {
-									"name": "Mailing_Country"
+									"name": "mailing_country"
 								},
 								"sink": {
 									"name": "MailingCountry",
@@ -251,7 +251,7 @@
 							},
 							{
 								"source": {
-									"name": "Billing_Country"
+									"name": "billing_country"
 								},
 								"sink": {
 									"name": "OtherCountry",
