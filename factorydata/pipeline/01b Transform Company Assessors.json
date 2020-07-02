@@ -25,20 +25,33 @@
 					"dataflow": {
 						"referenceName": "01_Transform_Company_Assessor",
 						"type": "DataFlowReference",
+						"parameters": {
+							"pDefaultCountry": {
+								"value": "'@{'Australia'}'",
+								"type": "Expression"
+							},
+							"pbatch_id": {
+								"value": "@pipeline().parameters.pbatch_id",
+								"type": "Expression"
+							}
+						},
 						"datasetParameters": {
-							"getCompany": {
+							"getLookupCompany": {
 								"pbatch_id": {
 									"value": "@pipeline().parameters.pbatch_id",
 									"type": "Expression"
 								}
 							},
-							"getAssessor": {
+							"getLookupAssessor": {
 								"pbatch_id": {
 									"value": "@pipeline().parameters.pbatch_id",
 									"type": "Expression"
 								}
 							},
-							"sink1": {
+							"getStageAssessors": {
+								"pBatch_Id": 1
+							},
+							"targetLookupSalesforceAssessor": {
 								"pbatch_id": 1
 							}
 						}
