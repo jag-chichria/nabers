@@ -17,13 +17,18 @@
 				"precision": 10
 			},
 			{
-				"name": "source_rating_id",
+				"name": "batch_id",
 				"type": "int",
 				"precision": 10
 			},
 			{
 				"name": "building_type",
 				"type": "varchar"
+			},
+			{
+				"name": "source_rating_id",
+				"type": "int",
+				"precision": 10
 			},
 			{
 				"name": "sf_company_id",
@@ -34,16 +39,15 @@
 				"type": "varchar"
 			},
 			{
-				"name": "batch_id",
-				"type": "int",
-				"precision": 10
-			},
-			{
 				"name": "sf_rating_id",
 				"type": "varchar"
 			},
 			{
 				"name": "sf_assessor_id",
+				"type": "varchar"
+			},
+			{
+				"name": "sf_customer_id",
 				"type": "varchar"
 			},
 			{
@@ -352,15 +356,15 @@
 			},
 			{
 				"name": "is_small_shopping_centre",
-				"type": "bit"
+				"type": "varchar"
 			},
 			{
 				"name": "using_latest_rules_water",
-				"type": "bit"
+				"type": "varchar"
 			},
 			{
 				"name": "using_latest_rules_energy",
-				"type": "bit"
+				"type": "varchar"
 			},
 			{
 				"name": "single_or_multi_storey",
