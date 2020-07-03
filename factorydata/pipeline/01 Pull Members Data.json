@@ -745,6 +745,150 @@
 									}
 								]
 							}
+						},
+						{
+							"name": "Lookup Each Customer by ABN In Salesforce",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SalesforceSource",
+									"query": {
+										"value": "Select id from Account\nwhere NO_ABN__c = '@{item().Customer_ABN}'",
+										"type": "Expression"
+									},
+									"readBehavior": "query"
+								},
+								"dataset": {
+									"referenceName": "sf_company",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": true
+							}
+						},
+						{
+							"name": "If Customer In Salesforce Exist",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Lookup Each Customer by ABN In Salesforce",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@contains(string(activity('Lookup Each Customer by ABN In Salesforce').output), 'firstRow')",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "insertCompanyDetails_copy1",
+										"description": "Company does not exist",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[dbo].[usp_InsertLookupCompanyData]",
+											"storedProcedureParameters": {
+												"batch_id": {
+													"value": {
+														"value": "@pipeline().parameters.pbatch_id",
+														"type": "Expression"
+													},
+													"type": "Int32"
+												},
+												"member_company_Id": {
+													"value": {
+														"value": "@activity('Get Company Details by Company Id').output.firstrow.CompanyId",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"salesforce_company_Id": {
+													"value": null,
+													"type": "String"
+												},
+												"account_type": {
+													"value": "company",
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "NABERSStaging",
+											"type": "LinkedServiceReference"
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "insertCompanyDetailswithSalesforceIdx_copy1",
+										"description": "Company does exist",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[dbo].[usp_InsertLookupCompanyData]",
+											"storedProcedureParameters": {
+												"batch_id": {
+													"value": {
+														"value": "@pipeline().parameters.pbatch_id",
+														"type": "Expression"
+													},
+													"type": "Int32"
+												},
+												"member_company_Id": {
+													"value": {
+														"value": "@activity('Get Company Details by Company Id').output.firstrow.CompanyId",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"salesforce_company_Id": {
+													"value": {
+														"value": "@activity('Lookup Each Company by ABN In Salesforce').output.firstrow.Id",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"account_type": {
+													"value": "company",
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "NABERSStaging",
+											"type": "LinkedServiceReference"
+										}
+									}
+								]
+							}
 						}
 					]
 				}
