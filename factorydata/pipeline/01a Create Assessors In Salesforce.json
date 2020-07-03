@@ -280,6 +280,14 @@
 								"sink": {
 									"name": "NO_User_Status__c"
 								}
+							},
+							{
+								"source": {
+									"name": "regional_cleaned"
+								},
+								"sink": {
+									"name": ""
+								}
 							}
 						]
 					}
