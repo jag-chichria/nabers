@@ -142,6 +142,53 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "copyBuilding",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "select top 20 \n\tc.ABN,c.CompanyName, c.CompanyID, c.CompanyStatusID,\n\tc.CompanyTypeID, c.CompanyURL, c.MailingAddressID, c.Phone, \n\tc.PIInsuranceExpiryDate, c.PLInsuranceExpiryDate, c.RatingParticipationFlag,\n\tc.SAPCustomerNo, c.ShortName, c.SoleTraderFlag,\n\tmaddr.[StreetNumber] as Mailing_StreetNumber,\n    maddr.[StreetName] as Mailing_StreetName,\n    maddr.[Suburb] as Mailing_Suburb,\n    maddr.[Postcode] as Mailing_Postcode,\n\tmst.ClassName as Mailing_State,\n\n\tbaddr.[StreetNumber] as Billing_StreetNumber,\n    baddr.[StreetName] as Billing_StreetName,\n    baddr.[Suburb] as Billing_Suburb,\n    baddr.[Postcode] as Billing_Postcode,\n\tbst.ClassName as Billing_State,\n\t'Assessor' as Type\n\t, 1 as batch_id\ninto CompanyStage\nfrom  \n\ttblRatingHeader rh\n\tleft join tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\n\tinner join tblRatingContractorCompany rcc on rc.RatingContractorID = rcc.assessorid\n\tinner join tblCompany c on c.companyid = rcc.companyid\n\tleft join tblAddress maddr on maddr.AddressId = c.MailingAddressID\n\tleft join tblAddress baddr on baddr.AddressId = c.BillingAddressID\n\tleft join tblClassification mst on mst.ClassificationID = maddr.StateId\n\tleft join tblClassification bst on bst.ClassificationID = baddr.StateId\nWhere rh.PremiseTypeID = @{pipeline().parameters.pPremiseType}\n\tand (EndEffectiveDate is null or EndEffectiveDate > getdate())\nand ((rh.CreatedDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}') OR (rh.LastActionDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}'))\n\torder by RatingHeaderID",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "db_company",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "cn_db_rating_stage",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"parameters": {
