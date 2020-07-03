@@ -264,12 +264,6 @@
 														"type": "Expression"
 													},
 													"type": "String"
-												},
-												"salesforce_portal_access": {
-													"value": {
-														"value": "@variables('_salesforceContactType')",
-														"type": "Expression"
-													}
 												}
 											}
 										},
