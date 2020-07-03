@@ -76,6 +76,15 @@
 				"type": "varchar"
 			},
 			{
+				"name": "Customer_ABN",
+				"type": "varchar"
+			},
+			{
+				"name": "customer_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
 				"name": "RatingPeriodFrom",
 				"type": "datetime",
 				"precision": 23,
@@ -346,7 +355,7 @@
 				"scale": 3
 			},
 			{
-				"name": "NoGreenPowerGHGIntensityScope12",
+				"name": "NoGreenPower_GHG_IntensityScope_12",
 				"type": "decimal",
 				"precision": 12,
 				"scale": 3
