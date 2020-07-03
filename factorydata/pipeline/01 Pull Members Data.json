@@ -793,7 +793,7 @@
 								},
 								"ifFalseActivities": [
 									{
-										"name": "insertCompanyDetails_copy1",
+										"name": "insertCustomerDetailsFalse",
 										"description": "Company does not exist",
 										"type": "SqlServerStoredProcedure",
 										"dependsOn": [],
@@ -817,7 +817,7 @@
 												},
 												"member_company_Id": {
 													"value": {
-														"value": "@activity('Get Company Details by Company Id').output.firstrow.CompanyId",
+														"value": "@item().Customer_ABN",
 														"type": "Expression"
 													},
 													"type": "String"
@@ -840,7 +840,7 @@
 								],
 								"ifTrueActivities": [
 									{
-										"name": "insertCompanyDetailswithSalesforceIdx_copy1",
+										"name": "insertCustomerDetailswithSalesforceId",
 										"description": "Company does exist",
 										"type": "SqlServerStoredProcedure",
 										"dependsOn": [],
@@ -864,14 +864,14 @@
 												},
 												"member_company_Id": {
 													"value": {
-														"value": "@activity('Get Company Details by Company Id').output.firstrow.CompanyId",
+														"value": "@item().Customer_ABN",
 														"type": "Expression"
 													},
 													"type": "String"
 												},
 												"salesforce_company_Id": {
 													"value": {
-														"value": "@activity('Lookup Each Company by ABN In Salesforce').output.firstrow.Id",
+														"value": "@activity('Lookup Each Customer by ABN In Salesforce').output.firstrow.Id",
 														"type": "Expression"
 													},
 													"type": "String"
