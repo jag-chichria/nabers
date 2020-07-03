@@ -261,7 +261,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from Account\nwhere NO_ABN__c = '@{item().ABN}'",
+										"value": "Select id from Account\nwhere NO_ABN__c = '@{item().Customer_ABN}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
