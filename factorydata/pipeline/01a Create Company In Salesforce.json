@@ -240,7 +240,10 @@
 				"inputs": [
 					{
 						"referenceName": "db_stage_assessors",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"pBatch_Id": 1
+						}
 					}
 				],
 				"outputs": [
