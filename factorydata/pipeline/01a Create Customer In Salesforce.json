@@ -24,7 +24,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderStoredProcedureName": "[dbo].[usp_GetCompanyToCreateInSalesForce]",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_GetCustomerToCreateInSalesForce]",
 						"storedProcedureParameters": {
 							"batchid": {
 								"type": "Int32",
