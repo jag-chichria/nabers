@@ -286,7 +286,7 @@
 									"name": "regional_cleaned"
 								},
 								"sink": {
-									"name": ""
+									"name": "NO_Regional__c"
 								}
 							}
 						]
