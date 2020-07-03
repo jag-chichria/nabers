@@ -53,6 +53,9 @@
 							},
 							"targetLookupSalesforceAssessor": {
 								"pbatch_id": 1
+							},
+							"updateCleanedData": {
+								"pbatch_id": 1
 							}
 						}
 					},
