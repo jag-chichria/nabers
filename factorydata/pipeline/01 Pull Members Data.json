@@ -266,7 +266,10 @@
 													"type": "String"
 												},
 												"salesforce_portal_access": {
-													"value": "NABERS Online"
+													"value": {
+														"value": "@variables('_salesforceContactType')",
+														"type": "Expression"
+													}
 												}
 											}
 										},
