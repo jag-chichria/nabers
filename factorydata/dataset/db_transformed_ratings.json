@@ -353,6 +353,18 @@
 			{
 				"name": "is_small_shopping_centre",
 				"type": "bit"
+			},
+			{
+				"name": "using_latest_rules_water",
+				"type": "bit"
+			},
+			{
+				"name": "using_latest_rules_energy",
+				"type": "bit"
+			},
+			{
+				"name": "single_or_multi_storey",
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
