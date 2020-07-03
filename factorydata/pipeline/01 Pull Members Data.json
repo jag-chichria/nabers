@@ -817,7 +817,7 @@
 												},
 												"member_company_Id": {
 													"value": {
-														"value": "@item().Customer_ABN",
+														"value": "@item().customer_id",
 														"type": "Expression"
 													},
 													"type": "String"
@@ -864,7 +864,7 @@
 												},
 												"member_company_Id": {
 													"value": {
-														"value": "@item().Customer_ABN",
+														"value": "@item().customer_id",
 														"type": "Expression"
 													},
 													"type": "String"
@@ -877,7 +877,7 @@
 													"type": "String"
 												},
 												"account_type": {
-													"value": "company",
+													"value": "customer",
 													"type": "String"
 												}
 											}
