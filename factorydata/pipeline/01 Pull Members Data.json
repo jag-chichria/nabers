@@ -264,6 +264,9 @@
 														"type": "Expression"
 													},
 													"type": "String"
+												},
+												"salesforce_portal_access": {
+													"value": "NABERS Online"
 												}
 											}
 										},
