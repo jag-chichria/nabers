@@ -857,8 +857,9 @@
 			"_dummy": {
 				"type": "String"
 			},
-			"_salesforceContactType": {
-				"type": "String"
+			"_salesforcePortalAccess": {
+				"type": "String",
+				"defaultValue": "NABERS Online"
 			}
 		},
 		"annotations": []
