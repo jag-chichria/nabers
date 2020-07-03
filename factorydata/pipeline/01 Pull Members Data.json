@@ -250,6 +250,13 @@
 														"type": "Expression"
 													},
 													"type": "Int32"
+												},
+												"salesforce_contact_type": {
+													"value": {
+														"value": "@activity('Get Salesforce Contact Type').output.firstrow.Id",
+														"type": "Expression"
+													},
+													"type": "String"
 												}
 											}
 										},
