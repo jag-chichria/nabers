@@ -401,7 +401,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"storedProcedureName": "[dbo].[usp_UpdateNewSalesforceIdForCustomer]",
+								"storedProcedureName": "[dbo].[usp_UpdateNewSalesforceIdForCompany]",
 								"storedProcedureParameters": {
 									"batch_id": {
 										"value": {
