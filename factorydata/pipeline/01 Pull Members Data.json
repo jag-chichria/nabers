@@ -264,6 +264,34 @@
 											"referenceName": "NABERSStaging",
 											"type": "LinkedServiceReference"
 										}
+									},
+									{
+										"name": "Lookup Each Assessor by Email In Salesforce_copy1",
+										"type": "Lookup",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "SalesforceSource",
+												"query": {
+													"value": "Select id from Contact\nwhere Email= '@{activity('Get Assessor Details by Assessor ID').output.firstRow.Email}'",
+													"type": "Expression"
+												},
+												"readBehavior": "query"
+											},
+											"dataset": {
+												"referenceName": "sf_contacts",
+												"type": "DatasetReference"
+											},
+											"firstRowOnly": true
+										}
 									}
 								],
 								"ifTrueActivities": [
@@ -814,6 +842,9 @@
 				"type": "Array"
 			},
 			"_dummy": {
+				"type": "String"
+			},
+			"_salesforceContactType": {
 				"type": "String"
 			}
 		},
