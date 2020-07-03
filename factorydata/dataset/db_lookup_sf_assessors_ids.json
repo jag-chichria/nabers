@@ -84,7 +84,7 @@
 				"type": "varchar"
 			},
 			{
-				"name": "salesforce_user_acive",
+				"name": "salesforce_user_active",
 				"type": "varchar"
 			}
 		],
