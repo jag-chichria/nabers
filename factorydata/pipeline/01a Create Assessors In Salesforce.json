@@ -265,6 +265,30 @@
 								"sink": {
 									"name": "NO_Rating_Types__c"
 								}
+							},
+							{
+								"source": {
+									"name": "salesforce_contact_type"
+								},
+								"sink": {
+									"name": "RecordTypeId"
+								}
+							},
+							{
+								"source": {
+									"name": "salesforce_portal_access"
+								},
+								"sink": {
+									"name": "Portal_Access__c"
+								}
+							},
+							{
+								"source": {
+									"name": "salesforce_user_active"
+								},
+								"sink": {
+									"name": "NO_User_Status__c"
+								}
 							}
 						]
 					}
