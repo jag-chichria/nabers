@@ -214,7 +214,14 @@
 										"name": "insertAssessorDetails",
 										"description": "Building does not exist",
 										"type": "SqlServerStoredProcedure",
-										"dependsOn": [],
+										"dependsOn": [
+											{
+												"activity": "Get Salesforce Contact Type",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
 										"policy": {
 											"timeout": "7.00:00:00",
 											"retry": 0,
@@ -266,7 +273,7 @@
 										}
 									},
 									{
-										"name": "Lookup Each Assessor by Email In Salesforce_copy1",
+										"name": "Get Salesforce Contact Type",
 										"type": "Lookup",
 										"dependsOn": [],
 										"policy": {
@@ -281,7 +288,7 @@
 											"source": {
 												"type": "SalesforceSource",
 												"query": {
-													"value": "Select id from Contact\nwhere Email= '@{activity('Get Assessor Details by Assessor ID').output.firstRow.Email}'",
+													"value": "Select id from RecordType where sObjectType = 'Contact' and DeveloperName = 'NO_Assessor'",
 													"type": "Expression"
 												},
 												"readBehavior": "query"
