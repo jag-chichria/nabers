@@ -33,6 +33,228 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/00 Schedule Job')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copyRatings",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "Select Top 20\n\trh.RatingHeaderID,\n\tRatingReferenceNumber,\n\trh.PremiseTypeID,\n\tpremiseType.ClassName as PremiseType,\n\trh.PremiseID,\n\tpremise.PremiseName as PremiseName,\n\tAssessorID,\n\trc.email as AssessorEmail,\n\tcustomer.RegisteredName as Customer_Name, \n\tcustomer.TradingName as Customer_TradingName,\n\tcmaddr.[StreetNumber] as [Customer_Mailing_StreeNumber],\n    cmaddr.[StreetName]  as [Customer_Mailing_StreetName],\n    cmaddr.[Suburb] as [Customer_Mailing_Suburb],\n    cmaddr.[Postcode] as [Customer_Mailing_Postcode],\n\tcmst.ClassName as [Customer_Mailing_State],\n\n\tRatingPeriodFrom,\n\tRatingPeriodTo,\n\tPublicListingFlag,\n\tOfficerID,\n\tRatingStatusID,\n\trs.ClassName as RatingStatus,\n\tLodgedDate,\n\tPaymentStatusID,\n\tps.ClassName as PaymentStatus,\n\tPaidDate,\n\t--Certificate\n\tCertificateValidFrom,\n\tCertificateValidTo,\n\n\tPremisesName as PremiseNameOnCert,\n\tCustomerName as CustomerNameOnCert,\n\n\trh.DeliveryEmail  as Certificate_Customer_Email,\n\n\tLastActionDate, \n\n\tReplaceFlag,\n\tRenewFlag,\n\tPreviousRatingHeaderID,\n\tNewRatingHeaderID,\n\taddr.[StreetNumber],\n    addr.[StreetName],\n    addr.[Suburb],\n    addr.[Postcode],\n\tst.ClassName as [State],\n\t(select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crt.ClassName as varchar(16)) FROM tblRatingType rt \n\t\t\t\t\tINNER JOIN tblClassification crt on crt.ClassificationID = rt.RatingType\n\t\t\t\t\tand rt.RatingHeaderID = rh.RatingHeaderID\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as RatingTypes\n\n\n\n\t, scs.CinemaTheatres \n\t, scws.ShoppingCentreWaterSummaryID \n\t, scs.FloorConfiguration\n\t, scs.ParkingSpacesMechanical\n\t, scs.ParkingSpacesNatural \n\t, scs.TotalGymGLAR \n\t, scs.FoodCourtSeats \n\t, rad.conflictOfInterestFlag \n\t, rad.InComplianceWithCurrentRules \n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 57) as WaterStarRatingWRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithoutGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 57) as WaterStarRatingWoRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 56) as EnergyStarRatingWRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithoutGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 56) as EnergyStarRatingWoRecycle\n\t, isnull(sces.TotalElectricityUse * 3.6, 0) + isnull(sces.TotalGasUse, 0) + isnull(sces.TotalLPGUse * 25.7, 0) + isnull(sces.TotalOilUse * 38.6, 0) + isnull(sces.TotalCoalUse * 22.1, 0) as totalEnergyConsumption\n\t, scs.HoursOfService as WeeklyCoreHoursOfService \n\t, sces.TotalElectricityUse as TotalElectricityConsumption\n\t, sces.TotalOilUse as TotalDieselConsumption\n\t, scws.WaterConsumptionWoRW as WaterConsumption\n\t, scws.WaterUsePerSqmWoRW as RecycleNormalisedWaterConsumption\n\t, scws.WaterConsumptionWoRW as TotalWaterConsumption\n\t, scws.RecycledWaterPercent as TotalRecycledWaterPercent\n\t, sces.TotalGasUse as TotalGasConsumption\n\t, (select Amount from tblFinancialTransaction ft inner join tblRatingPayment rp on ft.RatingPaymentID = rp.RatingPaymentID\n\t\t\tand rp.RatingHeaderID = rh.RatingHeaderId\n\t\t\twhere FeeCategoryID = 244 -- Loedgement\n\t\t\t) as RatingLodgementFees\n\t, sces.PredictedGHGEmissionsPerSqm as PredictedGreenhouseGasIntensity\n\t, scws.PredictedWaterUsePerGLAR as PredictedAverageWaterUse\n\t, scs.TradingDays as NumberOfTradingDays\n\t, scws.PredictedWaterUsePerGLARWoRW as NoRecyclePredictedAverageWaterUse\n\t, sces.GHGEmissionsPerSqmGLARScope12WoGP as NoGreenPower_GHG_IntensityScope_12\n\t, sces.GHGEmissionsPerSqmGLARScope123WoGP as NoGreenPowerGHGIntensityScope123\n\t, sces.GHGEmissionsScope12WoGP as NoGreenPowerGHGEmissionsScope12\n\t, sces.GHGEmissionsScope123WoGP  as NoGreenPowerGHGEmissionsScope123\n\t, sces.GHGEmissionsPerSqmGLARScope123 as GreenhouseGasIntensityScope123\n\t, sces.GHGEmissionsScope123  as GreenhouseGasEmissionsScope123\n\t, sces.EnergyIntensity\n\t, rad.ComplianceExplanation as ExplainWhyNotCompliant \n\t, scs.IsSmallShoppingCentre\n\t, 1 as batch_id\n\n--into RatingHeaderStage\nfrom tblRatingHeader rh\nleft join tblPremise premise on premise.PremiseID = rh.PremiseID\nleft join tblClassification premiseType on premiseType.ClassificationID = rh.PremiseTypeID\nleft join tblClassification rs on rs.ClassificationID = rh.RatingStatusID\nleft join tblClassification ps on ps.ClassificationID = rh.PaymentStatusID\nleft join tblAdministrator ad on ad.AdministratorID = rh.OfficerID\nleft join tblUser aduser on aduser.UserID = ad.UserID\nleft join tblCustomer customer on customer.CustomerID = rh.CustomerID\nleft join tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\nleft join tblUser rcuser on rcuser.UserID = rc.UserID\nleft join tblAddress addr on addr.AddressId = premise.PremiseAddressId\nleft join tblClassification st on st.ClassificationID = addr.StateId\nleft join tblAddress cmaddr on cmaddr.AddressId = customer.MailingAddressID\nleft join tblClassification cmst on cmst.ClassificationID = cmaddr.StateId\n\nleft join tblShoppingCentreSummary scs on scs.RatingHeaderID = rh.RatingHeaderID\nleft join tblShoppingCentreEnergySummary sces on sces.RatingHeaderID = rh.RatingHeaderID\nleft join tblShoppingCentreWaterSummary scws on scws.RatingHeaderID = rh.RatingHeaderID\n\nleft join tblAssessorDeclaration rad on rad.RatingHeaderID = rh.RatingHeaderID\n\nWhere rh.PremiseTypeID = @{pipeline().parameters.pPremiseType}\nand ((rh.CreatedDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}') OR (rh.LastActionDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}'))\norder by RatingHeaderID",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "AzureSqlSink"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "db_company",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "cn_db_rating_stage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "copyAccessors",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "Select Top 20\n\trcc.companyid,\n\trc.RatingContractorID as AssessorId,\n\trcuser.UserID as UserId,\n\trcuser.FirstName, \n\trcuser.LastName, \n\ttc.ClassName as Title, \n\tmaddr.[StreetNumber] as Mailing_StreetNumber,\n    maddr.[StreetName] as Mailing_StreetName,\n    maddr.[Suburb] as Mailing_Suburb,\n    maddr.[Postcode] as Mailing_Postcode,\n\tmst.ClassName as Mailing_State,\n\n\tbaddr.[StreetNumber] as Billing_StreetNumber,\n    baddr.[StreetName] as Billing_StreetName,\n    baddr.[Suburb] as Billing_Suburb,\n    baddr.[Postcode] as Billing_Postcode,\n\tbst.ClassName as Billing_State,\n\tPhone,\n\tEmail,\n\tJoinedDate,\n\tAccreditationDate,\n\tAccreditationExpiryDate,\n\tAccreditationNumber,\n\tEnergyFlag, \n\tWaterFlag, \n\tWasteFlag\n\t, 1 as batch_id\n\t, RequireSupervisionSC\n\t, (select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crst.ClassCode as varchar(16)) FROM tblRatingContractorAvailability  rca \n\t\t\t\t\tINNER JOIN tblClassification crt on crt.ClassificationID = rca.AvailabilityTypeID\n\t\t\t\t\tleft join tblClassification crst on crst.ClassificationID = rca.StateId\n\t\t\t\t\tand rca.RatingContractorID = rc.RatingContractorID and crt.ClassificationID = 459\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as Metropolitan\n\t, (select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crst.ClassCode as varchar(16)) FROM tblRatingContractorAvailability  rca \n\t\t\t\t\tINNER JOIN tblClassification crt on crt.ClassificationID = rca.AvailabilityTypeID\n\t\t\t\t\tleft join tblClassification crst on crst.ClassificationID = rca.StateId\n\t\t\t\t\tand rca.RatingContractorID = rc.RatingContractorID and crt.ClassificationID = 460\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as Regional\n\t, case when RetailFlag is null then 0 else RetailFlag end as RetailFlag \n\t, case when HospitalFlag is null then 0 else HospitalFlag end as HospitalFlag \n\t, case when HotelFlag is null then 0 else HotelFlag end as HotelFlag \n\t, case when OfficeFlag is null then 0 else OfficeFlag end as OfficeFlag \n\t, case when ApartmentBuildingFlag is null then 0 else ApartmentBuildingFlag end as ApartmentBuildingFlag \n\n\t--into AssessorsStage\n\tfrom \n\t\ttblRatingHeader rh\n\t\tleft join tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\n\t\tleft join tblUser rcuser on rcuser.UserID = rc.UserID\n\t\tleft join tblClassification tc on tc.ClassificationID = TitleID\n\t\tleft join tblAddress maddr on maddr.AddressId = MailingAddressID\n\t\tleft join tblAddress baddr on baddr.AddressId = BillingAddressID\n\t\tleft join tblClassification mst on mst.ClassificationID = maddr.StateId\n\t\tleft join tblClassification bst on bst.ClassificationID = baddr.StateId\n\t\tinner join tblRatingContractorCompany rcc on rc.RatingContractorID = rcc.assessorid\n\t\t\n\tWhere rh.PremiseTypeID = @{pipeline().parameters.pPremiseType} and \n\t(EndEffectiveDate is null or EndEffectiveDate > getdate())\nand ((rh.CreatedDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}') OR (rh.LastActionDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}'))\n\torder by RatingHeaderID",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "AzureSqlSink"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "db_company",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "cn_db_rating_stage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "copyCompany",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "select top 20 \n\tc.ABN,c.CompanyName, c.CompanyID, c.CompanyStatusID,\n\tc.CompanyTypeID, c.CompanyURL, c.MailingAddressID, c.Phone, \n\tc.PIInsuranceExpiryDate, c.PLInsuranceExpiryDate, c.RatingParticipationFlag,\n\tc.SAPCustomerNo, c.ShortName, c.SoleTraderFlag,\n\tmaddr.[StreetNumber] as Mailing_StreetNumber,\n    maddr.[StreetName] as Mailing_StreetName,\n    maddr.[Suburb] as Mailing_Suburb,\n    maddr.[Postcode] as Mailing_Postcode,\n\tmst.ClassName as Mailing_State,\n\n\tbaddr.[StreetNumber] as Billing_StreetNumber,\n    baddr.[StreetName] as Billing_StreetName,\n    baddr.[Suburb] as Billing_Suburb,\n    baddr.[Postcode] as Billing_Postcode,\n\tbst.ClassName as Billing_State,\n\t'Assessor' as Type\n\t, 1 as batch_id\ninto CompanyStage\nfrom  \n\ttblRatingHeader rh\n\tleft join tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\n\tinner join tblRatingContractorCompany rcc on rc.RatingContractorID = rcc.assessorid\n\tinner join tblCompany c on c.companyid = rcc.companyid\n\tleft join tblAddress maddr on maddr.AddressId = c.MailingAddressID\n\tleft join tblAddress baddr on baddr.AddressId = c.BillingAddressID\n\tleft join tblClassification mst on mst.ClassificationID = maddr.StateId\n\tleft join tblClassification bst on bst.ClassificationID = baddr.StateId\nWhere rh.PremiseTypeID = @{pipeline().parameters.pPremiseType}\n\tand (EndEffectiveDate is null or EndEffectiveDate > getdate())\nand ((rh.CreatedDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}') OR (rh.LastActionDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}'))\n\torder by RatingHeaderID",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "AzureSqlSink"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "db_company",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "cn_db_rating_stage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "copyBuilding",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "select top 20 \n\tc.ABN,c.CompanyName, c.CompanyID, c.CompanyStatusID,\n\tc.CompanyTypeID, c.CompanyURL, c.MailingAddressID, c.Phone, \n\tc.PIInsuranceExpiryDate, c.PLInsuranceExpiryDate, c.RatingParticipationFlag,\n\tc.SAPCustomerNo, c.ShortName, c.SoleTraderFlag,\n\tmaddr.[StreetNumber] as Mailing_StreetNumber,\n    maddr.[StreetName] as Mailing_StreetName,\n    maddr.[Suburb] as Mailing_Suburb,\n    maddr.[Postcode] as Mailing_Postcode,\n\tmst.ClassName as Mailing_State,\n\n\tbaddr.[StreetNumber] as Billing_StreetNumber,\n    baddr.[StreetName] as Billing_StreetName,\n    baddr.[Suburb] as Billing_Suburb,\n    baddr.[Postcode] as Billing_Postcode,\n\tbst.ClassName as Billing_State,\n\t'Assessor' as Type\n\t, 1 as batch_id\ninto CompanyStage\nfrom  \n\ttblRatingHeader rh\n\tleft join tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\n\tinner join tblRatingContractorCompany rcc on rc.RatingContractorID = rcc.assessorid\n\tinner join tblCompany c on c.companyid = rcc.companyid\n\tleft join tblAddress maddr on maddr.AddressId = c.MailingAddressID\n\tleft join tblAddress baddr on baddr.AddressId = c.BillingAddressID\n\tleft join tblClassification mst on mst.ClassificationID = maddr.StateId\n\tleft join tblClassification bst on bst.ClassificationID = baddr.StateId\nWhere rh.PremiseTypeID = @{pipeline().parameters.pPremiseType}\n\tand (EndEffectiveDate is null or EndEffectiveDate > getdate())\nand ((rh.CreatedDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}') OR (rh.LastActionDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}'))\n\torder by RatingHeaderID",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "AzureSqlSink"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "db_company",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "cn_db_rating_stage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"parameters": {
+					"pStartDate": {
+						"type": "string"
+					},
+					"pEndDate": {
+						"type": "string"
+					},
+					"pPremiseType": {
+						"type": "int",
+						"defaultValue": 55
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/db_company')]",
+				"[concat(variables('factoryId'), '/datasets/cn_db_rating_stage')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/00 Start Batch')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1347,15 +1569,6 @@
 									},
 									{
 										"source": {
-											"name": "regional_cleaned"
-										},
-										"sink": {
-											"name": "NO_Regional__c",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
 											"name": "Metropolitan"
 										},
 										"sink": {
@@ -1529,6 +1742,14 @@
 										"sink": {
 											"name": "NO_User_Status__c"
 										}
+									},
+									{
+										"source": {
+											"name": "regional_cleaned"
+										},
+										"sink": {
+											"name": "NO_Regional__c"
+										}
 									}
 								]
 							}
@@ -1652,7 +1873,7 @@
 							"isSequential": false,
 							"activities": [
 								{
-									"name": "Lookup Each Building by Name In Salesforce",
+									"name": "Lookup Member by Member Id In Salesforce",
 									"type": "Lookup",
 									"dependsOn": [],
 									"policy": {
@@ -1685,7 +1906,7 @@
 									"type": "SqlServerStoredProcedure",
 									"dependsOn": [
 										{
-											"activity": "Lookup Each Building by Name In Salesforce",
+											"activity": "Lookup Member by Member Id In Salesforce",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -1718,7 +1939,7 @@
 											},
 											"salesforce_assessor_Id": {
 												"value": {
-													"value": "@activity('Lookup Each Building by Name In Salesforce').output.firstrow.Id",
+													"value": "@activity('Lookup Member by Member Id In Salesforce').output.firstrow.Id",
 													"type": "Expression"
 												},
 												"type": "String"
@@ -1752,6 +1973,90 @@
 								"type": "Expression"
 							}
 						}
+					},
+					{
+						"name": "markAssessorAsUsersToInActive",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "forEachRow",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetNewAssessorToMarkUserInactiveInSalesForce]",
+								"storedProcedureParameters": {
+									"batchid": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "SalesforceSink",
+								"writeBatchSize": 5000,
+								"writeBehavior": "upsert",
+								"externalIdFieldName": "Email",
+								"ignoreNullValues": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Email",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Email",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "IsActive"
+										},
+										"sink": {
+											"name": "IsActive",
+											"type": "Boolean"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "db_stage_assessors",
+								"type": "DatasetReference",
+								"parameters": {
+									"pBatch_Id": "@pipeline().parameters.pbatch_id"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sf_users",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
 				"parameters": {
@@ -1781,7 +2086,8 @@
 				"[concat(variables('factoryId'), '/datasets/db_stage_assessors')]",
 				"[concat(variables('factoryId'), '/datasets/sf_contacts')]",
 				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
-				"[concat(variables('factoryId'), '/datasets/db_members_rating')]"
+				"[concat(variables('factoryId'), '/datasets/db_members_rating')]",
+				"[concat(variables('factoryId'), '/datasets/sf_users')]"
 			]
 		},
 		{
@@ -3249,6 +3555,358 @@
 										"sink": {
 											"name": "Renew_Replace__c"
 										}
+									},
+									{
+										"source": {
+											"name": "review_summary_page"
+										},
+										"sink": {
+											"name": "Review_summary_page__c"
+										}
+									},
+									{
+										"source": {
+											"name": "rating_information_page"
+										},
+										"sink": {
+											"name": "Rating_information_page__c"
+										}
+									},
+									{
+										"source": {
+											"name": "lodge_rating_page"
+										},
+										"sink": {
+											"name": "Lodge_rating_page__c"
+										}
+									},
+									{
+										"source": {
+											"name": "rating_details_page"
+										},
+										"sink": {
+											"name": "Rating_details_page__c"
+										}
+									},
+									{
+										"source": {
+											"name": "parking_space_page"
+										},
+										"sink": {
+											"name": "Parking_Spaces_Page__c"
+										}
+									},
+									{
+										"source": {
+											"name": "water_page"
+										},
+										"sink": {
+											"name": "Water_page__c"
+										}
+									},
+									{
+										"source": {
+											"name": "has_parking_space"
+										},
+										"sink": {
+											"name": "Has_Parking_Space__c"
+										}
+									},
+									{
+										"source": {
+											"name": "has_gym"
+										},
+										"sink": {
+											"name": "Has_Gym__c"
+										}
+									},
+									{
+										"source": {
+											"name": "has_food_court"
+										},
+										"sink": {
+											"name": "Has_Food_Court__c"
+										}
+									},
+									{
+										"source": {
+											"name": "conflict_of_interest"
+										},
+										"sink": {
+											"name": "Conflict_Of_Interest__c"
+										}
+									},
+									{
+										"source": {
+											"name": "compliant_with_current_rules"
+										},
+										"sink": {
+											"name": "Compliant_With_Rules__c"
+										}
+									},
+									{
+										"source": {
+											"name": "relodged_date"
+										},
+										"sink": {
+											"name": "Relodge_Date__c"
+										}
+									},
+									{
+										"source": {
+											"name": "rating_data_complete"
+										},
+										"sink": {
+											"name": "Rating_Data_Complete_Flag__c"
+										}
+									},
+									{
+										"source": {
+											"name": "assessor_declaration"
+										},
+										"sink": {
+											"name": "Assessor_Declaration__c"
+										}
+									},
+									{
+										"source": {
+											"name": "customer_aware_of_star_rating"
+										},
+										"sink": {
+											"name": "Customer_Aware_Of_Star_Rating__c"
+										}
+									},
+									{
+										"source": {
+											"name": "water_star_rating_with_recycle"
+										},
+										"sink": {
+											"name": "Water_Star_Rating_With_Recycled_Water__c"
+										}
+									},
+									{
+										"source": {
+											"name": "water_star_rating_without_recycle"
+										},
+										"sink": {
+											"name": "Water_Star_Rating_Without_Recycled_Water__c"
+										}
+									},
+									{
+										"source": {
+											"name": "energy_star_rating_with_recycle"
+										},
+										"sink": {
+											"name": "Energy_Star_Rating_With_Green_Power__c"
+										}
+									},
+									{
+										"source": {
+											"name": "energy_star_rating_without_recycle"
+										},
+										"sink": {
+											"name": "Energy_Star_Rating_Without_Green_Power__c"
+										}
+									},
+									{
+										"source": {
+											"name": "total_energy_consumption"
+										},
+										"sink": {
+											"name": "Total_Energy_Consumption__c"
+										}
+									},
+									{
+										"source": {
+											"name": "weekly_core_hours_of_Service"
+										},
+										"sink": {
+											"name": "Weekly_Core_Hours_Of_Service__c"
+										}
+									},
+									{
+										"source": {
+											"name": "total_electricity_consumption"
+										},
+										"sink": {
+											"name": "Total_Electricity_Consumption__c"
+										}
+									},
+									{
+										"source": {
+											"name": "total_diesel_consumption"
+										},
+										"sink": {
+											"name": "Total_Diesel_Consumption__c"
+										}
+									},
+									{
+										"source": {
+											"name": "recycle_normalised_water_consumption"
+										},
+										"sink": {
+											"name": "Recycle_Normalised_Water_Consumption__c"
+										}
+									},
+									{
+										"source": {
+											"name": "total_water_consumption"
+										},
+										"sink": {
+											"name": "Total_Water_Consumption__c"
+										}
+									},
+									{
+										"source": {
+											"name": "total_recycled_water_percent"
+										},
+										"sink": {
+											"name": "Total_Recycled_Water_Percent__c"
+										}
+									},
+									{
+										"source": {
+											"name": "total_gas_consumption"
+										},
+										"sink": {
+											"name": "Total_Gas_Consumption__c"
+										}
+									},
+									{
+										"source": {
+											"name": "rating_lodgement_fees"
+										},
+										"sink": {
+											"name": "Rating_Lodgement_Fees__c"
+										}
+									},
+									{
+										"source": {
+											"name": "predicted_greenhouse_gas_intensity"
+										},
+										"sink": {
+											"name": "Predicted_Greenhouse_Gas_Intensity__c"
+										}
+									},
+									{
+										"source": {
+											"name": "predicted_average_water_use"
+										},
+										"sink": {
+											"name": "Predicted_Average_Water_Use__c"
+										}
+									},
+									{
+										"source": {
+											"name": "number_of_trading_days"
+										},
+										"sink": {
+											"name": "Number_Of_Trading_Days__c"
+										}
+									},
+									{
+										"source": {
+											"name": "no_recycle_predicted_average_water_use"
+										},
+										"sink": {
+											"name": "No_Recycle_Predicted_Average_Water_Use__c"
+										}
+									},
+									{
+										"source": {
+											"name": "no_greenpower_ghg_intensity_scope_12"
+										},
+										"sink": {
+											"name": "No_GreenPower_GHG_Intensity_Scope_12__c"
+										}
+									},
+									{
+										"source": {
+											"name": "no_greenpower_ghg_intensity_scope_123"
+										},
+										"sink": {
+											"name": "No_GreenPower_GHG_Intensity_Scope_123__c"
+										}
+									},
+									{
+										"source": {
+											"name": "no_greenpower_ghg_emissions_scope_12"
+										},
+										"sink": {
+											"name": "No_GreenPower_GHG_Emissions_Scope_12__c"
+										}
+									},
+									{
+										"source": {
+											"name": "no_greenpower_ghg_emissions_scope_123"
+										},
+										"sink": {
+											"name": "No_GreenPower_GHG_Emissions_Scope_123__c"
+										}
+									},
+									{
+										"source": {
+											"name": "greenhouse_gas_intensity_scope_123"
+										},
+										"sink": {
+											"name": "Greenhouse_Gas_Intensity_Scope_123__c"
+										}
+									},
+									{
+										"source": {
+											"name": "greenhouse_gas_emissions_scope_123"
+										},
+										"sink": {
+											"name": "Greenhouse_Gas_Emissions_Scope_123__c"
+										}
+									},
+									{
+										"source": {
+											"name": "energy_intensity"
+										},
+										"sink": {
+											"name": "Energy_Intensity__c"
+										}
+									},
+									{
+										"source": {
+											"name": "explain_why_not_compliant"
+										},
+										"sink": {
+											"name": "Explain_Why_Not_Compliant__c"
+										}
+									},
+									{
+										"source": {
+											"name": "is_small_shopping_centre"
+										},
+										"sink": {
+											"name": "Is_Small_Shopping_Centre__c"
+										}
+									},
+									{
+										"source": {
+											"name": "using_latest_rules_water"
+										},
+										"sink": {
+											"name": "Using_Latest_Water_Rules_Version__c"
+										}
+									},
+									{
+										"source": {
+											"name": "using_latest_rules_energy"
+										},
+										"sink": {
+											"name": "Using_Latest_Energy_Rules_Version__c"
+										}
+									},
+									{
+										"source": {
+											"name": "single_or_multi_storey"
+										},
+										"sink": {
+											"name": "Shopping_Centre_Storey__c"
+										}
 									}
 								]
 							}
@@ -3612,6 +4270,422 @@
 				"[concat(variables('factoryId'), '/datasets/sf_Ratings')]",
 				"[concat(variables('factoryId'), '/datasets/db_transformed_ratings')]",
 				"[concat(variables('factoryId'), '/datasets/sf_buiding_rating')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/cn_db_rating_stage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RatingHeaderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RatingReferenceNumber",
+						"type": "varchar"
+					},
+					{
+						"name": "PremiseTypeID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "PremiseType",
+						"type": "varchar"
+					},
+					{
+						"name": "PremiseID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "PremiseName",
+						"type": "varchar"
+					},
+					{
+						"name": "AssessorID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AssessorEmail",
+						"type": "varchar"
+					},
+					{
+						"name": "Customer_Name",
+						"type": "varchar"
+					},
+					{
+						"name": "Customer_TradingName",
+						"type": "varchar"
+					},
+					{
+						"name": "Customer_Mailing_StreeNumber",
+						"type": "varchar"
+					},
+					{
+						"name": "Customer_Mailing_StreetName",
+						"type": "varchar"
+					},
+					{
+						"name": "Customer_Mailing_Suburb",
+						"type": "varchar"
+					},
+					{
+						"name": "Customer_Mailing_Postcode",
+						"type": "varchar"
+					},
+					{
+						"name": "Customer_Mailing_State",
+						"type": "varchar"
+					},
+					{
+						"name": "RatingPeriodFrom",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "RatingPeriodTo",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "PublicListingFlag",
+						"type": "bit"
+					},
+					{
+						"name": "OfficerID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RatingStatusID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RatingStatus",
+						"type": "varchar"
+					},
+					{
+						"name": "LodgedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "PaymentStatusID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "PaymentStatus",
+						"type": "varchar"
+					},
+					{
+						"name": "PaidDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CertificateValidFrom",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CertificateValidTo",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "PremiseNameOnCert",
+						"type": "varchar"
+					},
+					{
+						"name": "CustomerNameOnCert",
+						"type": "varchar"
+					},
+					{
+						"name": "Certificate_Customer_Email",
+						"type": "varchar"
+					},
+					{
+						"name": "LastActionDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "ReplaceFlag",
+						"type": "bit"
+					},
+					{
+						"name": "RenewFlag",
+						"type": "bit"
+					},
+					{
+						"name": "PreviousRatingHeaderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "NewRatingHeaderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "StreetNumber",
+						"type": "varchar"
+					},
+					{
+						"name": "StreetName",
+						"type": "varchar"
+					},
+					{
+						"name": "Suburb",
+						"type": "varchar"
+					},
+					{
+						"name": "Postcode",
+						"type": "varchar"
+					},
+					{
+						"name": "State",
+						"type": "varchar"
+					},
+					{
+						"name": "RatingTypes",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CinemaTheatres",
+						"type": "decimal",
+						"precision": 8,
+						"scale": 2
+					},
+					{
+						"name": "ShoppingCentreWaterSummaryID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "FloorConfiguration",
+						"type": "varchar"
+					},
+					{
+						"name": "ParkingSpacesMechanical",
+						"type": "decimal",
+						"precision": 8,
+						"scale": 2
+					},
+					{
+						"name": "ParkingSpacesNatural",
+						"type": "decimal",
+						"precision": 8,
+						"scale": 2
+					},
+					{
+						"name": "TotalGymGLAR",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "FoodCourtSeats",
+						"type": "decimal",
+						"precision": 8,
+						"scale": 2
+					},
+					{
+						"name": "conflictOfInterestFlag",
+						"type": "bit"
+					},
+					{
+						"name": "InComplianceWithCurrentRules",
+						"type": "bit"
+					},
+					{
+						"name": "WaterStarRatingWRecycle",
+						"type": "varchar"
+					},
+					{
+						"name": "WaterStarRatingWoRecycle",
+						"type": "varchar"
+					},
+					{
+						"name": "EnergyStarRatingWRecycle",
+						"type": "varchar"
+					},
+					{
+						"name": "EnergyStarRatingWoRecycle",
+						"type": "varchar"
+					},
+					{
+						"name": "totalEnergyConsumption",
+						"type": "decimal",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "WeeklyCoreHoursOfService",
+						"type": "decimal",
+						"precision": 8,
+						"scale": 2
+					},
+					{
+						"name": "TotalElectricityConsumption",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "TotalDieselConsumption",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "WaterConsumption",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "RecycleNormalisedWaterConsumption",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "TotalWaterConsumption",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "TotalRecycledWaterPercent",
+						"type": "decimal",
+						"precision": 6,
+						"scale": 2
+					},
+					{
+						"name": "TotalGasConsumption",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "RatingLodgementFees",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 2
+					},
+					{
+						"name": "PredictedGreenhouseGasIntensity",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "PredictedAverageWaterUse",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "NumberOfTradingDays",
+						"type": "decimal",
+						"precision": 8,
+						"scale": 2
+					},
+					{
+						"name": "NoRecyclePredictedAverageWaterUse",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "NoGreenPower_GHG_IntensityScope_12",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "NoGreenPowerGHGIntensityScope123",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "NoGreenPowerGHGEmissionsScope12",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "NoGreenPowerGHGEmissionsScope123",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "GreenhouseGasIntensityScope123",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "GreenhouseGasEmissionsScope123",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "EnergyIntensity",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "ExplainWhyNotCompliant",
+						"type": "varchar"
+					},
+					{
+						"name": "IsSmallShoppingCentre",
+						"type": "bit"
+					},
+					{
+						"name": "batch_id",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "RatingHeaderStage"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
 			]
 		},
 		{
@@ -5271,7 +6345,7 @@
 							"name": "AlterRow1"
 						}
 					],
-					"script": "parameters{\n\tpDefaultCountry as string ('Australia'),\n\tpbatch_id as integer (1),\n\tpActive as string ('Active'),\n\tpPortalAccess as string ('NABERS Online')\n}\nsource(output(\n\t\tid as integer,\n\t\tsalesforce_company_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_company_id as integer,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getLookupCompany\nsource(output(\n\t\tid as integer,\n\t\tsalesforce_assessor_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_assessor_id as integer,\n\t\tsalesforce_company_id as string,\n\t\tmember_company_id as integer,\n\t\tsync_status as string,\n\t\tmailing_country as string,\n\t\tbilling_country as string,\n\t\taccredition as string,\n\t\trating_type as string,\n\t\tregional_cleaned as string,\n\t\tsalesforce_contact_type as string,\n\t\tsalesforce_portal_access as string,\n\t\tsalesforce_user_active as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getLookupAssessor\nsource(output(\n\t\tcompanyid as integer,\n\t\tAssessorId as integer,\n\t\tUserId as integer,\n\t\tFirstName as string,\n\t\tLastName as string,\n\t\tTitle as string,\n\t\tMailing_StreetNumber as string,\n\t\tMailing_StreetName as string,\n\t\tMailing_Suburb as string,\n\t\tMailing_Postcode as string,\n\t\tMailing_State as string,\n\t\tBilling_StreetNumber as string,\n\t\tBilling_StreetName as string,\n\t\tBilling_Suburb as string,\n\t\tBilling_Postcode as string,\n\t\tBilling_State as string,\n\t\tPhone as string,\n\t\tEmail as string,\n\t\tJoinedDate as timestamp,\n\t\tAccreditationDate as timestamp,\n\t\tAccreditationExpiryDate as timestamp,\n\t\tAccreditationNumber as string,\n\t\tEnergyFlag as boolean,\n\t\tWaterFlag as boolean,\n\t\tWasteFlag as boolean,\n\t\tbatch_id as integer,\n\t\tRequireSupervisionSC as boolean,\n\t\tMetropolitan as string,\n\t\tRegional as string,\n\t\tRetailFlag as integer,\n\t\tHospitalFlag as integer,\n\t\tHotelFlag as integer,\n\t\tOfficeFlag as integer,\n\t\tApartmentBuildingFlag as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getStageAssessors\ngetLookupAssessor, getLookupCompany join(getLookupAssessor@member_company_id == getLookupCompany@member_company_id,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> joinLookupAssessorCompany\nnewRequiredColumns alterRow(updateIf(isNull(getLookupAssessor@salesforce_company_id)||length(trim(getLookupAssessor@salesforce_company_id))==0)) ~> updateIfSalesforceCompanyIdIsEmpty\njoinStagedAssessors derive(D_DefaultMailingCountry = $pDefaultCountry,\n\t\tD_DefaultBillingCountry = $pDefaultCountry,\n\t\tD_RatingTypes = iif(true() == EnergyFlag, 'Energy', '')\r\n+ iif(true() == WaterFlag, iif(true() == EnergyFlag, '; Water', 'Water'), ''),\n\t\tD_Accredition = iif(1 == RetailFlag, 'Shopping Centre', '')\r\n+ iif(1 == HotelFlag, iif(1 == RetailFlag, '; Hotel', 'Hotel'), '')\r\n+ iif(1 == OfficeFlag, iif(1 == RetailFlag || 1 == HotelFlag, '; Office', 'Office'), '')\r\n+ iif(1 == ApartmentBuildingFlag, iif(1 == RetailFlag || 1 == HotelFlag || 1 == OfficeFlag, '; Apartment Building', 'Apartment Building'), '')\r\n+ iif(1 == HospitalFlag, iif(1 == RetailFlag || 1 == HotelFlag || 1 == OfficeFlag|| 1 == ApartmentBuildingFlag, '; Public Hospital', 'Public Hospital'), ''),\n\t\tD_Regional_Cleaned = iif(isNull(Regional), Metropolitan, Regional),\n\t\tD_Salesforce_User_Active = $pActive,\n\t\tD_Portal_Access = $pPortalAccess) ~> newRequiredColumns\ngetStageAssessors filter(equals(batch_id, $pbatch_id)) ~> getForCurrentBatch\njoinLookupAssessorCompany, getStageAssessors join(member_assessor_id == AssessorId,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> joinStagedAssessors\nnewRequiredColumns alterRow(updateIf(equals($pbatch_id,getLookupAssessor@batch_id))) ~> AlterRow1\nupdateIfSalesforceCompanyIdIsEmpty sink(input(\n\t\tid as integer,\n\t\tsalesforce_assessor_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_assessor_id as integer,\n\t\tsalesforce_company_id as string,\n\t\tmember_company_id as integer,\n\t\tsync_status as string,\n\t\tmailing_country as string,\n\t\tbilling_country as string,\n\t\taccredition as string,\n\t\trating_type as string,\n\t\tregional_cleaned as string,\n\t\tsalesforce_contact_type as string,\n\t\tsalesforce_portal_access as string,\n\t\tsalesforce_user_active as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['id'],\n\tformat: 'table',\n\tmapColumn(\n\t\tsalesforce_company_id = getLookupCompany@salesforce_company_Id,\n\t\tid = getLookupAssessor@id\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> targetLookupSalesforceAssessor\nAlterRow1 sink(input(\n\t\tid as integer,\n\t\tsalesforce_assessor_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_assessor_id as integer,\n\t\tsalesforce_company_id as string,\n\t\tmember_company_id as integer,\n\t\tsync_status as string,\n\t\tmailing_country as string,\n\t\tbilling_country as string,\n\t\taccredition as string,\n\t\trating_type as string,\n\t\tregional_cleaned as string,\n\t\tsalesforce_contact_type as string,\n\t\tsalesforce_portal_access as string,\n\t\tsalesforce_user_active as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['id'],\n\tformat: 'table',\n\tmapColumn(\n\t\tmailing_country = D_DefaultMailingCountry,\n\t\tbilling_country = D_DefaultBillingCountry,\n\t\trating_type = D_RatingTypes,\n\t\taccredition = D_Accredition,\n\t\tregional_cleaned = D_Regional_Cleaned,\n\t\tid = getLookupAssessor@id,\n\t\tsalesforce_user_active = D_Salesforce_User_Active,\n\t\tsalesforce_portal_access = D_Portal_Access\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> updateCleanedData"
+					"script": "parameters{\n\tpDefaultCountry as string ('Australia'),\n\tpbatch_id as integer (1),\n\tpActive as string ('Active'),\n\tpPortalAccess as string ('NABERS Online')\n}\nsource(output(\n\t\tid as integer,\n\t\tsalesforce_company_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_company_id as integer,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getLookupCompany\nsource(output(\n\t\tid as integer,\n\t\tsalesforce_assessor_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_assessor_id as integer,\n\t\tsalesforce_company_id as string,\n\t\tmember_company_id as integer,\n\t\tsync_status as string,\n\t\tmailing_country as string,\n\t\tbilling_country as string,\n\t\taccredition as string,\n\t\trating_type as string,\n\t\tregional_cleaned as string,\n\t\tsalesforce_contact_type as string,\n\t\tsalesforce_portal_access as string,\n\t\tsalesforce_user_active as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getLookupAssessor\nsource(output(\n\t\tcompanyid as integer,\n\t\tAssessorId as integer,\n\t\tUserId as integer,\n\t\tFirstName as string,\n\t\tLastName as string,\n\t\tTitle as string,\n\t\tMailing_StreetNumber as string,\n\t\tMailing_StreetName as string,\n\t\tMailing_Suburb as string,\n\t\tMailing_Postcode as string,\n\t\tMailing_State as string,\n\t\tBilling_StreetNumber as string,\n\t\tBilling_StreetName as string,\n\t\tBilling_Suburb as string,\n\t\tBilling_Postcode as string,\n\t\tBilling_State as string,\n\t\tPhone as string,\n\t\tEmail as string,\n\t\tJoinedDate as timestamp,\n\t\tAccreditationDate as timestamp,\n\t\tAccreditationExpiryDate as timestamp,\n\t\tAccreditationNumber as string,\n\t\tEnergyFlag as boolean,\n\t\tWaterFlag as boolean,\n\t\tWasteFlag as boolean,\n\t\tbatch_id as integer,\n\t\tRequireSupervisionSC as boolean,\n\t\tMetropolitan as string,\n\t\tRegional as string,\n\t\tRetailFlag as integer,\n\t\tHospitalFlag as integer,\n\t\tHotelFlag as integer,\n\t\tOfficeFlag as integer,\n\t\tApartmentBuildingFlag as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getStageAssessors\ngetLookupAssessor, getLookupCompany join(getLookupAssessor@member_company_id == getLookupCompany@member_company_id,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> joinLookupAssessorCompany\nnewRequiredColumns alterRow(updateIf(isNull(getLookupAssessor@salesforce_company_id)||length(trim(getLookupAssessor@salesforce_company_id))==0)) ~> updateIfSalesforceCompanyIdIsEmpty\njoinStagedAssessors derive(D_DefaultMailingCountry = $pDefaultCountry,\n\t\tD_DefaultBillingCountry = $pDefaultCountry,\n\t\tD_RatingTypes = iif(true() == EnergyFlag, 'Energy', '')\r\n+ iif(true() == WaterFlag, iif(true() == EnergyFlag, '; Water', 'Water'), ''),\n\t\tD_Accredition = iif(1 == RetailFlag, 'Shopping Centre', '')\r\n+ iif(1 == HotelFlag, iif(1 == RetailFlag, '; Hotel', 'Hotel'), '')\r\n+ iif(1 == OfficeFlag, iif(1 == RetailFlag || 1 == HotelFlag, '; Office', 'Office'), '')\r\n+ iif(1 == ApartmentBuildingFlag, iif(1 == RetailFlag || 1 == HotelFlag || 1 == OfficeFlag, '; Apartment Building', 'Apartment Building'), '')\r\n+ iif(1 == HospitalFlag, iif(1 == RetailFlag || 1 == HotelFlag || 1 == OfficeFlag|| 1 == ApartmentBuildingFlag, '; Public Hospital', 'Public Hospital'), ''),\n\t\tD_Regional_Cleaned = replace(replace(iif(isNull(Regional), Metropolitan, Regional), ';ACT', ''), 'ACT', ''),\n\t\tD_Salesforce_User_Active = $pActive,\n\t\tD_Portal_Access = $pPortalAccess) ~> newRequiredColumns\ngetStageAssessors filter(equals(batch_id, $pbatch_id)) ~> getForCurrentBatch\njoinLookupAssessorCompany, getStageAssessors join(member_assessor_id == AssessorId,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> joinStagedAssessors\nnewRequiredColumns alterRow(updateIf(equals($pbatch_id,getLookupAssessor@batch_id))) ~> AlterRow1\nupdateIfSalesforceCompanyIdIsEmpty sink(input(\n\t\tid as integer,\n\t\tsalesforce_assessor_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_assessor_id as integer,\n\t\tsalesforce_company_id as string,\n\t\tmember_company_id as integer,\n\t\tsync_status as string,\n\t\tmailing_country as string,\n\t\tbilling_country as string,\n\t\taccredition as string,\n\t\trating_type as string,\n\t\tregional_cleaned as string,\n\t\tsalesforce_contact_type as string,\n\t\tsalesforce_portal_access as string,\n\t\tsalesforce_user_active as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['id'],\n\tformat: 'table',\n\tmapColumn(\n\t\tsalesforce_company_id = getLookupCompany@salesforce_company_Id,\n\t\tid = getLookupAssessor@id\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> targetLookupSalesforceAssessor\nAlterRow1 sink(input(\n\t\tid as integer,\n\t\tsalesforce_assessor_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_assessor_id as integer,\n\t\tsalesforce_company_id as string,\n\t\tmember_company_id as integer,\n\t\tsync_status as string,\n\t\tmailing_country as string,\n\t\tbilling_country as string,\n\t\taccredition as string,\n\t\trating_type as string,\n\t\tregional_cleaned as string,\n\t\tsalesforce_contact_type as string,\n\t\tsalesforce_portal_access as string,\n\t\tsalesforce_user_active as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['id'],\n\tformat: 'table',\n\tmapColumn(\n\t\tmailing_country = D_DefaultMailingCountry,\n\t\tbilling_country = D_DefaultBillingCountry,\n\t\trating_type = D_RatingTypes,\n\t\taccredition = D_Accredition,\n\t\tregional_cleaned = D_Regional_Cleaned,\n\t\tid = getLookupAssessor@id,\n\t\tsalesforce_user_active = D_Salesforce_User_Active,\n\t\tsalesforce_portal_access = D_Portal_Access\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> updateCleanedData"
 				}
 			},
 			"dependsOn": [
@@ -5401,644 +6475,6 @@
 				"[concat(variables('factoryId'), '/datasets/db_lookup_sf_assessors_ids')]",
 				"[concat(variables('factoryId'), '/datasets/db_lookup_sf_officer_ids')]",
 				"[concat(variables('factoryId'), '/datasets/db_transformed_ratings')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/00 Schedule Job')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "copyRatings",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "Select Top 20\n\trh.RatingHeaderID,\n\tRatingReferenceNumber,\n\trh.PremiseTypeID,\n\tpremiseType.ClassName as PremiseType,\n\trh.PremiseID,\n\tpremise.PremiseName as PremiseName,\n\tAssessorID,\n\trc.email as AssessorEmail,\n\tcustomer.RegisteredName as Customer_Name, \n\tcustomer.TradingName as Customer_TradingName,\n\tcmaddr.[StreetNumber] as [Customer_Mailing_StreeNumber],\n    cmaddr.[StreetName]  as [Customer_Mailing_StreetName],\n    cmaddr.[Suburb] as [Customer_Mailing_Suburb],\n    cmaddr.[Postcode] as [Customer_Mailing_Postcode],\n\tcmst.ClassName as [Customer_Mailing_State],\n\n\tRatingPeriodFrom,\n\tRatingPeriodTo,\n\tPublicListingFlag,\n\tOfficerID,\n\tRatingStatusID,\n\trs.ClassName as RatingStatus,\n\tLodgedDate,\n\tPaymentStatusID,\n\tps.ClassName as PaymentStatus,\n\tPaidDate,\n\t--Certificate\n\tCertificateValidFrom,\n\tCertificateValidTo,\n\n\tPremisesName as PremiseNameOnCert,\n\tCustomerName as CustomerNameOnCert,\n\n\trh.DeliveryEmail  as Certificate_Customer_Email,\n\n\tLastActionDate, \n\n\tReplaceFlag,\n\tRenewFlag,\n\tPreviousRatingHeaderID,\n\tNewRatingHeaderID,\n\taddr.[StreetNumber],\n    addr.[StreetName],\n    addr.[Suburb],\n    addr.[Postcode],\n\tst.ClassName as [State],\n\t(select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crt.ClassName as varchar(16)) FROM tblRatingType rt \n\t\t\t\t\tINNER JOIN tblClassification crt on crt.ClassificationID = rt.RatingType\n\t\t\t\t\tand rt.RatingHeaderID = rh.RatingHeaderID\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as RatingTypes\n\n\n\n\t, scs.CinemaTheatres \n\t, scws.ShoppingCentreWaterSummaryID \n\t, scs.FloorConfiguration\n\t, scs.ParkingSpacesMechanical\n\t, scs.ParkingSpacesNatural \n\t, scs.TotalGymGLAR \n\t, scs.FoodCourtSeats \n\t, rad.conflictOfInterestFlag \n\t, rad.InComplianceWithCurrentRules \n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 57) as WaterStarRatingWRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithoutGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 57) as WaterStarRatingWoRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 56) as EnergyStarRatingWRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithoutGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 56) as EnergyStarRatingWoRecycle\n\t, isnull(sces.TotalElectricityUse * 3.6, 0) + isnull(sces.TotalGasUse, 0) + isnull(sces.TotalLPGUse * 25.7, 0) + isnull(sces.TotalOilUse * 38.6, 0) + isnull(sces.TotalCoalUse * 22.1, 0) as totalEnergyConsumption\n\t, scs.HoursOfService as WeeklyCoreHoursOfService \n\t, sces.TotalElectricityUse as TotalElectricityConsumption\n\t, sces.TotalOilUse as TotalDieselConsumption\n\t, scws.WaterConsumptionWoRW as WaterConsumption\n\t, scws.WaterUsePerSqmWoRW as RecycleNormalisedWaterConsumption\n\t, scws.WaterConsumptionWoRW as TotalWaterConsumption\n\t, scws.RecycledWaterPercent as TotalRecycledWaterPercent\n\t, sces.TotalGasUse as TotalGasConsumption\n\t, (select Amount from tblFinancialTransaction ft inner join tblRatingPayment rp on ft.RatingPaymentID = rp.RatingPaymentID\n\t\t\tand rp.RatingHeaderID = rh.RatingHeaderId\n\t\t\twhere FeeCategoryID = 244 -- Loedgement\n\t\t\t) as RatingLodgementFees\n\t, sces.PredictedGHGEmissionsPerSqm as PredictedGreenhouseGasIntensity\n\t, scws.PredictedWaterUsePerGLAR as PredictedAverageWaterUse\n\t, scs.TradingDays as NumberOfTradingDays\n\t, scws.PredictedWaterUsePerGLARWoRW as NoRecyclePredictedAverageWaterUse\n\t, sces.GHGEmissionsPerSqmGLARScope12WoGP as NoGreenPower_GHG_IntensityScope_12\n\t, sces.GHGEmissionsPerSqmGLARScope123WoGP as NoGreenPowerGHGIntensityScope123\n\t, sces.GHGEmissionsScope12WoGP as NoGreenPowerGHGEmissionsScope12\n\t, sces.GHGEmissionsScope123WoGP  as NoGreenPowerGHGEmissionsScope123\n\t, sces.GHGEmissionsPerSqmGLARScope123 as GreenhouseGasIntensityScope123\n\t, sces.GHGEmissionsScope123  as GreenhouseGasEmissionsScope123\n\t, sces.EnergyIntensity\n\t, rad.ComplianceExplanation as ExplainWhyNotCompliant \n\t, scs.IsSmallShoppingCentre\n\t, 1 as batch_id\n\n--into RatingHeaderStage\nfrom tblRatingHeader rh\nleft join tblPremise premise on premise.PremiseID = rh.PremiseID\nleft join tblClassification premiseType on premiseType.ClassificationID = rh.PremiseTypeID\nleft join tblClassification rs on rs.ClassificationID = rh.RatingStatusID\nleft join tblClassification ps on ps.ClassificationID = rh.PaymentStatusID\nleft join tblAdministrator ad on ad.AdministratorID = rh.OfficerID\nleft join tblUser aduser on aduser.UserID = ad.UserID\nleft join tblCustomer customer on customer.CustomerID = rh.CustomerID\nleft join tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\nleft join tblUser rcuser on rcuser.UserID = rc.UserID\nleft join tblAddress addr on addr.AddressId = premise.PremiseAddressId\nleft join tblClassification st on st.ClassificationID = addr.StateId\nleft join tblAddress cmaddr on cmaddr.AddressId = customer.MailingAddressID\nleft join tblClassification cmst on cmst.ClassificationID = cmaddr.StateId\n\nleft join tblShoppingCentreSummary scs on scs.RatingHeaderID = rh.RatingHeaderID\nleft join tblShoppingCentreEnergySummary sces on sces.RatingHeaderID = rh.RatingHeaderID\nleft join tblShoppingCentreWaterSummary scws on scws.RatingHeaderID = rh.RatingHeaderID\n\nleft join tblAssessorDeclaration rad on rad.RatingHeaderID = rh.RatingHeaderID\n\nWhere rh.PremiseTypeID = @{pipeline().parameters.pPremiseType}\nand ((rh.CreatedDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}') OR (rh.LastActionDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}'))\norder by RatingHeaderID",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"sink": {
-								"type": "AzureSqlSink"
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "db_company",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "cn_db_rating_stage",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "copyAccessors",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "Select Top 20\n\trcc.companyid,\n\trc.RatingContractorID as AssessorId,\n\trcuser.UserID as UserId,\n\trcuser.FirstName, \n\trcuser.LastName, \n\ttc.ClassName as Title, \n\tmaddr.[StreetNumber] as Mailing_StreetNumber,\n    maddr.[StreetName] as Mailing_StreetName,\n    maddr.[Suburb] as Mailing_Suburb,\n    maddr.[Postcode] as Mailing_Postcode,\n\tmst.ClassName as Mailing_State,\n\n\tbaddr.[StreetNumber] as Billing_StreetNumber,\n    baddr.[StreetName] as Billing_StreetName,\n    baddr.[Suburb] as Billing_Suburb,\n    baddr.[Postcode] as Billing_Postcode,\n\tbst.ClassName as Billing_State,\n\tPhone,\n\tEmail,\n\tJoinedDate,\n\tAccreditationDate,\n\tAccreditationExpiryDate,\n\tAccreditationNumber,\n\tEnergyFlag, \n\tWaterFlag, \n\tWasteFlag\n\t, 1 as batch_id\n\t, RequireSupervisionSC\n\t, (select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crst.ClassCode as varchar(16)) FROM tblRatingContractorAvailability  rca \n\t\t\t\t\tINNER JOIN tblClassification crt on crt.ClassificationID = rca.AvailabilityTypeID\n\t\t\t\t\tleft join tblClassification crst on crst.ClassificationID = rca.StateId\n\t\t\t\t\tand rca.RatingContractorID = rc.RatingContractorID and crt.ClassificationID = 459\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as Metropolitan\n\t, (select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crst.ClassCode as varchar(16)) FROM tblRatingContractorAvailability  rca \n\t\t\t\t\tINNER JOIN tblClassification crt on crt.ClassificationID = rca.AvailabilityTypeID\n\t\t\t\t\tleft join tblClassification crst on crst.ClassificationID = rca.StateId\n\t\t\t\t\tand rca.RatingContractorID = rc.RatingContractorID and crt.ClassificationID = 460\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as Regional\n\t, case when RetailFlag is null then 0 else RetailFlag end as RetailFlag \n\t, case when HospitalFlag is null then 0 else HospitalFlag end as HospitalFlag \n\t, case when HotelFlag is null then 0 else HotelFlag end as HotelFlag \n\t, case when OfficeFlag is null then 0 else OfficeFlag end as OfficeFlag \n\t, case when ApartmentBuildingFlag is null then 0 else ApartmentBuildingFlag end as ApartmentBuildingFlag \n\n\t--into AssessorsStage\n\tfrom \n\t\ttblRatingHeader rh\n\t\tleft join tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\n\t\tleft join tblUser rcuser on rcuser.UserID = rc.UserID\n\t\tleft join tblClassification tc on tc.ClassificationID = TitleID\n\t\tleft join tblAddress maddr on maddr.AddressId = MailingAddressID\n\t\tleft join tblAddress baddr on baddr.AddressId = BillingAddressID\n\t\tleft join tblClassification mst on mst.ClassificationID = maddr.StateId\n\t\tleft join tblClassification bst on bst.ClassificationID = baddr.StateId\n\t\tinner join tblRatingContractorCompany rcc on rc.RatingContractorID = rcc.assessorid\n\t\t\n\tWhere rh.PremiseTypeID = @{pipeline().parameters.pPremiseType} and \n\t(EndEffectiveDate is null or EndEffectiveDate > getdate())\nand ((rh.CreatedDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}') OR (rh.LastActionDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}'))\n\torder by RatingHeaderID",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"sink": {
-								"type": "AzureSqlSink"
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "db_company",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "cn_db_rating_stage",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "copyCompany",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "select top 20 \n\tc.ABN,c.CompanyName, c.CompanyID, c.CompanyStatusID,\n\tc.CompanyTypeID, c.CompanyURL, c.MailingAddressID, c.Phone, \n\tc.PIInsuranceExpiryDate, c.PLInsuranceExpiryDate, c.RatingParticipationFlag,\n\tc.SAPCustomerNo, c.ShortName, c.SoleTraderFlag,\n\tmaddr.[StreetNumber] as Mailing_StreetNumber,\n    maddr.[StreetName] as Mailing_StreetName,\n    maddr.[Suburb] as Mailing_Suburb,\n    maddr.[Postcode] as Mailing_Postcode,\n\tmst.ClassName as Mailing_State,\n\n\tbaddr.[StreetNumber] as Billing_StreetNumber,\n    baddr.[StreetName] as Billing_StreetName,\n    baddr.[Suburb] as Billing_Suburb,\n    baddr.[Postcode] as Billing_Postcode,\n\tbst.ClassName as Billing_State,\n\t'Assessor' as Type\n\t, 1 as batch_id\ninto CompanyStage\nfrom  \n\ttblRatingHeader rh\n\tleft join tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\n\tinner join tblRatingContractorCompany rcc on rc.RatingContractorID = rcc.assessorid\n\tinner join tblCompany c on c.companyid = rcc.companyid\n\tleft join tblAddress maddr on maddr.AddressId = c.MailingAddressID\n\tleft join tblAddress baddr on baddr.AddressId = c.BillingAddressID\n\tleft join tblClassification mst on mst.ClassificationID = maddr.StateId\n\tleft join tblClassification bst on bst.ClassificationID = baddr.StateId\nWhere rh.PremiseTypeID = @{pipeline().parameters.pPremiseType}\n\tand (EndEffectiveDate is null or EndEffectiveDate > getdate())\nand ((rh.CreatedDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}') OR (rh.LastActionDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}'))\n\torder by RatingHeaderID",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"sink": {
-								"type": "AzureSqlSink"
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "db_company",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "cn_db_rating_stage",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "copyBuilding",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "select top 20 \n\tc.ABN,c.CompanyName, c.CompanyID, c.CompanyStatusID,\n\tc.CompanyTypeID, c.CompanyURL, c.MailingAddressID, c.Phone, \n\tc.PIInsuranceExpiryDate, c.PLInsuranceExpiryDate, c.RatingParticipationFlag,\n\tc.SAPCustomerNo, c.ShortName, c.SoleTraderFlag,\n\tmaddr.[StreetNumber] as Mailing_StreetNumber,\n    maddr.[StreetName] as Mailing_StreetName,\n    maddr.[Suburb] as Mailing_Suburb,\n    maddr.[Postcode] as Mailing_Postcode,\n\tmst.ClassName as Mailing_State,\n\n\tbaddr.[StreetNumber] as Billing_StreetNumber,\n    baddr.[StreetName] as Billing_StreetName,\n    baddr.[Suburb] as Billing_Suburb,\n    baddr.[Postcode] as Billing_Postcode,\n\tbst.ClassName as Billing_State,\n\t'Assessor' as Type\n\t, 1 as batch_id\ninto CompanyStage\nfrom  \n\ttblRatingHeader rh\n\tleft join tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\n\tinner join tblRatingContractorCompany rcc on rc.RatingContractorID = rcc.assessorid\n\tinner join tblCompany c on c.companyid = rcc.companyid\n\tleft join tblAddress maddr on maddr.AddressId = c.MailingAddressID\n\tleft join tblAddress baddr on baddr.AddressId = c.BillingAddressID\n\tleft join tblClassification mst on mst.ClassificationID = maddr.StateId\n\tleft join tblClassification bst on bst.ClassificationID = baddr.StateId\nWhere rh.PremiseTypeID = @{pipeline().parameters.pPremiseType}\n\tand (EndEffectiveDate is null or EndEffectiveDate > getdate())\nand ((rh.CreatedDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}') OR (rh.LastActionDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}'))\n\torder by RatingHeaderID",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"sink": {
-								"type": "AzureSqlSink"
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "db_company",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "cn_db_rating_stage",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"parameters": {
-					"pStartDate": {
-						"type": "string"
-					},
-					"pEndDate": {
-						"type": "string"
-					},
-					"pPremiseType": {
-						"type": "int",
-						"defaultValue": 55
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/db_company')]",
-				"[concat(variables('factoryId'), '/datasets/cn_db_rating_stage')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/cn_db_rating_stage')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "RatingHeaderID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "RatingReferenceNumber",
-						"type": "varchar"
-					},
-					{
-						"name": "PremiseTypeID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "PremiseType",
-						"type": "varchar"
-					},
-					{
-						"name": "PremiseID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "PremiseName",
-						"type": "varchar"
-					},
-					{
-						"name": "AssessorID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "AssessorEmail",
-						"type": "varchar"
-					},
-					{
-						"name": "Customer_Name",
-						"type": "varchar"
-					},
-					{
-						"name": "Customer_TradingName",
-						"type": "varchar"
-					},
-					{
-						"name": "Customer_Mailing_StreeNumber",
-						"type": "varchar"
-					},
-					{
-						"name": "Customer_Mailing_StreetName",
-						"type": "varchar"
-					},
-					{
-						"name": "Customer_Mailing_Suburb",
-						"type": "varchar"
-					},
-					{
-						"name": "Customer_Mailing_Postcode",
-						"type": "varchar"
-					},
-					{
-						"name": "Customer_Mailing_State",
-						"type": "varchar"
-					},
-					{
-						"name": "RatingPeriodFrom",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "RatingPeriodTo",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "PublicListingFlag",
-						"type": "bit"
-					},
-					{
-						"name": "OfficerID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "RatingStatusID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "RatingStatus",
-						"type": "varchar"
-					},
-					{
-						"name": "LodgedDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "PaymentStatusID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "PaymentStatus",
-						"type": "varchar"
-					},
-					{
-						"name": "PaidDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "CertificateValidFrom",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "CertificateValidTo",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "PremiseNameOnCert",
-						"type": "varchar"
-					},
-					{
-						"name": "CustomerNameOnCert",
-						"type": "varchar"
-					},
-					{
-						"name": "Certificate_Customer_Email",
-						"type": "varchar"
-					},
-					{
-						"name": "LastActionDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "ReplaceFlag",
-						"type": "bit"
-					},
-					{
-						"name": "RenewFlag",
-						"type": "bit"
-					},
-					{
-						"name": "PreviousRatingHeaderID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "NewRatingHeaderID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "StreetNumber",
-						"type": "varchar"
-					},
-					{
-						"name": "StreetName",
-						"type": "varchar"
-					},
-					{
-						"name": "Suburb",
-						"type": "varchar"
-					},
-					{
-						"name": "Postcode",
-						"type": "varchar"
-					},
-					{
-						"name": "State",
-						"type": "varchar"
-					},
-					{
-						"name": "RatingTypes",
-						"type": "nvarchar"
-					},
-					{
-						"name": "CinemaTheatres",
-						"type": "decimal",
-						"precision": 8,
-						"scale": 2
-					},
-					{
-						"name": "ShoppingCentreWaterSummaryID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "FloorConfiguration",
-						"type": "varchar"
-					},
-					{
-						"name": "ParkingSpacesMechanical",
-						"type": "decimal",
-						"precision": 8,
-						"scale": 2
-					},
-					{
-						"name": "ParkingSpacesNatural",
-						"type": "decimal",
-						"precision": 8,
-						"scale": 2
-					},
-					{
-						"name": "TotalGymGLAR",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 3
-					},
-					{
-						"name": "FoodCourtSeats",
-						"type": "decimal",
-						"precision": 8,
-						"scale": 2
-					},
-					{
-						"name": "conflictOfInterestFlag",
-						"type": "bit"
-					},
-					{
-						"name": "InComplianceWithCurrentRules",
-						"type": "bit"
-					},
-					{
-						"name": "WaterStarRatingWRecycle",
-						"type": "varchar"
-					},
-					{
-						"name": "WaterStarRatingWoRecycle",
-						"type": "varchar"
-					},
-					{
-						"name": "EnergyStarRatingWRecycle",
-						"type": "varchar"
-					},
-					{
-						"name": "EnergyStarRatingWoRecycle",
-						"type": "varchar"
-					},
-					{
-						"name": "totalEnergyConsumption",
-						"type": "decimal",
-						"precision": 19,
-						"scale": 4
-					},
-					{
-						"name": "WeeklyCoreHoursOfService",
-						"type": "decimal",
-						"precision": 8,
-						"scale": 2
-					},
-					{
-						"name": "TotalElectricityConsumption",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 3
-					},
-					{
-						"name": "TotalDieselConsumption",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 3
-					},
-					{
-						"name": "WaterConsumption",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 3
-					},
-					{
-						"name": "RecycleNormalisedWaterConsumption",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 3
-					},
-					{
-						"name": "TotalWaterConsumption",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 3
-					},
-					{
-						"name": "TotalRecycledWaterPercent",
-						"type": "decimal",
-						"precision": 6,
-						"scale": 2
-					},
-					{
-						"name": "TotalGasConsumption",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 3
-					},
-					{
-						"name": "RatingLodgementFees",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 2
-					},
-					{
-						"name": "PredictedGreenhouseGasIntensity",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 3
-					},
-					{
-						"name": "PredictedAverageWaterUse",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 3
-					},
-					{
-						"name": "NumberOfTradingDays",
-						"type": "decimal",
-						"precision": 8,
-						"scale": 2
-					},
-					{
-						"name": "NoRecyclePredictedAverageWaterUse",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 3
-					},
-					{
-						"name": "NoGreenPower_GHG_IntensityScope_12",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 3
-					},
-					{
-						"name": "NoGreenPowerGHGIntensityScope123",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 3
-					},
-					{
-						"name": "NoGreenPowerGHGEmissionsScope12",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 3
-					},
-					{
-						"name": "NoGreenPowerGHGEmissionsScope123",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 3
-					},
-					{
-						"name": "GreenhouseGasIntensityScope123",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 3
-					},
-					{
-						"name": "GreenhouseGasEmissionsScope123",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 3
-					},
-					{
-						"name": "EnergyIntensity",
-						"type": "decimal",
-						"precision": 12,
-						"scale": 3
-					},
-					{
-						"name": "ExplainWhyNotCompliant",
-						"type": "varchar"
-					},
-					{
-						"name": "IsSmallShoppingCentre",
-						"type": "bit"
-					},
-					{
-						"name": "batch_id",
-						"type": "int",
-						"precision": 10
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "RatingHeaderStage"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
 			]
 		}
 	]
