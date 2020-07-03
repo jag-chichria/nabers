@@ -247,6 +247,358 @@
 								"sink": {
 									"name": "Renew_Replace__c"
 								}
+							},
+							{
+								"source": {
+									"name": "review_summary_page"
+								},
+								"sink": {
+									"name": "Review_summary_page__c"
+								}
+							},
+							{
+								"source": {
+									"name": "rating_information_page"
+								},
+								"sink": {
+									"name": "Rating_information_page__c"
+								}
+							},
+							{
+								"source": {
+									"name": "lodge_rating_page"
+								},
+								"sink": {
+									"name": "Lodge_rating_page__c"
+								}
+							},
+							{
+								"source": {
+									"name": "rating_details_page"
+								},
+								"sink": {
+									"name": "Rating_details_page__c"
+								}
+							},
+							{
+								"source": {
+									"name": "parking_space_page"
+								},
+								"sink": {
+									"name": "Parking_Spaces_Page__c"
+								}
+							},
+							{
+								"source": {
+									"name": "water_page"
+								},
+								"sink": {
+									"name": "Water_page__c"
+								}
+							},
+							{
+								"source": {
+									"name": "has_parking_space"
+								},
+								"sink": {
+									"name": "Has_Parking_Space__c"
+								}
+							},
+							{
+								"source": {
+									"name": "has_gym"
+								},
+								"sink": {
+									"name": "Has_Gym__c"
+								}
+							},
+							{
+								"source": {
+									"name": "has_food_court"
+								},
+								"sink": {
+									"name": "Has_Food_Court__c"
+								}
+							},
+							{
+								"source": {
+									"name": "conflict_of_interest"
+								},
+								"sink": {
+									"name": "Conflict_Of_Interest__c"
+								}
+							},
+							{
+								"source": {
+									"name": "compliant_with_current_rules"
+								},
+								"sink": {
+									"name": "Compliant_With_Rules__c"
+								}
+							},
+							{
+								"source": {
+									"name": "relodged_date"
+								},
+								"sink": {
+									"name": "\tRelodge_Date__c"
+								}
+							},
+							{
+								"source": {
+									"name": "rating_data_complete"
+								},
+								"sink": {
+									"name": "Rating_Data_Complete_Flag__c"
+								}
+							},
+							{
+								"source": {
+									"name": "assessor_declaration"
+								},
+								"sink": {
+									"name": "Assessor_Declaration__c"
+								}
+							},
+							{
+								"source": {
+									"name": "customer_aware_of_star_rating"
+								},
+								"sink": {
+									"name": "Customer_Aware_Of_Star_Rating__c"
+								}
+							},
+							{
+								"source": {
+									"name": "water_star_rating_with_recycle"
+								},
+								"sink": {
+									"name": "Water_Star_Rating_With_Recycled_Water__c"
+								}
+							},
+							{
+								"source": {
+									"name": "water_star_rating_without_recycle"
+								},
+								"sink": {
+									"name": "Water_Star_Rating_Without_Recycled_Water__c"
+								}
+							},
+							{
+								"source": {
+									"name": "energy_star_rating_with_recycle"
+								},
+								"sink": {
+									"name": "Energy_Star_Rating_With_Green_Power__c"
+								}
+							},
+							{
+								"source": {
+									"name": "energy_star_rating_without_recycle"
+								},
+								"sink": {
+									"name": "Energy_Star_Rating_Without_Green_Power__c"
+								}
+							},
+							{
+								"source": {
+									"name": "total_energy_consumption"
+								},
+								"sink": {
+									"name": "Total_Energy_Consumption__c"
+								}
+							},
+							{
+								"source": {
+									"name": "weekly_core_hours_of_Service"
+								},
+								"sink": {
+									"name": "Weekly_Core_Hours_Of_Service__c"
+								}
+							},
+							{
+								"source": {
+									"name": "total_electricity_consumption"
+								},
+								"sink": {
+									"name": "Total_Electricity_Consumption__c"
+								}
+							},
+							{
+								"source": {
+									"name": "total_diesel_consumption"
+								},
+								"sink": {
+									"name": "Total_Diesel_Consumption__c"
+								}
+							},
+							{
+								"source": {
+									"name": "recycle_normalised_water_consumption"
+								},
+								"sink": {
+									"name": "Recycle_Normalised_Water_Consumption__c"
+								}
+							},
+							{
+								"source": {
+									"name": "total_water_consumption"
+								},
+								"sink": {
+									"name": "Total_Water_Consumption__c"
+								}
+							},
+							{
+								"source": {
+									"name": "total_recycled_water_percent"
+								},
+								"sink": {
+									"name": "Total_Recycled_Water_Percent__c"
+								}
+							},
+							{
+								"source": {
+									"name": "total_gas_consumption"
+								},
+								"sink": {
+									"name": "Total_Gas_Consumption__c"
+								}
+							},
+							{
+								"source": {
+									"name": "rating_lodgement_fees"
+								},
+								"sink": {
+									"name": "Rating_Lodgement_Fees__c"
+								}
+							},
+							{
+								"source": {
+									"name": "predicted_greenhouse_gas_intensity"
+								},
+								"sink": {
+									"name": "Predicted_Greenhouse_Gas_Intensity__c"
+								}
+							},
+							{
+								"source": {
+									"name": "predicted_average_water_use"
+								},
+								"sink": {
+									"name": "Predicted_Average_Water_Use__c"
+								}
+							},
+							{
+								"source": {
+									"name": "number_of_trading_days"
+								},
+								"sink": {
+									"name": "Number_Of_Trading_Days__c"
+								}
+							},
+							{
+								"source": {
+									"name": "no_recycle_predicted_average_water_use"
+								},
+								"sink": {
+									"name": "No_Recycle_Predicted_Average_Water_Use__c"
+								}
+							},
+							{
+								"source": {
+									"name": "no_greenpower_ghg_intensity_scope_12"
+								},
+								"sink": {
+									"name": "No_GreenPower_GHG_Intensity_Scope_12__c"
+								}
+							},
+							{
+								"source": {
+									"name": "no_greenpower_ghg_intensity_scope_123"
+								},
+								"sink": {
+									"name": "No_GreenPower_GHG_Intensity_Scope_123__c"
+								}
+							},
+							{
+								"source": {
+									"name": "no_greenpower_ghg_emissions_scope_12"
+								},
+								"sink": {
+									"name": "No_GreenPower_GHG_Emissions_Scope_12__c"
+								}
+							},
+							{
+								"source": {
+									"name": "no_greenpower_ghg_emissions_scope_123"
+								},
+								"sink": {
+									"name": "No_GreenPower_GHG_Emissions_Scope_123__c"
+								}
+							},
+							{
+								"source": {
+									"name": "greenhouse_gas_intensity_scope_123"
+								},
+								"sink": {
+									"name": "Greenhouse_Gas_Intensity_Scope_123__c"
+								}
+							},
+							{
+								"source": {
+									"name": "greenhouse_gas_emissions_scope_123"
+								},
+								"sink": {
+									"name": "Greenhouse_Gas_Emissions_Scope_123__c"
+								}
+							},
+							{
+								"source": {
+									"name": "energy_intensity"
+								},
+								"sink": {
+									"name": "Energy_Intensity__c"
+								}
+							},
+							{
+								"source": {
+									"name": "explain_why_not_compliant"
+								},
+								"sink": {
+									"name": "Explain_Why_Not_Compliant__c"
+								}
+							},
+							{
+								"source": {
+									"name": "is_small_shopping_centre"
+								},
+								"sink": {
+									"name": "Is_Small_Shopping_Centre__c"
+								}
+							},
+							{
+								"source": {
+									"name": "using_latest_rules_water"
+								},
+								"sink": {
+									"name": "Using_Latest_Water_Rules_Version__c"
+								}
+							},
+							{
+								"source": {
+									"name": "using_latest_rules_energy"
+								},
+								"sink": {
+									"name": "Using_Latest_Energy_Rules_Version__c"
+								}
+							},
+							{
+								"source": {
+									"name": "single_or_multi_storey"
+								},
+								"sink": {
+									"name": "Shopping_Centre_Storey__c"
+								}
 							}
 						]
 					}
