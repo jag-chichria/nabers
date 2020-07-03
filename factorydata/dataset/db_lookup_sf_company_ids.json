@@ -49,6 +49,14 @@
 			{
 				"name": "Billing_Country",
 				"type": "varchar"
+			},
+			{
+				"name": "sync_status",
+				"type": "varchar"
+			},
+			{
+				"name": "account_type",
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
