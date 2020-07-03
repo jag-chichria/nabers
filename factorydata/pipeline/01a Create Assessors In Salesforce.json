@@ -410,7 +410,7 @@
 					"isSequential": false,
 					"activities": [
 						{
-							"name": "Lookup Each Building by Name In Salesforce",
+							"name": "Lookup Member by Member Id In Salesforce",
 							"type": "Lookup",
 							"dependsOn": [],
 							"policy": {
@@ -442,7 +442,7 @@
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
-									"activity": "Lookup Each Building by Name In Salesforce",
+									"activity": "Lookup Member by Member Id In Salesforce",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -475,7 +475,7 @@
 									},
 									"salesforce_assessor_Id": {
 										"value": {
-											"value": "@activity('Lookup Each Building by Name In Salesforce').output.firstrow.Id",
+											"value": "@activity('Lookup Member by Member Id In Salesforce').output.firstrow.Id",
 											"type": "Expression"
 										},
 										"type": "String"
@@ -509,6 +509,89 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "markAssessorAsUsersToInActive",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "forEachRow",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_GetNewAssessorToMarkUserInactiveInSalesForce]",
+						"storedProcedureParameters": {
+							"batchid": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.pbatch_id",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "SalesforceSink",
+						"writeBatchSize": 5000,
+						"writeBehavior": "upsert",
+						"externalIdFieldName": "Email",
+						"ignoreNullValues": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Email",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Email",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IsActive"
+								},
+								"sink": {
+									"name": "IsActive",
+									"type": "Boolean"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "db_stage_assessors",
+						"type": "DatasetReference",
+						"parameters": {
+							"pBatch_Id": "@pipeline().parameters.pbatch_id"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sf_users",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"parameters": {
