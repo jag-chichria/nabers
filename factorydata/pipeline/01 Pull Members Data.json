@@ -827,7 +827,7 @@
 													"type": "String"
 												},
 												"account_type": {
-													"value": "company",
+													"value": "customer",
 													"type": "String"
 												}
 											}
