@@ -442,6 +442,10 @@
 												"salesforce_company_Id": {
 													"value": null,
 													"type": "String"
+												},
+												"account_type": {
+													"value": "company",
+													"type": "String"
 												}
 											}
 										},
