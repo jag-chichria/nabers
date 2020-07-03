@@ -423,6 +423,10 @@
 											"type": "Expression"
 										},
 										"type": "String"
+									},
+									"account_type": {
+										"value": "company",
+										"type": "String"
 									}
 								}
 							},
