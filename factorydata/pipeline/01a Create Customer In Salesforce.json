@@ -354,7 +354,7 @@
 					"isSequential": false,
 					"activities": [
 						{
-							"name": "Lookup Each Building by Name In Salesforce",
+							"name": "Lookup Each Customer by ABN In Salesforce",
 							"type": "Lookup",
 							"dependsOn": [],
 							"policy": {
@@ -386,7 +386,7 @@
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
-									"activity": "Lookup Each Building by Name In Salesforce",
+									"activity": "Lookup Each Customer by ABN In Salesforce",
 									"dependencyConditions": [
 										"Succeeded"
 									]
