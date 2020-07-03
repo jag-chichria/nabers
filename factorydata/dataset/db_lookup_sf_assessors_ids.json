@@ -74,6 +74,18 @@
 			{
 				"name": "regional_cleaned",
 				"type": "varchar"
+			},
+			{
+				"name": "salesforce_contact_type",
+				"type": "varchar"
+			},
+			{
+				"name": "salesforce_portal_access",
+				"type": "varchar"
+			},
+			{
+				"name": "salesforce_user_acive",
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
