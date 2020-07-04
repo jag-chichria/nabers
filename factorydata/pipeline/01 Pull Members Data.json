@@ -1144,7 +1144,7 @@
 							}
 						},
 						{
-							"name": "If Customer In Salesforce Exist_copy1",
+							"name": "If Customer Contact In Salesforce Exist",
 							"type": "IfCondition",
 							"dependsOn": [
 								{
@@ -1157,7 +1157,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@contains(string(activity('Lookup Each Customer by ABN In Salesforce').output), 'firstRow')",
+									"value": "@contains(string(activity('Lookup Each Customer Contact by Email In Salesforce').output), 'firstRow')",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
@@ -1251,7 +1251,7 @@
 								],
 								"ifTrueActivities": [
 									{
-										"name": "insertCustomerDetailswithSalesforceId_copy1",
+										"name": "insertCustomerContactDetailswithSalesforceId",
 										"description": "Company does exist",
 										"type": "SqlServerStoredProcedure",
 										"dependsOn": [],
@@ -1275,20 +1275,20 @@
 												},
 												"member_company_Id": {
 													"value": {
-														"value": "@item().customer_id",
+														"value": "@item().CustomerContactId",
 														"type": "Expression"
 													},
 													"type": "String"
 												},
 												"salesforce_company_Id": {
 													"value": {
-														"value": "@activity('Lookup Each Customer by ABN In Salesforce').output.firstrow.Id",
+														"value": "@activity('Lookup Each Customer Contact by Email In Salesforce').output.firstrow.Id",
 														"type": "Expression"
 													},
 													"type": "String"
 												},
 												"account_type": {
-													"value": "customer",
+													"value": "customer contact",
 													"type": "String"
 												}
 											}
