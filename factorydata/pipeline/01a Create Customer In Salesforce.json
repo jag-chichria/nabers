@@ -131,7 +131,7 @@
 									"name": "CompanyRecordType"
 								},
 								"sink": {
-									"name": "Contact_Record_Type__c"
+									"name": "RecordTypeId"
 								}
 							}
 						]
