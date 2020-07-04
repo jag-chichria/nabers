@@ -599,6 +599,14 @@
 								"sink": {
 									"name": "Shopping_Centre_Storey__c"
 								}
+							},
+							{
+								"source": {
+									"name": "sf_customer_id"
+								},
+								"sink": {
+									"name": "Customer__c"
+								}
 							}
 						]
 					}
