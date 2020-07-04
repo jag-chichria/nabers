@@ -307,7 +307,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "01 Pull From Staging",
+						"activity": "01a Transform Country Attibutes",
 						"dependencyConditions": [
 							"Succeeded"
 						]
