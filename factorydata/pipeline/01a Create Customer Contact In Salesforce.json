@@ -254,7 +254,7 @@
 					"isSequential": false,
 					"activities": [
 						{
-							"name": "Lookup Each Customer by ABN In Salesforce",
+							"name": "Lookup Each Customer Contact by Email In Salesforce",
 							"type": "Lookup",
 							"dependsOn": [],
 							"policy": {
@@ -269,7 +269,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from Account\nwhere NO_ABN__c = '@{item().Customer_ABN}'",
+										"value": "Select id from Contact\nwhere Email= '@{item().Email}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
@@ -286,7 +286,7 @@
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
-									"activity": "Lookup Each Customer by ABN In Salesforce",
+									"activity": "Lookup Each Customer Contact by Email In Salesforce",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -319,13 +319,13 @@
 									},
 									"salesforce_company_Id": {
 										"value": {
-											"value": "@activity('Lookup Each Customer by ABN In Salesforce').output.firstRow.Id",
+											"value": "@activity('Lookup Each Customer Contact by Email In Salesforce').output.firstRow.Id",
 											"type": "Expression"
 										},
 										"type": "String"
 									},
 									"account_type": {
-										"value": "customer",
+										"value": "customer contact",
 										"type": "String"
 									}
 								}
