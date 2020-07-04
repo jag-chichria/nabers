@@ -128,7 +128,7 @@
 							},
 							{
 								"source": {
-									"name": "CompanyRecordType"
+									"name": "sf_record_type"
 								},
 								"sink": {
 									"name": "RecordTypeId"
