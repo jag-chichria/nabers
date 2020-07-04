@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "createNotFoundCustomers",
+				"name": "createNotFoundCustomerContact",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -24,7 +24,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderStoredProcedureName": "[dbo].[usp_GetCustomerToCreateInSalesForce]",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_GetCustomerContactToCreateInSalesForce]",
 						"storedProcedureParameters": {
 							"batchid": {
 								"type": "Int32",
@@ -198,7 +198,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "createNotFoundCustomers",
+						"activity": "createNotFoundCustomerContact",
 						"dependencyConditions": [
 							"Succeeded"
 						]
