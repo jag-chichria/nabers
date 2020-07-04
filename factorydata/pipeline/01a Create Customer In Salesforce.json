@@ -304,7 +304,7 @@
 									},
 									"member_company_id": {
 										"value": {
-											"value": "@item().CompanyID",
+											"value": "@item().company_id",
 											"type": "Expression"
 										},
 										"type": "Int32"
