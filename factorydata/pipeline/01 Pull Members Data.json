@@ -1162,12 +1162,12 @@
 								},
 								"ifFalseActivities": [
 									{
-										"name": "insertCustomerDetailsFalse_copy1",
+										"name": "insertCustomerContactDetailsFalse",
 										"description": "Company does not exist",
 										"type": "SqlServerStoredProcedure",
 										"dependsOn": [
 											{
-												"activity": "Lookup Customer Record Type_copy1",
+												"activity": "Lookup Customer Contact Record Type",
 												"dependencyConditions": [
 													"Succeeded"
 												]
@@ -1203,12 +1203,12 @@
 													"type": "String"
 												},
 												"account_type": {
-													"value": "customer",
+													"value": "customer contact",
 													"type": "String"
 												},
 												"sf_record_type": {
 													"value": {
-														"value": "@activity('Lookup Customer Record Type').output.firstRow.Id",
+														"value": "@activity('Lookup Customer Contact Record Type').output.firstRow.Id",
 														"type": "Expression"
 													},
 													"type": "String"
@@ -1221,7 +1221,7 @@
 										}
 									},
 									{
-										"name": "Lookup Customer Record Type_copy1",
+										"name": "Lookup Customer Contact Record Type",
 										"type": "Lookup",
 										"dependsOn": [],
 										"policy": {
@@ -1236,7 +1236,7 @@
 											"source": {
 												"type": "SalesforceSource",
 												"query": {
-													"value": "Select Id from RecordType where Name = 'Customer / Industry Company'",
+													"value": "Select Id from RecordType where Name = 'Customer/Industry Contact'",
 													"type": "Expression"
 												},
 												"readBehavior": "query"
