@@ -796,7 +796,14 @@
 										"name": "insertCustomerDetailsFalse",
 										"description": "Company does not exist",
 										"type": "SqlServerStoredProcedure",
-										"dependsOn": [],
+										"dependsOn": [
+											{
+												"activity": "Lookup Customer Record Type",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
 										"policy": {
 											"timeout": "7.00:00:00",
 											"retry": 0,
@@ -829,12 +836,47 @@
 												"account_type": {
 													"value": "customer",
 													"type": "String"
+												},
+												"sf_record_type": {
+													"value": {
+														"value": "@activity('Lookup Customer Record Type').output.firstRow.Id",
+														"type": "Expression"
+													},
+													"type": "String"
 												}
 											}
 										},
 										"linkedServiceName": {
 											"referenceName": "NABERSStaging",
 											"type": "LinkedServiceReference"
+										}
+									},
+									{
+										"name": "Lookup Customer Record Type",
+										"type": "Lookup",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "SalesforceSource",
+												"query": {
+													"value": "Select Id from RecordType where Name = 'Customer / Industry Company'",
+													"type": "Expression"
+												},
+												"readBehavior": "query"
+											},
+											"dataset": {
+												"referenceName": "sf_Buildings",
+												"type": "DatasetReference"
+											},
+											"firstRowOnly": true
 										}
 									}
 								],
