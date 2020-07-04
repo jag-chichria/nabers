@@ -1116,7 +1116,7 @@
 					"isSequential": false,
 					"activities": [
 						{
-							"name": "Lookup Each Customer by ABN In Salesforce_copy1",
+							"name": "Lookup Each Customer Contact by Email In Salesforce",
 							"type": "Lookup",
 							"dependsOn": [],
 							"policy": {
@@ -1131,7 +1131,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from Account\nwhere NO_ABN__c = '@{item().Customer_ABN}'",
+										"value": "Select id from Contact\nwhere Email = '@{item().Email}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
@@ -1148,7 +1148,7 @@
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "Lookup Each Customer by ABN In Salesforce_copy1",
+									"activity": "Lookup Each Customer Contact by Email In Salesforce",
 									"dependencyConditions": [
 										"Succeeded"
 									]
