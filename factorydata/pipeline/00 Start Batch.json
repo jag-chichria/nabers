@@ -98,7 +98,7 @@
 						]
 					},
 					{
-						"activity": "01b Create Customer Relationship",
+						"activity": "01a Create Customer Contact",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -333,38 +333,6 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "01a Transform Country Attibutes",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "01a Create Customer Contact In Salesforce",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"pbatch_id": {
-							"value": "@variables('vbatch_id')",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "01b Create Customer Relationship",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "01a Create Customer Contact",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
 						"activity": "01a Create Customers",
 						"dependencyConditions": [
 							"Succeeded"
@@ -374,7 +342,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "01b Create Customer Contact Relation",
+						"referenceName": "01a Create Customer Contact In Salesforce",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
