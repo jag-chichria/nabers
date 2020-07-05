@@ -327,6 +327,25 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "01a Create Customer Contact",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "01a Create Customer In Salesforce",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"pbatch_id": {
+							"value": "@variables('vbatch_id')",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"variables": {
