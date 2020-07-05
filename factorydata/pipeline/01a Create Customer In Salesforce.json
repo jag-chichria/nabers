@@ -125,6 +125,14 @@
 								"sink": {
 									"name": "NO_Organisation_Type__c"
 								}
+							},
+							{
+								"source": {
+									"name": "sf_record_type"
+								},
+								"sink": {
+									"name": "RecordTypeId"
+								}
 							}
 						]
 					}
