@@ -374,7 +374,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "01b Transform Ratings",
+						"referenceName": "01a Create Customer Contact In Salesforce",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
