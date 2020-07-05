@@ -98,13 +98,7 @@
 						]
 					},
 					{
-						"activity": "01a Create Customers",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "01a Create Customer Contact",
+						"activity": "01b Create Customer Relationship",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -363,7 +357,20 @@
 			{
 				"name": "01b Create Customer Relationship",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "01a Create Customer Contact",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "01a Create Customers",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
