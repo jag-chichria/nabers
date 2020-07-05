@@ -359,6 +359,25 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "01b Create Customer Relationship",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "01b Transform Ratings",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"pbatch_id": {
+							"value": "@variables('vbatch_id')",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"variables": {
