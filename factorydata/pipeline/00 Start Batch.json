@@ -374,7 +374,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "01a Create Customer Contact In Salesforce",
+						"referenceName": "01b Create Customer Contact Relation",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
