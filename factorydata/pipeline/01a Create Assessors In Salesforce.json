@@ -161,7 +161,7 @@
 							},
 							{
 								"source": {
-									"name": "Mailing_StreetName"
+									"name": "cleaned_mailing_streetname"
 								},
 								"sink": {
 									"name": "MailingStreet",
