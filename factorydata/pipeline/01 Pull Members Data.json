@@ -1193,7 +1193,7 @@
 												},
 												"member_company_Id": {
 													"value": {
-														"value": "@item().customer_id",
+														"value": "@item().CustomerId",
 														"type": "Expression"
 													},
 													"type": "String"
