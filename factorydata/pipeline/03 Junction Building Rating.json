@@ -333,7 +333,7 @@
 										},
 										{
 											"source": {
-												"name": "sf_building_id",
+												"name": "sf_customercontact_id",
 												"physicalType": "varchar"
 											},
 											"sink": {
