@@ -1,0 +1,15 @@
+{
+	"name": "sf_rating_contact",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NabersOnline",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SalesforceObject",
+		"schema": [],
+		"typeProperties": {
+			"objectApiName": "NO_Rating_Contact__c"
+		}
+	}
+}
