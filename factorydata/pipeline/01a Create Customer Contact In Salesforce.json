@@ -318,7 +318,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from Contact\nwhere Email= '@{item().Email}'",
+										"value": "Select id from Contact\nwhere Email= '@{replace(item().Email, '''', '''''')}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
