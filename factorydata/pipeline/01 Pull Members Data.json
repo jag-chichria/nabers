@@ -773,7 +773,7 @@
 												},
 												"salesforce_user_Id": {
 													"value": {
-														"value": "@activity('Lookup Each Tech Officer by Email In Salesforce').output?.firstRow.Id",
+														"value": "@{IF(contains(string(activity('Lookup Each Tech Officer by Email In Salesforce').output), 'firstRow'), activity('Lookup Each Tech Officer by Email In Salesforce').output.firstRow.Id, '')}",
 														"type": "Expression"
 													},
 													"type": "String"
