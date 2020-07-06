@@ -1282,7 +1282,7 @@
 												},
 												"salesforce_company_Id": {
 													"value": {
-														"value": "@activity('Lookup Each Customer Contact by Email In Salesforce').output.firstrow.Id",
+														"value": "@activity('Lookup Each Customer Contact by Email In Salesforce').output.firstRow.Id",
 														"type": "Expression"
 													},
 													"type": "String"
