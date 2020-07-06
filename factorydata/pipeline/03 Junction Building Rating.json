@@ -88,7 +88,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Set Variable Rating",
+						"activity": "usp_GetSalesforce",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -97,7 +97,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@variables('_vnewBuildingsInSF')",
+						"value": "@activity('usp_GetSalesforce').output.value",
 						"type": "Expression"
 					},
 					"isSequential": false,
@@ -391,26 +391,6 @@
 							}
 						}
 					]
-				}
-			},
-			{
-				"name": "Set Variable Rating",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "usp_GetSalesforce",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "_vnewBuildingsInSF",
-					"value": {
-						"value": "@activity('usp_GetSalesforce').output.value",
-						"type": "Expression"
-					}
 				}
 			}
 		],
