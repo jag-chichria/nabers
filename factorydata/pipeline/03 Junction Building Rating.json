@@ -306,7 +306,7 @@
 										"source_rating_id": {
 											"type": "Int32",
 											"value": {
-												"value": "@item().source_rating_id",
+												"value": "@item().RatingHeaderId",
 												"type": "Expression"
 											}
 										}
@@ -337,7 +337,7 @@
 												"physicalType": "varchar"
 											},
 											"sink": {
-												"name": "Building__c"
+												"name": "Contact__c"
 											}
 										}
 									],
