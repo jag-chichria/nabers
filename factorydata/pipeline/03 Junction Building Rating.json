@@ -356,7 +356,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "sf_buiding_rating",
+									"referenceName": "sf_rating_contact",
 									"type": "DatasetReference"
 								}
 							]
