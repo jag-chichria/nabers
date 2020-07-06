@@ -131,8 +131,8 @@
 							}
 						},
 						{
-							"name": "Set Variable _sf_buildingRecord",
-							"type": "SetVariable",
+							"name": "if Rating was successfully created",
+							"type": "IfCondition",
 							"dependsOn": [
 								{
 									"activity": "Lookup Each Rating by Member Rating Id In Salesforce",
@@ -143,26 +143,10 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "_vsf_buildingRecord",
-								"value": {
-									"value": "@activity('Lookup Each Rating by Member Rating Id In Salesforce').output.value",
+								"expression": {
+									"value": "@contains(string(activity('Lookup Each Rating by Member Rating Id In Salesforce').output), 'firstRow')",
 									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "If Condition1",
-							"type": "IfCondition",
-							"dependsOn": [
-								{
-									"activity": "Set Variable _sf_buildingRecord",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
+								},
 								"ifTrueActivities": [
 									{
 										"name": "UpdateNewSalesforceIdForRating",
