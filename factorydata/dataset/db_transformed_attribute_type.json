@@ -37,7 +37,7 @@
 				"type": "varchar"
 			},
 			{
-				"name": "tenancy_servcing",
+				"name": "tenancy_servicing",
 				"type": "varchar"
 			}
 		],
