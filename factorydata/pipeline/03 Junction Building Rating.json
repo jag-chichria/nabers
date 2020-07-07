@@ -43,7 +43,7 @@
 				}
 			},
 			{
-				"name": "usp_GetSalesforce",
+				"name": "usp_GetRatings",
 				"type": "Lookup",
 				"dependsOn": [
 					{
@@ -88,7 +88,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "usp_GetSalesforce",
+						"activity": "usp_GetRatings",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -97,7 +97,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('usp_GetSalesforce').output.value",
+						"value": "@activity('usp_GetRatings').output.value",
 						"type": "Expression"
 					},
 					"isSequential": false,
