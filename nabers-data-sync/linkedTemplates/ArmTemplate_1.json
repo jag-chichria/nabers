@@ -5314,7 +5314,7 @@
 														},
 														"salesforceratingId": {
 															"value": {
-																"value": "@variables('_vsf_buildingRecord')[0].Id",
+																"value": "@activity('Lookup Each Rating by Member Rating Id In Salesforce').output.firstRow.Id",
 																"type": "Expression"
 															},
 															"type": "String"
@@ -5329,7 +5329,14 @@
 											{
 												"name": "copyJunctionBuildingRating",
 												"type": "Copy",
-												"dependsOn": [],
+												"dependsOn": [
+													{
+														"activity": "UpdateNewSalesforceIdForRating",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
 												"policy": {
 													"timeout": "7.00:00:00",
 													"retry": 0,
@@ -5341,6 +5348,20 @@
 												"typeProperties": {
 													"source": {
 														"type": "AzureSqlSource",
+														"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRatingBuildingForJunctionInSalesforce]",
+														"storedProcedureParameters": {
+															"batch_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@pipeline().parameters.pbatch_id",
+																	"type": "Expression"
+																}
+															},
+															"source_rating_id": {
+																"type": "Int32",
+																"value": "@item().RatingHeaderId"
+															}
+														},
 														"queryTimeout": "02:00:00"
 													},
 													"sink": {
@@ -5396,7 +5417,14 @@
 											{
 												"name": "copyJunctionRatingContact",
 												"type": "Copy",
-												"dependsOn": [],
+												"dependsOn": [
+													{
+														"activity": "UpdateNewSalesforceIdForRating",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
 												"policy": {
 													"timeout": "7.00:00:00",
 													"retry": 0,
