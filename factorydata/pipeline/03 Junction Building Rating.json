@@ -118,7 +118,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from NO_Rating__c \nwhere NO_Member_Rating_Id__c = @{item().RatingHeaderID}\n",
+										"value": "Select id from NO_Rating__c \nwhere NO_Member_Rating_Id__c = @{item().RatingHeaderID}",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
