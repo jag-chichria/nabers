@@ -158,10 +158,11 @@
 							},
 							{
 								"source": {
-									"name": "RatingAttrubuteType"
+									"name": "attribute_type"
 								},
 								"sink": {
-									"name": "RatingAttributeType__c"
+									"name": "Rating_Attribute_Type__c",
+									"type": "String"
 								}
 							}
 						],
