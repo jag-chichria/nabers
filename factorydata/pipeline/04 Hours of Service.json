@@ -45,7 +45,14 @@
 			{
 				"name": "copyHoursOfSerivce",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Update Batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -189,14 +196,7 @@
 			{
 				"name": "01_Transform_HoursOfService",
 				"type": "ExecuteDataFlow",
-				"dependsOn": [
-					{
-						"activity": "Update Batch",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
