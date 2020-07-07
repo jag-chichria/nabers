@@ -5127,7 +5127,7 @@
 						}
 					},
 					{
-						"name": "usp_GetSalesforce",
+						"name": "usp_GetRatings",
 						"type": "Lookup",
 						"dependsOn": [
 							{
@@ -5173,7 +5173,7 @@
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "usp_GetSalesforce",
+								"activity": "usp_GetRatings",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -5182,7 +5182,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('usp_GetSalesforce').output.value",
+								"value": "@activity('usp_GetRatings').output.value",
 								"type": "Expression"
 							},
 							"isSequential": false,
@@ -5203,7 +5203,7 @@
 										"source": {
 											"type": "SalesforceSource",
 											"query": {
-												"value": "Select id from NO_Rating__c \nwhere NO_Member_Rating_Id__c = @{item().RatingHeaderID}\n",
+												"value": "Select id from NO_Rating__c \nwhere NO_Member_Rating_Id__c = @{item().RatingHeaderID}",
 												"type": "Expression"
 											},
 											"readBehavior": "query"
@@ -5213,7 +5213,7 @@
 											"type": "DatasetReference",
 											"parameters": {}
 										},
-										"firstRowOnly": false
+										"firstRowOnly": true
 									}
 								},
 								{
