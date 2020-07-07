@@ -273,7 +273,10 @@
 													},
 													"source_rating_id": {
 														"type": "Int32",
-														"value": "@item().RatingHeaderId"
+														"value": {
+															"value": "@item().RatingHeaderId",
+															"type": "Expression"
+														}
 													}
 												},
 												"queryTimeout": "02:00:00"
@@ -411,6 +414,122 @@
 										"outputs": [
 											{
 												"referenceName": "sf_rating_contact",
+												"type": "DatasetReference"
+											}
+										]
+									},
+									{
+										"name": "copyHoursOfSerivce",
+										"type": "Copy",
+										"dependsOn": [
+											{
+												"activity": "UpdateNewSalesforceIdForRating",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "AzureSqlSource",
+												"sqlReaderStoredProcedureName": "[dbo].[usp_GetRatingHoursOfServiceToCreateInSalesforce]",
+												"storedProcedureParameters": {
+													"batch_id": {
+														"type": "Int32",
+														"value": {
+															"value": "@pipeline().parameters.pbatch_id",
+															"type": "Expression"
+														}
+													},
+													"source_rating_id": {
+														"type": "Int32",
+														"value": {
+															"value": "@item().RatingHeaderId",
+															"type": "Expression"
+														}
+													}
+												},
+												"queryTimeout": "02:00:00"
+											},
+											"sink": {
+												"type": "SalesforceSink",
+												"writeBatchSize": 5000,
+												"writeBehavior": "insert"
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"mappings": [
+													{
+														"source": {
+															"name": "sf_rating_id",
+															"type": "String",
+															"physicalType": "varchar"
+														},
+														"sink": {
+															"name": "Rating__c",
+															"type": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "TenancyName",
+															"type": "String",
+															"physicalType": "nvarchar"
+														},
+														"sink": {
+															"name": "Area_Tenancy_Name__c",
+															"type": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "ListedArea",
+															"type": "String",
+															"physicalType": "nvarchar"
+														},
+														"sink": {
+															"name": "Area__c",
+															"type": "Decimal"
+														}
+													},
+													{
+														"source": {
+															"name": "blocknumber",
+															"type": "String",
+															"physicalType": "nvarchar"
+														},
+														"sink": {
+															"name": "Area_Block_Number__c",
+															"type": "Decimal"
+														}
+													},
+													null
+												],
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "db_transformed_ratings",
+												"type": "DatasetReference"
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "sf_rating_attribute",
 												"type": "DatasetReference"
 											}
 										]
