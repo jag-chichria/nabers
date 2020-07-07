@@ -45,14 +45,7 @@
 			{
 				"name": "copyHoursOfSerivce",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "01_Transform_HoursOfService",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -75,10 +68,7 @@
 							},
 							"source_rating_id": {
 								"type": "Int32",
-								"value": {
-									"value": "@item().RatingHeaderId",
-									"type": "Expression"
-								}
+								"value": "22908"
 							}
 						},
 						"queryTimeout": "02:00:00"
