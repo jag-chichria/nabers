@@ -135,7 +135,7 @@
 							},
 							{
 								"source": {
-									"name": "IsListedAsCentralService"
+									"name": "area_centrally_serviced"
 								},
 								"sink": {
 									"name": "Area_Centrally_Serviced__c",
@@ -144,8 +144,7 @@
 							},
 							{
 								"source": {
-									"name": "IsTenancyServicingCheck",
-									"type": "String",
+									"name": "tenancy_servicing",
 									"physicalType": "nvarchar"
 								},
 								"sink": {
