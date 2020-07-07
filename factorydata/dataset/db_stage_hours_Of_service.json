@@ -9,12 +9,19 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
 				"name": "RatingHeaderID",
-				"type": "nvarchar"
+				"type": "int",
+				"precision": 10
 			},
 			{
 				"name": "AreaID",
-				"type": "nvarchar"
+				"type": "int",
+				"precision": 10
 			},
 			{
 				"name": "TenancyName",
@@ -30,19 +37,19 @@
 			},
 			{
 				"name": "IsListedAsCentralServiced",
-				"type": "nvarchar"
+				"type": "bit"
 			},
 			{
 				"name": "IsTenancyServicingCheck",
-				"type": "nvarchar"
+				"type": "bit"
 			},
 			{
 				"name": "IsAreaConfirmed",
-				"type": "nvarchar"
+				"type": "bit"
 			},
 			{
 				"name": "IsCentralServicingResult",
-				"type": "nvarchar"
+				"type": "bit"
 			},
 			{
 				"name": "RatedCSArea",
@@ -78,7 +85,8 @@
 			},
 			{
 				"name": "batch_id",
-				"type": "nvarchar"
+				"type": "int",
+				"precision": 10
 			}
 		],
 		"typeProperties": {
