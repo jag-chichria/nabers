@@ -369,6 +369,10 @@
 			{
 				"name": "single_or_multi_storey",
 				"type": "varchar"
+			},
+			{
+				"name": "shopping_centre_size",
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
