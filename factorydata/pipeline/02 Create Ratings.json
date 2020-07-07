@@ -607,6 +607,14 @@
 								"sink": {
 									"name": "Customer__c"
 								}
+							},
+							{
+								"source": {
+									"name": "shopping_centre_size"
+								},
+								"sink": {
+									"name": "Shopping_Centre_Size__c"
+								}
 							}
 						]
 					}
