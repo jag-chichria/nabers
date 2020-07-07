@@ -127,7 +127,7 @@
 									"referenceName": "sf_Ratings",
 									"type": "DatasetReference"
 								},
-								"firstRowOnly": false
+								"firstRowOnly": true
 							}
 						},
 						{
