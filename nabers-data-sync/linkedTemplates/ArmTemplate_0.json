@@ -711,6 +711,10 @@
 					{
 						"name": "salesforce_user_active",
 						"type": "varchar"
+					},
+					{
+						"name": "metropolitan_cleaned",
+						"type": "varchar"
 					}
 				],
 				"typeProperties": {
