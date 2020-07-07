@@ -1,0 +1,49 @@
+{
+	"name": "db_transformed_attribute_type",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "AreaId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "member_rating_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "batch_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "area_centrally_serviced",
+				"type": "varchar"
+			},
+			{
+				"name": "attribute_type",
+				"type": "varchar"
+			},
+			{
+				"name": "tenancy_servcing",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Transformed_AttributeType"
+		}
+	}
+}
