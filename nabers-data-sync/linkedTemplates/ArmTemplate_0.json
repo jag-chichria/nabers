@@ -1888,6 +1888,10 @@
 					{
 						"name": "single_or_multi_storey",
 						"type": "varchar"
+					},
+					{
+						"name": "shopping_centre_size",
+						"type": "varchar"
 					}
 				],
 				"typeProperties": {
@@ -1927,6 +1931,162 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/db_stage_hours_Of_service')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RatingHeaderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AreaID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TenancyName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ListedArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "blocknumber",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsListedAsCentralServiced",
+						"type": "bit"
+					},
+					{
+						"name": "IsTenancyServicingCheck",
+						"type": "bit"
+					},
+					{
+						"name": "IsAreaConfirmed",
+						"type": "bit"
+					},
+					{
+						"name": "IsCentralServicingResult",
+						"type": "bit"
+					},
+					{
+						"name": "RatedCSArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "RatedGLAR",
+						"type": "nvarchar"
+					},
+					{
+						"name": "WeeksVacant",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ExtentedHours",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Hours",
+						"type": "nvarchar"
+					},
+					{
+						"name": "HoursArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsExtendedHoursEnabled",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsHoursEnabled",
+						"type": "nvarchar"
+					},
+					{
+						"name": "batch_id",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "HoursOfServiceStage"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/db_transformed_attribute_type')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AreaId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "member_rating_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "batch_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "area_centrally_serviced",
+						"type": "varchar"
+					},
+					{
+						"name": "attribute_type",
+						"type": "varchar"
+					},
+					{
+						"name": "tenancy_servicing",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Transformed_AttributeType"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
 			]
 		},
 		{
@@ -2260,52 +2420,6 @@
 				"schema": [],
 				"typeProperties": {
 					"objectApiName": "Contact"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NabersOnline')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/sf_customercontact')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NabersOnline",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "salesforce"
-				},
-				"annotations": [],
-				"type": "SalesforceObject",
-				"schema": [],
-				"typeProperties": {
-					"objectApiName": "AccountContactRelation"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NabersOnline')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/sf_rating_contact')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NabersOnline",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "salesforce"
-				},
-				"annotations": [],
-				"type": "SalesforceObject",
-				"schema": [],
-				"typeProperties": {
-					"objectApiName": "NO_Rating_Contact__c"
 				}
 			},
 			"dependsOn": [

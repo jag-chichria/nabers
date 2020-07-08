@@ -1,0 +1,641 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "nabers-data-sync"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/04 Hours of Service')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Update Batch",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
+							"storedProcedureParameters": {
+								"batch_id": {
+									"value": {
+										"value": "@pipeline().parameters.pbatch_id",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"process_name": {
+									"value": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"stage": {
+									"value": "In Progress",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "NABERSStaging",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "copyHoursOfSerivce",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRatingHoursOfServiceToCreateInSalesforce]",
+								"storedProcedureParameters": {
+									"batch_id": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										}
+									},
+									"source_rating_id": {
+										"type": "Int32",
+										"value": "22908"
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "SalesforceSink",
+								"writeBatchSize": 5000,
+								"writeBehavior": "insert"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "sf_rating_id",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "Rating__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TenancyName",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "Area_Tenancy_Name__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ListedArea",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "Area__c",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "blocknumber",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "Area_Block_Number__c",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "area_centrally_serviced"
+										},
+										"sink": {
+											"name": "Area_Centrally_Serviced__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "tenancy_servicing",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "Area_Tenancy_Servicing_Checked__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "WeeksVacant",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "Area_Weeks_Vacant_During_Rating_Period__c",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "attribute_type"
+										},
+										"sink": {
+											"name": "Rating_Attribute_Type__c",
+											"type": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "db_transformed_ratings",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sf_rating_attribute",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "01_Transform_HoursOfService",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Update Batch",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "01_Transform_HoursOfService",
+								"type": "DataFlowReference",
+								"parameters": {
+									"pbatch_id": {
+										"value": "@pipeline().parameters.pbatch_id",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"getStagedHoursOfService": {},
+									"sinkTransformdAttributeType": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							}
+						}
+					}
+				],
+				"parameters": {
+					"pbatch_id": {
+						"type": "int",
+						"defaultValue": 1
+					}
+				},
+				"variables": {
+					"_vnewBuildingsInSF": {
+						"type": "Array"
+					},
+					"_vsf_buildingRecord": {
+						"type": "Array"
+					},
+					"_vnewBuildingInSF": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/00 Start Batch')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "usp_StartBatch",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_StartBatch]",
+								"storedProcedureParameters": {
+									"process_name": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().Pipeline",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "db_members_rating",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "Batch Id",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "usp_StartBatch",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "vbatch_id",
+							"value": {
+								"value": "@string(activity('usp_StartBatch').output.firstRow.NewBatchId)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "01 Pull From Staging",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Batch Id",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01 Pull Members Data",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@activity('usp_StartBatch').output.firstRow.NewBatchId",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "01b Transform",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01a Create Building",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "01a Create Assessors",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "01a Create Customer Contact",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01b Transform Ratings",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "01a Create Building",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01 Pull From Staging",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01a Create Building In Salesforce",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "02 Create Ratings",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01b Transform",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "02 Create Ratings",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "03 Junction Building Rating",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "02 Create Ratings",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "03 Junction Building Rating",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "01a Create Assessors",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01a Transform Company Assessor",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01a Create Assessors In Salesforce",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "01a Create Company",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01a Transform Country Attibutes",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01a Create Company In Salesforce",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "01a Transform Company Assessor",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01a Create Company",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01b Transform Company Assessors",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "01a Transform Country Attibutes",
+						"description": "Placeholder for missing mailing and billing country",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01 Pull From Staging",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01b Transform Country in Building",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "01a Create Customers",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01a Transform Country Attibutes",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01a Create Customer In Salesforce",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "01a Create Customer Contact",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01a Create Customers",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01a Create Customer Contact In Salesforce",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"variables": {
+					"vbatch_id": {
+						"type": "String",
+						"defaultValue": "1"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		}
+	]
+}
