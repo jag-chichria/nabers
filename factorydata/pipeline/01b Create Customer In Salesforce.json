@@ -48,7 +48,7 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "Customer_Mailing_StreetName"
+									"name": "mailing_street"
 								},
 								"sink": {
 									"name": "ShippingStreet",
