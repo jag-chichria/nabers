@@ -872,7 +872,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "01b Create Company In Salesforce",
+								"referenceName": "01b Create Assessors Company In Salesforce",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,

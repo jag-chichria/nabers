@@ -715,6 +715,10 @@
 					{
 						"name": "metropolitan_cleaned",
 						"type": "varchar"
+					},
+					{
+						"name": "salesforce_user_id",
+						"type": "varchar"
 					}
 				],
 				"typeProperties": {
@@ -842,6 +846,18 @@
 					},
 					{
 						"name": "account_type",
+						"type": "varchar"
+					},
+					{
+						"name": "sf_record_type",
+						"type": "varchar"
+					},
+					{
+						"name": "mailing_street",
+						"type": "varchar"
+					},
+					{
+						"name": "billing_street",
 						"type": "varchar"
 					}
 				],
@@ -2054,6 +2070,10 @@
 					{
 						"name": "shopping_centre_size",
 						"type": "varchar"
+					},
+					{
+						"name": "sf_owner_id",
+						"type": "nchar"
 					}
 				],
 				"typeProperties": {
