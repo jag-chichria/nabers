@@ -90,6 +90,10 @@
 			{
 				"name": "metropolitan_cleaned",
 				"type": "varchar"
+			},
+			{
+				"name": "salesforce_user_id",
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
