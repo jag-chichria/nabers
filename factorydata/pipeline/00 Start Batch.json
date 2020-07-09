@@ -102,6 +102,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "01a Transform Hours of Service",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"userProperties": [],
@@ -343,6 +349,33 @@
 				"typeProperties": {
 					"pipeline": {
 						"referenceName": "01c Create Customer Contact In Salesforce",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"pbatch_id": {
+							"value": "@variables('vbatch_id')",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "01a Transform Hours of Service",
+				"description": "",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "01 Pull From Staging",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "01a Transform Hours of Service",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
