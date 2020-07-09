@@ -373,6 +373,10 @@
 			{
 				"name": "shopping_centre_size",
 				"type": "varchar"
+			},
+			{
+				"name": "sf_owner_id",
+				"type": "nchar"
 			}
 		],
 		"typeProperties": {
