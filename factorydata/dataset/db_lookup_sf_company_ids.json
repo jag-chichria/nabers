@@ -57,6 +57,18 @@
 			{
 				"name": "account_type",
 				"type": "varchar"
+			},
+			{
+				"name": "sf_record_type",
+				"type": "varchar"
+			},
+			{
+				"name": "mailing_street",
+				"type": "varchar"
+			},
+			{
+				"name": "billing_street",
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
