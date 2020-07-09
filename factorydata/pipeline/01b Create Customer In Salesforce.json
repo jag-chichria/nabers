@@ -102,7 +102,7 @@
 							},
 							{
 								"source": {
-									"name": "Customer_TradingName"
+									"name": "Customer_Name"
 								},
 								"sink": {
 									"name": "Name",
@@ -132,6 +132,14 @@
 								},
 								"sink": {
 									"name": "RecordTypeId"
+								}
+							},
+							{
+								"source": {
+									"name": "Customer_TradingName"
+								},
+								"sink": {
+									"name": "NO_Short_Name__c"
 								}
 							}
 						]
