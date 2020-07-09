@@ -48,8 +48,7 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "Billing_StreetName",
-									"type": "String"
+									"name": "billing_street"
 								},
 								"sink": {
 									"name": "BillingStreet",
@@ -88,8 +87,7 @@
 							},
 							{
 								"source": {
-									"name": "Mailing_StreetName",
-									"type": "String"
+									"name": "mailing_street"
 								},
 								"sink": {
 									"name": "ShippingStreet",
