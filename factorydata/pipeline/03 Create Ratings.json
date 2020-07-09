@@ -615,6 +615,14 @@
 								"sink": {
 									"name": "Shopping_Centre_Size__c"
 								}
+							},
+							{
+								"source": {
+									"name": "sf_owner_id"
+								},
+								"sink": {
+									"name": "OwnerId"
+								}
 							}
 						]
 					}
