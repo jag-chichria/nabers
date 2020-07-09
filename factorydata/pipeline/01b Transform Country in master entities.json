@@ -1,5 +1,5 @@
 {
-	"name": "01b Transform Country in Building",
+	"name": "01b Transform Country in master entities",
 	"properties": {
 		"activities": [
 			{
@@ -29,10 +29,10 @@
 							"pbatch_id": "1"
 						},
 						"datasetParameters": {
-							"source1": {
+							"getLookupSFCompany": {
 								"pbatch_id": 1
 							},
-							"sink1": {
+							"updateLookupSFCmpany": {
 								"pbatch_id": 1
 							}
 						}

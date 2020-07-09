@@ -92,7 +92,7 @@
 						]
 					},
 					{
-						"activity": "01a Create Assessors",
+						"activity": "01d Create Assessors",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -198,11 +198,11 @@
 				}
 			},
 			{
-				"name": "01a Create Assessors",
+				"name": "01d Create Assessors",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "01a Transform Company Assessor",
+						"activity": "01c Transform Company Assessor",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -211,7 +211,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "01a Create Assessors In Salesforce",
+						"referenceName": "01d Create Assessors In Salesforce",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -224,11 +224,11 @@
 				}
 			},
 			{
-				"name": "01a Create Company",
+				"name": "01b Create Company",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "01a Transform Country Attibutes",
+						"activity": "01a Transform Country in master entities",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -237,7 +237,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "01a Create Company In Salesforce",
+						"referenceName": "01b Create Company In Salesforce",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -250,11 +250,11 @@
 				}
 			},
 			{
-				"name": "01a Transform Company Assessor",
+				"name": "01c Transform Company Assessor",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "01a Create Company",
+						"activity": "01b Create Company",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -263,7 +263,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "01b Transform Company Assessors",
+						"referenceName": "01c Transform Company Assessors",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -276,7 +276,7 @@
 				}
 			},
 			{
-				"name": "01a Transform Country Attibutes",
+				"name": "01a Transform Country in master entities",
 				"description": "Placeholder for missing mailing and billing country",
 				"type": "ExecutePipeline",
 				"dependsOn": [
@@ -290,7 +290,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "01b Transform Country in Building",
+						"referenceName": "01b Transform Country in master entities",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -307,7 +307,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "01a Transform Country Attibutes",
+						"activity": "01a Transform Country in master entities",
 						"dependencyConditions": [
 							"Succeeded"
 						]
