@@ -445,6 +445,12 @@
 									"dependencyConditions": [
 										"Succeeded"
 									]
+								},
+								{
+									"activity": "Lookup Assessor in User by Email Id In Salesforce",
+									"dependencyConditions": [
+										"Succeeded"
+									]
 								}
 							],
 							"policy": {
@@ -478,12 +484,47 @@
 											"type": "Expression"
 										},
 										"type": "String"
+									},
+									"salesforce_user_id": {
+										"value": {
+											"value": "@activity('Lookup Assessor in User by Email Id In Salesforce').output.firstrow.Id",
+											"type": "Expression"
+										},
+										"type": "String"
 									}
 								}
 							},
 							"linkedServiceName": {
 								"referenceName": "NABERSStaging",
 								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Lookup Assessor in User by Email Id In Salesforce",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SalesforceSource",
+									"query": {
+										"value": "Select id from User\nwhere Email = @{item().Email}",
+										"type": "Expression"
+									},
+									"readBehavior": "query"
+								},
+								"dataset": {
+									"referenceName": "sf_contacts",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": true
 							}
 						}
 					]
