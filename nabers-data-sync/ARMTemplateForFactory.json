@@ -341,7 +341,7 @@
 						}
 					},
 					{
-						"name": "01b Transform",
+						"name": "02 Transform",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
@@ -351,13 +351,19 @@
 								]
 							},
 							{
-								"activity": "01a Create Assessors",
+								"activity": "01d Create Assessors",
 								"dependencyConditions": [
 									"Succeeded"
 								]
 							},
 							{
-								"activity": "01a Create Customer Contact",
+								"activity": "01c Create Customer Contact",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "01a Transform Hours of Service",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -366,7 +372,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "01b Transform Ratings",
+								"referenceName": "02 Transform Ratings",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -405,11 +411,11 @@
 						}
 					},
 					{
-						"name": "02 Create Ratings",
+						"name": "03 Create Ratings",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "01b Transform",
+								"activity": "02 Transform",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -418,7 +424,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "02 Create Ratings",
+								"referenceName": "03 Create Ratings",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -431,11 +437,11 @@
 						}
 					},
 					{
-						"name": "03 Junction Building Rating",
+						"name": "03a Junction Building Rating",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "02 Create Ratings",
+								"activity": "03 Create Ratings",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -444,7 +450,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "03 Junction Building Rating",
+								"referenceName": "03a Junction Building Rating",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -457,11 +463,11 @@
 						}
 					},
 					{
-						"name": "01a Create Assessors",
+						"name": "01d Create Assessors",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "01a Transform Company Assessor",
+								"activity": "01c Transform Company Assessor",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -470,7 +476,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "01a Create Assessors In Salesforce",
+								"referenceName": "01d Create Assessors In Salesforce",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -483,11 +489,11 @@
 						}
 					},
 					{
-						"name": "01a Create Company",
+						"name": "01b Create Company",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "01a Transform Country Attibutes",
+								"activity": "01a Transform Country in master entities",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -496,7 +502,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "01a Create Company In Salesforce",
+								"referenceName": "01b Create Company In Salesforce",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -509,11 +515,11 @@
 						}
 					},
 					{
-						"name": "01a Transform Company Assessor",
+						"name": "01c Transform Company Assessor",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "01a Create Company",
+								"activity": "01b Create Company",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -522,7 +528,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "01b Transform Company Assessors",
+								"referenceName": "01c Transform Company Assessors",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -535,7 +541,7 @@
 						}
 					},
 					{
-						"name": "01a Transform Country Attibutes",
+						"name": "01a Transform Country in master entities",
 						"description": "Placeholder for missing mailing and billing country",
 						"type": "ExecutePipeline",
 						"dependsOn": [
@@ -549,7 +555,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "01b Transform Country in Building",
+								"referenceName": "01b Transform Country in master entities",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -562,11 +568,11 @@
 						}
 					},
 					{
-						"name": "01a Create Customers",
+						"name": "01b Create Customers",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "01a Transform Country Attibutes",
+								"activity": "01a Transform Country in master entities",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -575,7 +581,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "01a Create Customer In Salesforce",
+								"referenceName": "01b Create Customer In Salesforce",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -588,11 +594,11 @@
 						}
 					},
 					{
-						"name": "01a Create Customer Contact",
+						"name": "01c Create Customer Contact",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "01a Create Customers",
+								"activity": "01b Create Customers",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -601,7 +607,34 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "01a Create Customer Contact In Salesforce",
+								"referenceName": "01c Create Customer Contact In Salesforce",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "01a Transform Hours of Service",
+						"description": "",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01 Pull From Staging",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01a Transform Hours of Service",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -625,16 +658,17 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/db_members_rating')]",
 				"[concat(variables('factoryId'), '/pipelines/01 Pull Members Data')]",
-				"[concat(variables('factoryId'), '/pipelines/01b Transform Ratings')]",
+				"[concat(variables('factoryId'), '/pipelines/02 Transform Ratings')]",
 				"[concat(variables('factoryId'), '/pipelines/01a Create Building In Salesforce')]",
-				"[concat(variables('factoryId'), '/pipelines/02 Create Ratings')]",
-				"[concat(variables('factoryId'), '/pipelines/03 Junction Building Rating')]",
-				"[concat(variables('factoryId'), '/pipelines/01a Create Assessors In Salesforce')]",
-				"[concat(variables('factoryId'), '/pipelines/01a Create Company In Salesforce')]",
-				"[concat(variables('factoryId'), '/pipelines/01b Transform Company Assessors')]",
-				"[concat(variables('factoryId'), '/pipelines/01b Transform Country in Building')]",
-				"[concat(variables('factoryId'), '/pipelines/01a Create Customer In Salesforce')]",
-				"[concat(variables('factoryId'), '/pipelines/01a Create Customer Contact In Salesforce')]"
+				"[concat(variables('factoryId'), '/pipelines/03 Create Ratings')]",
+				"[concat(variables('factoryId'), '/pipelines/03a Junction Building Rating')]",
+				"[concat(variables('factoryId'), '/pipelines/01d Create Assessors In Salesforce')]",
+				"[concat(variables('factoryId'), '/pipelines/01b Create Company In Salesforce')]",
+				"[concat(variables('factoryId'), '/pipelines/01c Transform Company Assessors')]",
+				"[concat(variables('factoryId'), '/pipelines/01b Transform Country in master entities')]",
+				"[concat(variables('factoryId'), '/pipelines/01b Create Customer In Salesforce')]",
+				"[concat(variables('factoryId'), '/pipelines/01c Create Customer Contact In Salesforce')]",
+				"[concat(variables('factoryId'), '/pipelines/01a Transform Hours of Service')]"
 			]
 		},
 		{
@@ -2007,7 +2041,2230 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/01a Create Assessors In Salesforce')]",
+			"name": "[concat(parameters('factoryName'), '/01a Create Building In Salesforce')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "createNotFoundBuilding",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Update Batch",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetBuildingToCreateInSalesForce]",
+								"storedProcedureParameters": {
+									"batchid": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "SalesforceSink",
+								"writeBatchSize": 5000,
+								"writeBehavior": "insert",
+								"ignoreNullValues": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "name",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Name",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "postcode",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Postcode__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "state",
+											"type": "String"
+										},
+										"sink": {
+											"name": "State__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "streetname",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Street_Name__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "streetnumber",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Street_Number__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "suburb",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Suburb__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "member_premise_id"
+										},
+										"sink": {
+											"name": "NOCRM_External_ID__c"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "db_lookup_sf_buildings_ids",
+								"type": "DatasetReference",
+								"parameters": {
+									"pbatch_id": "@pipeline().parameters.pbatch_id"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sf_Buildings",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Update Batch",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
+							"storedProcedureParameters": {
+								"batch_id": {
+									"value": {
+										"value": "@pipeline().parameters.pbatch_id",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"process_name": {
+									"value": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"stage": {
+									"value": "In Progress",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "NABERSStaging",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "usp_GetSalesforce",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "createNotFoundBuilding",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetBuildingToCreateInSalesForce]",
+								"storedProcedureParameters": {
+									"batchid": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "db_members_rating",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "forEachRow",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Set Variable Rating",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('_vnewBuildingsInSF')",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "Lookup Each Building by Name In Salesforce",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SalesforceSource",
+											"query": {
+												"value": "Select id from NO_Building__c \nwhere Postcode__c = '@{item().Postcode}'\nand State__c = '@{item().State}'\nand Suburb__c = '@{item().Suburb}'\nand Street_Number__c = '@{item().StreetNumber}'\nand Street_Name__c = '@{item().StreetName}'\nand Name = '@{item().Name}'",
+												"type": "Expression"
+											},
+											"readBehavior": "query"
+										},
+										"dataset": {
+											"referenceName": "sf_Buildings",
+											"type": "DatasetReference",
+											"parameters": {}
+										},
+										"firstRowOnly": true
+									}
+								},
+								{
+									"name": "UpdateNewSalesforceIdForBuilding",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "Lookup Each Building by Name In Salesforce",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[[dbo].[usp_UpdateNewSalesforceIdForBuilding]",
+										"storedProcedureParameters": {
+											"batch_id": {
+												"value": {
+													"value": "@pipeline().parameters.pbatch_id",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"member_premise_id": {
+												"value": {
+													"value": "@item().member_premise_id",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"salesforce_building_Id": {
+												"value": {
+													"value": "@activity('Lookup Each Building by Name In Salesforce').output.firstrow.Id",
+													"type": "Expression"
+												},
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "NABERSStaging",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Set Variable Rating",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "usp_GetSalesforce",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "_vnewBuildingsInSF",
+							"value": {
+								"value": "@activity('usp_GetSalesforce').output.value",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"parameters": {
+					"pbatch_id": {
+						"type": "int",
+						"defaultValue": 1
+					}
+				},
+				"variables": {
+					"_defaultCountry": {
+						"type": "String",
+						"defaultValue": "Australia"
+					},
+					"_defaultPremiseType": {
+						"type": "String",
+						"defaultValue": "Shopping Centre"
+					},
+					"_vnewBuildingsInSF": {
+						"type": "Array"
+					},
+					"_vsf_buildingRecord": {
+						"type": "String"
+					},
+					"_vnewBuildingInSF": {
+						"type": "Array"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/db_lookup_sf_buildings_ids')]",
+				"[concat(variables('factoryId'), '/datasets/sf_Buildings')]",
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
+				"[concat(variables('factoryId'), '/datasets/db_members_rating')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/01a Transform Hours of Service')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Update Batch",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
+							"storedProcedureParameters": {
+								"batch_id": {
+									"value": {
+										"value": "@pipeline().parameters.pbatch_id",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"process_name": {
+									"value": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"stage": {
+									"value": "In Progress",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "NABERSStaging",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Transform HoursOfService",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Update Batch",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "01_Transform_HoursOfService",
+								"type": "DataFlowReference",
+								"parameters": {
+									"pbatch_id": {
+										"value": "@pipeline().parameters.pbatch_id",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"getStagedHoursOfService": {},
+									"sinkTransformdAttributeType": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							}
+						}
+					}
+				],
+				"parameters": {
+					"pbatch_id": {
+						"type": "int",
+						"defaultValue": 1
+					}
+				},
+				"variables": {
+					"_vnewBuildingsInSF": {
+						"type": "Array"
+					},
+					"_vsf_buildingRecord": {
+						"type": "Array"
+					},
+					"_vnewBuildingInSF": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
+				"[concat(variables('factoryId'), '/dataflows/01_Transform_HoursOfService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/01b Create Company In Salesforce')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "createNotFoundCompany",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Update Batch",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetCompanyToCreateInSalesForce]",
+								"storedProcedureParameters": {
+									"batchid": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "SalesforceSink",
+								"writeBatchSize": 5000,
+								"writeBehavior": "insert",
+								"ignoreNullValues": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Billing_StreetName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "BillingStreet",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Billing_Suburb",
+											"type": "String"
+										},
+										"sink": {
+											"name": "BillingCity",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Billing_State",
+											"type": "String"
+										},
+										"sink": {
+											"name": "BillingState",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Billing_Postcode",
+											"type": "String"
+										},
+										"sink": {
+											"name": "BillingPostalCode",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Mailing_StreetName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ShippingStreet",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Mailing_Suburb",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ShippingCity",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Mailing_State",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ShippingState",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Mailing_Postcode",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ShippingPostalCode",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Phone",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Phone",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CompanyURL",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Website",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Type",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Company_Record_Type__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ABN",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NO_ABN__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PIInsuranceExpiryDate",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "NO_Professional_Indemnity_Expiry_Date__c",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "PLInsuranceExpiryDate",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "NO_Public_Liability_Expiry_Date__c",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "SAPCustomerNo",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NO_SAP_Customer_Number__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ShortName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NO_Short_Name__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CompanyName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Name",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Mailing_Country"
+										},
+										"sink": {
+											"name": "ShippingCountry",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Billing_Country"
+										},
+										"sink": {
+											"name": "BillingCountry",
+											"type": "String"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "db_stage_assessors",
+								"type": "DatasetReference",
+								"parameters": {
+									"pBatch_Id": 1
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sf_company",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Update Batch",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
+							"storedProcedureParameters": {
+								"batch_id": {
+									"value": {
+										"value": "@pipeline().parameters.pbatch_id",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"process_name": {
+									"value": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"stage": {
+									"value": "In Progress",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "NABERSStaging",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "usp_GetCompany",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "createNotFoundCompany",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetCompanyToCreateInSalesForce]",
+								"storedProcedureParameters": {
+									"batchid": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "db_members_rating",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "forEachRow",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Set Variable Rating",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('_vnewBuildingsInSF')",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "Lookup Each Building by Name In Salesforce",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SalesforceSource",
+											"query": {
+												"value": "Select id from Account\nwhere NO_ABN__c = '@{item().ABN}'",
+												"type": "Expression"
+											},
+											"readBehavior": "query"
+										},
+										"dataset": {
+											"referenceName": "sf_company",
+											"type": "DatasetReference",
+											"parameters": {}
+										},
+										"firstRowOnly": true
+									}
+								},
+								{
+									"name": "UpdateNewSalesforceIdForBuilding",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "Lookup Each Building by Name In Salesforce",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[[dbo].[usp_UpdateNewSalesforceIdForCompany]",
+										"storedProcedureParameters": {
+											"batch_id": {
+												"value": {
+													"value": "@pipeline().parameters.pbatch_id",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"member_company_id": {
+												"value": {
+													"value": "@item().CompanyID",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"salesforce_company_Id": {
+												"value": {
+													"value": "@activity('Lookup Each Building by Name In Salesforce').output.firstRow.Id",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"account_type": {
+												"value": "company",
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "NABERSStaging",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Set Variable Rating",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "usp_GetCompany",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "_vnewBuildingsInSF",
+							"value": {
+								"value": "@activity('usp_GetCompany').output.value",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"parameters": {
+					"pbatch_id": {
+						"type": "int",
+						"defaultValue": 1
+					}
+				},
+				"variables": {
+					"_defaultCountry": {
+						"type": "String",
+						"defaultValue": "Australia"
+					},
+					"_defaultPremiseType": {
+						"type": "String",
+						"defaultValue": "Shopping Centre"
+					},
+					"_vnewBuildingsInSF": {
+						"type": "Array"
+					},
+					"_vsf_buildingRecord": {
+						"type": "String"
+					},
+					"_vnewBuildingInSF": {
+						"type": "Array"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/db_stage_assessors')]",
+				"[concat(variables('factoryId'), '/datasets/sf_company')]",
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
+				"[concat(variables('factoryId'), '/datasets/db_members_rating')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/01b Create Customer Contact Relation')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Update Batch",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
+							"storedProcedureParameters": {
+								"batch_id": {
+									"value": {
+										"value": "@pipeline().parameters.pbatch_id",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"process_name": {
+									"value": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"stage": {
+									"value": "In Progress",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "NABERSStaging",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "createCustomerContactRelation",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Update Batch",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetCustomerContactRelationToCreateInSalesForce]",
+								"storedProcedureParameters": {
+									"batchid": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "SalesforceSink",
+								"writeBatchSize": 5000,
+								"writeBehavior": "insert",
+								"ignoreNullValues": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "sf_customercontact_id",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ContactId",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "sf_customer_id",
+											"type": "String"
+										},
+										"sink": {
+											"name": "AccountId",
+											"type": "String"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "db_transformed_ratings",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sf_customercontact",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Lookup Each Assessor by Email In Salesforce",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SalesforceSource",
+								"query": {
+									"value": "Select id from Contact\nwhere Email= 'Paul.Wall@dexus.com'",
+									"type": "Expression"
+								},
+								"readBehavior": "query"
+							},
+							"dataset": {
+								"referenceName": "sf_contacts",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": true
+						}
+					}
+				],
+				"parameters": {
+					"pbatch_id": {
+						"type": "int",
+						"defaultValue": 1
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
+				"[concat(variables('factoryId'), '/datasets/db_transformed_ratings')]",
+				"[concat(variables('factoryId'), '/datasets/sf_customercontact')]",
+				"[concat(variables('factoryId'), '/datasets/sf_contacts')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/01b Create Customer In Salesforce')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "createNotFoundCustomers",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Update Batch",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetCustomerToCreateInSalesForce]",
+								"storedProcedureParameters": {
+									"batchid": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "SalesforceSink",
+								"writeBatchSize": 5000,
+								"writeBehavior": "insert",
+								"ignoreNullValues": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Customer_Mailing_StreetName"
+										},
+										"sink": {
+											"name": "ShippingStreet",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Customer_Mailing_Suburb"
+										},
+										"sink": {
+											"name": "ShippingCity",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Customer_Mailing_State"
+										},
+										"sink": {
+											"name": "ShippingState",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Customer_Mailing_Postcode"
+										},
+										"sink": {
+											"name": "ShippingPostalCode",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Customer_ABN"
+										},
+										"sink": {
+											"name": "NO_ABN__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Customer_SAP_Number"
+										},
+										"sink": {
+											"name": "NO_SAP_Customer_Number__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Customer_TradingName"
+										},
+										"sink": {
+											"name": "Name",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Mailing_Country"
+										},
+										"sink": {
+											"name": "ShippingCountry",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Customer_Organisation"
+										},
+										"sink": {
+											"name": "NO_Organisation_Type__c"
+										}
+									},
+									{
+										"source": {
+											"name": "sf_record_type"
+										},
+										"sink": {
+											"name": "RecordTypeId"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "db_stage_assessors",
+								"type": "DatasetReference",
+								"parameters": {
+									"pBatch_Id": 1
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sf_company",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Update Batch",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
+							"storedProcedureParameters": {
+								"batch_id": {
+									"value": {
+										"value": "@pipeline().parameters.pbatch_id",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"process_name": {
+									"value": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"stage": {
+									"value": "In Progress",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "NABERSStaging",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "usp_GetCustomers",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "createNotFoundCustomers",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetCustomerToCreateInSalesForce]",
+								"storedProcedureParameters": {
+									"batchid": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "db_members_rating",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "forEachRow",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Set Variable Rating",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('_vnewCustomersInSF')",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "Lookup Each Customer by ABN In Salesforce",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SalesforceSource",
+											"query": {
+												"value": "Select id from Account\nwhere NO_ABN__c = '@{item().Customer_ABN}'",
+												"type": "Expression"
+											},
+											"readBehavior": "query"
+										},
+										"dataset": {
+											"referenceName": "sf_company",
+											"type": "DatasetReference",
+											"parameters": {}
+										},
+										"firstRowOnly": true
+									}
+								},
+								{
+									"name": "UpdateNewSalesforceIdForCustomer",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "Lookup Each Customer by ABN In Salesforce",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[[dbo].[usp_UpdateNewSalesforceIdForCompany]",
+										"storedProcedureParameters": {
+											"batch_id": {
+												"value": {
+													"value": "@pipeline().parameters.pbatch_id",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"member_company_id": {
+												"value": {
+													"value": "@item().member_company_id",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"salesforce_company_Id": {
+												"value": {
+													"value": "@activity('Lookup Each Customer by ABN In Salesforce').output.firstRow.Id",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"account_type": {
+												"value": "customer",
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "NABERSStaging",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Set Variable Rating",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "usp_GetCustomers",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "_vnewCustomersInSF",
+							"value": {
+								"value": "@activity('usp_GetCustomers').output.value",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"parameters": {
+					"pbatch_id": {
+						"type": "int",
+						"defaultValue": 1
+					}
+				},
+				"variables": {
+					"_vnewCustomersInSF": {
+						"type": "Array"
+					},
+					"_vsf_CustomerRecord": {
+						"type": "String"
+					},
+					"_vnewCustomerInSF": {
+						"type": "Array"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/db_stage_assessors')]",
+				"[concat(variables('factoryId'), '/datasets/sf_company')]",
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
+				"[concat(variables('factoryId'), '/datasets/db_members_rating')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/01b Transform Country in master entities')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "01_Transform",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Update Batch",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "01_Transform_Country_In_Company",
+								"type": "DataFlowReference",
+								"parameters": {
+									"pbatch_id": "1"
+								},
+								"datasetParameters": {
+									"getLookupSFCompany": {
+										"pbatch_id": 1
+									},
+									"updateLookupSFCmpany": {
+										"pbatch_id": 1
+									}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							}
+						}
+					},
+					{
+						"name": "Update Batch",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
+							"storedProcedureParameters": {
+								"batch_id": {
+									"value": {
+										"value": "@pipeline().parameters.pbatch_id",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"process_name": {
+									"value": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"stage": {
+									"value": "In Progress",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "NABERSStaging",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"parameters": {
+					"pbatch_id": {
+						"type": "int",
+						"defaultValue": 1
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/01_Transform_Country_In_Company')]",
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/01c Create Customer Contact In Salesforce')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "createNotFoundCustomerContact",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Update Batch",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetCustomerContactToCreateInSalesForce]",
+								"storedProcedureParameters": {
+									"batchid": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "SalesforceSink",
+								"writeBatchSize": 5000,
+								"writeBehavior": "insert",
+								"ignoreNullValues": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "StreetName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MailingStreet",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Suburb",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MailingCity",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Postcode",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MailingPostalCode",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "State",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MailingState",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "phone",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Phone",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Mobile",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MobilePhone",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "fax",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Fax",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Email",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Email",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountManagerFlag",
+											"type": "Boolean"
+										},
+										"sink": {
+											"name": "NO_Account_Manager__c",
+											"type": "Boolean"
+										}
+									},
+									{
+										"source": {
+											"name": "FirstName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "FirstName",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "LastName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "LastName",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Title"
+										},
+										"sink": {
+											"name": "Title",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "sf_record_type",
+											"type": "String"
+										},
+										"sink": {
+											"name": "RecordTypeId",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "sf_company_id"
+										},
+										"sink": {
+											"name": "AccountId"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "db_stage_assessors",
+								"type": "DatasetReference",
+								"parameters": {
+									"pBatch_Id": 1
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sf_contacts",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Update Batch",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
+							"storedProcedureParameters": {
+								"batch_id": {
+									"value": {
+										"value": "@pipeline().parameters.pbatch_id",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"process_name": {
+									"value": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"stage": {
+									"value": "In Progress",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "NABERSStaging",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "usp_GetCustomers",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "createNotFoundCustomerContact",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetCustomerContactToCreateInSalesForce]",
+								"storedProcedureParameters": {
+									"batchid": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "db_members_rating",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "forEachRow",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Set Variable Rating",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('_vnewCustomersInSF')",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "Lookup Each Customer Contact by Email In Salesforce",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SalesforceSource",
+											"query": {
+												"value": "Select id from Contact\nwhere Email= '@{replace(item().Email, '''', '''''')}'",
+												"type": "Expression"
+											},
+											"readBehavior": "query"
+										},
+										"dataset": {
+											"referenceName": "sf_company",
+											"type": "DatasetReference",
+											"parameters": {}
+										},
+										"firstRowOnly": true
+									}
+								},
+								{
+									"name": "UpdateNewSalesforceIdForCustomer",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "Lookup Each Customer Contact by Email In Salesforce",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[[dbo].[usp_UpdateNewSalesforceIdForCompany]",
+										"storedProcedureParameters": {
+											"batch_id": {
+												"value": {
+													"value": "@pipeline().parameters.pbatch_id",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"member_company_id": {
+												"value": {
+													"value": "@item().member_company_id",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"salesforce_company_Id": {
+												"value": {
+													"value": "@activity('Lookup Each Customer Contact by Email In Salesforce').output.firstRow.Id",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"account_type": {
+												"value": "customer contact",
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "NABERSStaging",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Set Variable Rating",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "usp_GetCustomers",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "_vnewCustomersInSF",
+							"value": {
+								"value": "@activity('usp_GetCustomers').output.value",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"parameters": {
+					"pbatch_id": {
+						"type": "int",
+						"defaultValue": 1
+					}
+				},
+				"variables": {
+					"_vnewCustomersInSF": {
+						"type": "Array"
+					},
+					"_vsf_CustomerRecord": {
+						"type": "String"
+					},
+					"_vnewCustomerInSF": {
+						"type": "Array"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/db_stage_assessors')]",
+				"[concat(variables('factoryId'), '/datasets/sf_contacts')]",
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
+				"[concat(variables('factoryId'), '/datasets/db_members_rating')]",
+				"[concat(variables('factoryId'), '/datasets/sf_company')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/01c Transform Company Assessors')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "01_Transform",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Update Batch",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "01_Transform_Company_Assessor",
+								"type": "DataFlowReference",
+								"parameters": {
+									"pDefaultCountry": {
+										"value": "'@{'Australia'}'",
+										"type": "Expression"
+									},
+									"pbatch_id": {
+										"value": "@pipeline().parameters.pbatch_id",
+										"type": "Expression"
+									},
+									"pActive": "'Active'",
+									"pPortalAccess": "'NABERS Online'"
+								},
+								"datasetParameters": {
+									"getLookupCompany": {
+										"pbatch_id": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										}
+									},
+									"getLookupAssessor": {
+										"pbatch_id": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										}
+									},
+									"getStageAssessors": {
+										"pBatch_Id": 1
+									},
+									"targetLookupSalesforceAssessor": {
+										"pbatch_id": 1
+									},
+									"updateCleanedData": {
+										"pbatch_id": 1
+									}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							}
+						}
+					},
+					{
+						"name": "Update Batch",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
+							"storedProcedureParameters": {
+								"batch_id": {
+									"value": {
+										"value": "@pipeline().parameters.pbatch_id",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"process_name": {
+									"value": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"stage": {
+									"value": "In Progress",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "NABERSStaging",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"parameters": {
+					"pbatch_id": {
+						"type": "int",
+						"defaultValue": 1
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/01_Transform_Company_Assessor')]",
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/01d Create Assessors In Salesforce')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -2639,2114 +4896,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/01a Create Building In Salesforce')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "createNotFoundBuilding",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Update Batch",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetBuildingToCreateInSalesForce]",
-								"storedProcedureParameters": {
-									"batchid": {
-										"type": "Int32",
-										"value": {
-											"value": "@pipeline().parameters.pbatch_id",
-											"type": "Expression"
-										}
-									}
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"sink": {
-								"type": "SalesforceSink",
-								"writeBatchSize": 5000,
-								"writeBehavior": "insert",
-								"ignoreNullValues": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "name",
-											"type": "String"
-										},
-										"sink": {
-											"name": "Name",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "postcode",
-											"type": "String"
-										},
-										"sink": {
-											"name": "Postcode__c",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "state",
-											"type": "String"
-										},
-										"sink": {
-											"name": "State__c",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "streetname",
-											"type": "String"
-										},
-										"sink": {
-											"name": "Street_Name__c",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "streetnumber",
-											"type": "String"
-										},
-										"sink": {
-											"name": "Street_Number__c",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "suburb",
-											"type": "String"
-										},
-										"sink": {
-											"name": "Suburb__c",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "member_premise_id"
-										},
-										"sink": {
-											"name": "NOCRM_External_ID__c"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "db_lookup_sf_buildings_ids",
-								"type": "DatasetReference",
-								"parameters": {
-									"pbatch_id": "@pipeline().parameters.pbatch_id"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "sf_Buildings",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Update Batch",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
-							"storedProcedureParameters": {
-								"batch_id": {
-									"value": {
-										"value": "@pipeline().parameters.pbatch_id",
-										"type": "Expression"
-									},
-									"type": "Int32"
-								},
-								"process_name": {
-									"value": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"stage": {
-									"value": "In Progress",
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "NABERSStaging",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "usp_GetSalesforce",
-						"type": "Lookup",
-						"dependsOn": [
-							{
-								"activity": "createNotFoundBuilding",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetBuildingToCreateInSalesForce]",
-								"storedProcedureParameters": {
-									"batchid": {
-										"type": "Int32",
-										"value": {
-											"value": "@pipeline().parameters.pbatch_id",
-											"type": "Expression"
-										}
-									}
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"dataset": {
-								"referenceName": "db_members_rating",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "forEachRow",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "Set Variable Rating",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@variables('_vnewBuildingsInSF')",
-								"type": "Expression"
-							},
-							"isSequential": false,
-							"activities": [
-								{
-									"name": "Lookup Each Building by Name In Salesforce",
-									"type": "Lookup",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "SalesforceSource",
-											"query": {
-												"value": "Select id from NO_Building__c \nwhere Postcode__c = '@{item().Postcode}'\nand State__c = '@{item().State}'\nand Suburb__c = '@{item().Suburb}'\nand Street_Number__c = '@{item().StreetNumber}'\nand Street_Name__c = '@{item().StreetName}'\nand Name = '@{item().Name}'",
-												"type": "Expression"
-											},
-											"readBehavior": "query"
-										},
-										"dataset": {
-											"referenceName": "sf_Buildings",
-											"type": "DatasetReference",
-											"parameters": {}
-										},
-										"firstRowOnly": true
-									}
-								},
-								{
-									"name": "UpdateNewSalesforceIdForBuilding",
-									"type": "SqlServerStoredProcedure",
-									"dependsOn": [
-										{
-											"activity": "Lookup Each Building by Name In Salesforce",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"storedProcedureName": "[[dbo].[usp_UpdateNewSalesforceIdForBuilding]",
-										"storedProcedureParameters": {
-											"batch_id": {
-												"value": {
-													"value": "@pipeline().parameters.pbatch_id",
-													"type": "Expression"
-												},
-												"type": "Int32"
-											},
-											"member_premise_id": {
-												"value": {
-													"value": "@item().member_premise_id",
-													"type": "Expression"
-												},
-												"type": "Int32"
-											},
-											"salesforce_building_Id": {
-												"value": {
-													"value": "@activity('Lookup Each Building by Name In Salesforce').output.firstrow.Id",
-													"type": "Expression"
-												},
-												"type": "String"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "NABERSStaging",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Set Variable Rating",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "usp_GetSalesforce",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "_vnewBuildingsInSF",
-							"value": {
-								"value": "@activity('usp_GetSalesforce').output.value",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"parameters": {
-					"pbatch_id": {
-						"type": "int",
-						"defaultValue": 1
-					}
-				},
-				"variables": {
-					"_defaultCountry": {
-						"type": "String",
-						"defaultValue": "Australia"
-					},
-					"_defaultPremiseType": {
-						"type": "String",
-						"defaultValue": "Shopping Centre"
-					},
-					"_vnewBuildingsInSF": {
-						"type": "Array"
-					},
-					"_vsf_buildingRecord": {
-						"type": "String"
-					},
-					"_vnewBuildingInSF": {
-						"type": "Array"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/db_lookup_sf_buildings_ids')]",
-				"[concat(variables('factoryId'), '/datasets/sf_Buildings')]",
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
-				"[concat(variables('factoryId'), '/datasets/db_members_rating')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/01a Create Company In Salesforce')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "createNotFoundCompany",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Update Batch",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetCompanyToCreateInSalesForce]",
-								"storedProcedureParameters": {
-									"batchid": {
-										"type": "Int32",
-										"value": {
-											"value": "@pipeline().parameters.pbatch_id",
-											"type": "Expression"
-										}
-									}
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"sink": {
-								"type": "SalesforceSink",
-								"writeBatchSize": 5000,
-								"writeBehavior": "insert",
-								"ignoreNullValues": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "Billing_StreetName",
-											"type": "String"
-										},
-										"sink": {
-											"name": "BillingStreet",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Billing_Suburb",
-											"type": "String"
-										},
-										"sink": {
-											"name": "BillingCity",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Billing_State",
-											"type": "String"
-										},
-										"sink": {
-											"name": "BillingState",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Billing_Postcode",
-											"type": "String"
-										},
-										"sink": {
-											"name": "BillingPostalCode",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Mailing_StreetName",
-											"type": "String"
-										},
-										"sink": {
-											"name": "ShippingStreet",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Mailing_Suburb",
-											"type": "String"
-										},
-										"sink": {
-											"name": "ShippingCity",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Mailing_State",
-											"type": "String"
-										},
-										"sink": {
-											"name": "ShippingState",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Mailing_Postcode",
-											"type": "String"
-										},
-										"sink": {
-											"name": "ShippingPostalCode",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Phone",
-											"type": "String"
-										},
-										"sink": {
-											"name": "Phone",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "CompanyURL",
-											"type": "String"
-										},
-										"sink": {
-											"name": "Website",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Type",
-											"type": "String"
-										},
-										"sink": {
-											"name": "Company_Record_Type__c",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "ABN",
-											"type": "String"
-										},
-										"sink": {
-											"name": "NO_ABN__c",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "PIInsuranceExpiryDate",
-											"type": "DateTime"
-										},
-										"sink": {
-											"name": "NO_Professional_Indemnity_Expiry_Date__c",
-											"type": "DateTime"
-										}
-									},
-									{
-										"source": {
-											"name": "PLInsuranceExpiryDate",
-											"type": "DateTime"
-										},
-										"sink": {
-											"name": "NO_Public_Liability_Expiry_Date__c",
-											"type": "DateTime"
-										}
-									},
-									{
-										"source": {
-											"name": "SAPCustomerNo",
-											"type": "String"
-										},
-										"sink": {
-											"name": "NO_SAP_Customer_Number__c",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "ShortName",
-											"type": "String"
-										},
-										"sink": {
-											"name": "NO_Short_Name__c",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "CompanyName",
-											"type": "String"
-										},
-										"sink": {
-											"name": "Name",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Mailing_Country"
-										},
-										"sink": {
-											"name": "ShippingCountry",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Billing_Country"
-										},
-										"sink": {
-											"name": "BillingCountry",
-											"type": "String"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "db_stage_assessors",
-								"type": "DatasetReference",
-								"parameters": {
-									"pBatch_Id": 1
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "sf_company",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Update Batch",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
-							"storedProcedureParameters": {
-								"batch_id": {
-									"value": {
-										"value": "@pipeline().parameters.pbatch_id",
-										"type": "Expression"
-									},
-									"type": "Int32"
-								},
-								"process_name": {
-									"value": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"stage": {
-									"value": "In Progress",
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "NABERSStaging",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "usp_GetCompany",
-						"type": "Lookup",
-						"dependsOn": [
-							{
-								"activity": "createNotFoundCompany",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetCompanyToCreateInSalesForce]",
-								"storedProcedureParameters": {
-									"batchid": {
-										"type": "Int32",
-										"value": {
-											"value": "@pipeline().parameters.pbatch_id",
-											"type": "Expression"
-										}
-									}
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"dataset": {
-								"referenceName": "db_members_rating",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "forEachRow",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "Set Variable Rating",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@variables('_vnewBuildingsInSF')",
-								"type": "Expression"
-							},
-							"isSequential": false,
-							"activities": [
-								{
-									"name": "Lookup Each Building by Name In Salesforce",
-									"type": "Lookup",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "SalesforceSource",
-											"query": {
-												"value": "Select id from Account\nwhere NO_ABN__c = '@{item().ABN}'",
-												"type": "Expression"
-											},
-											"readBehavior": "query"
-										},
-										"dataset": {
-											"referenceName": "sf_company",
-											"type": "DatasetReference",
-											"parameters": {}
-										},
-										"firstRowOnly": true
-									}
-								},
-								{
-									"name": "UpdateNewSalesforceIdForBuilding",
-									"type": "SqlServerStoredProcedure",
-									"dependsOn": [
-										{
-											"activity": "Lookup Each Building by Name In Salesforce",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"storedProcedureName": "[[dbo].[usp_UpdateNewSalesforceIdForCompany]",
-										"storedProcedureParameters": {
-											"batch_id": {
-												"value": {
-													"value": "@pipeline().parameters.pbatch_id",
-													"type": "Expression"
-												},
-												"type": "Int32"
-											},
-											"member_company_id": {
-												"value": {
-													"value": "@item().CompanyID",
-													"type": "Expression"
-												},
-												"type": "Int32"
-											},
-											"salesforce_company_Id": {
-												"value": {
-													"value": "@activity('Lookup Each Building by Name In Salesforce').output.firstRow.Id",
-													"type": "Expression"
-												},
-												"type": "String"
-											},
-											"account_type": {
-												"value": "company",
-												"type": "String"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "NABERSStaging",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Set Variable Rating",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "usp_GetCompany",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "_vnewBuildingsInSF",
-							"value": {
-								"value": "@activity('usp_GetCompany').output.value",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"parameters": {
-					"pbatch_id": {
-						"type": "int",
-						"defaultValue": 1
-					}
-				},
-				"variables": {
-					"_defaultCountry": {
-						"type": "String",
-						"defaultValue": "Australia"
-					},
-					"_defaultPremiseType": {
-						"type": "String",
-						"defaultValue": "Shopping Centre"
-					},
-					"_vnewBuildingsInSF": {
-						"type": "Array"
-					},
-					"_vsf_buildingRecord": {
-						"type": "String"
-					},
-					"_vnewBuildingInSF": {
-						"type": "Array"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/db_stage_assessors')]",
-				"[concat(variables('factoryId'), '/datasets/sf_company')]",
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
-				"[concat(variables('factoryId'), '/datasets/db_members_rating')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/01a Create Customer Contact In Salesforce')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "createNotFoundCustomerContact",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Update Batch",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetCustomerContactToCreateInSalesForce]",
-								"storedProcedureParameters": {
-									"batchid": {
-										"type": "Int32",
-										"value": {
-											"value": "@pipeline().parameters.pbatch_id",
-											"type": "Expression"
-										}
-									}
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"sink": {
-								"type": "SalesforceSink",
-								"writeBatchSize": 5000,
-								"writeBehavior": "insert",
-								"ignoreNullValues": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "StreetName",
-											"type": "String"
-										},
-										"sink": {
-											"name": "MailingStreet",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Suburb",
-											"type": "String"
-										},
-										"sink": {
-											"name": "MailingCity",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Postcode",
-											"type": "String"
-										},
-										"sink": {
-											"name": "MailingPostalCode",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "State",
-											"type": "String"
-										},
-										"sink": {
-											"name": "MailingState",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "phone",
-											"type": "String"
-										},
-										"sink": {
-											"name": "Phone",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Mobile",
-											"type": "String"
-										},
-										"sink": {
-											"name": "MobilePhone",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "fax",
-											"type": "String"
-										},
-										"sink": {
-											"name": "Fax",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Email",
-											"type": "String"
-										},
-										"sink": {
-											"name": "Email",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "AccountManagerFlag",
-											"type": "Boolean"
-										},
-										"sink": {
-											"name": "NO_Account_Manager__c",
-											"type": "Boolean"
-										}
-									},
-									{
-										"source": {
-											"name": "FirstName",
-											"type": "String"
-										},
-										"sink": {
-											"name": "FirstName",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "LastName",
-											"type": "String"
-										},
-										"sink": {
-											"name": "LastName",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Title"
-										},
-										"sink": {
-											"name": "Title",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "sf_record_type",
-											"type": "String"
-										},
-										"sink": {
-											"name": "RecordTypeId",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "sf_company_id"
-										},
-										"sink": {
-											"name": "AccountId"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "db_stage_assessors",
-								"type": "DatasetReference",
-								"parameters": {
-									"pBatch_Id": 1
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "sf_contacts",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Update Batch",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
-							"storedProcedureParameters": {
-								"batch_id": {
-									"value": {
-										"value": "@pipeline().parameters.pbatch_id",
-										"type": "Expression"
-									},
-									"type": "Int32"
-								},
-								"process_name": {
-									"value": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"stage": {
-									"value": "In Progress",
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "NABERSStaging",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "usp_GetCustomers",
-						"type": "Lookup",
-						"dependsOn": [
-							{
-								"activity": "createNotFoundCustomerContact",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetCustomerContactToCreateInSalesForce]",
-								"storedProcedureParameters": {
-									"batchid": {
-										"type": "Int32",
-										"value": {
-											"value": "@pipeline().parameters.pbatch_id",
-											"type": "Expression"
-										}
-									}
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"dataset": {
-								"referenceName": "db_members_rating",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "forEachRow",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "Set Variable Rating",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@variables('_vnewCustomersInSF')",
-								"type": "Expression"
-							},
-							"isSequential": false,
-							"activities": [
-								{
-									"name": "Lookup Each Customer Contact by Email In Salesforce",
-									"type": "Lookup",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "SalesforceSource",
-											"query": {
-												"value": "Select id from Contact\nwhere Email= '@{replace(item().Email, '''', '''''')}'",
-												"type": "Expression"
-											},
-											"readBehavior": "query"
-										},
-										"dataset": {
-											"referenceName": "sf_company",
-											"type": "DatasetReference",
-											"parameters": {}
-										},
-										"firstRowOnly": true
-									}
-								},
-								{
-									"name": "UpdateNewSalesforceIdForCustomer",
-									"type": "SqlServerStoredProcedure",
-									"dependsOn": [
-										{
-											"activity": "Lookup Each Customer Contact by Email In Salesforce",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"storedProcedureName": "[[dbo].[usp_UpdateNewSalesforceIdForCompany]",
-										"storedProcedureParameters": {
-											"batch_id": {
-												"value": {
-													"value": "@pipeline().parameters.pbatch_id",
-													"type": "Expression"
-												},
-												"type": "Int32"
-											},
-											"member_company_id": {
-												"value": {
-													"value": "@item().member_company_id",
-													"type": "Expression"
-												},
-												"type": "Int32"
-											},
-											"salesforce_company_Id": {
-												"value": {
-													"value": "@activity('Lookup Each Customer Contact by Email In Salesforce').output.firstRow.Id",
-													"type": "Expression"
-												},
-												"type": "String"
-											},
-											"account_type": {
-												"value": "customer contact",
-												"type": "String"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "NABERSStaging",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Set Variable Rating",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "usp_GetCustomers",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "_vnewCustomersInSF",
-							"value": {
-								"value": "@activity('usp_GetCustomers').output.value",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"parameters": {
-					"pbatch_id": {
-						"type": "int",
-						"defaultValue": 1
-					}
-				},
-				"variables": {
-					"_vnewCustomersInSF": {
-						"type": "Array"
-					},
-					"_vsf_CustomerRecord": {
-						"type": "String"
-					},
-					"_vnewCustomerInSF": {
-						"type": "Array"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/db_stage_assessors')]",
-				"[concat(variables('factoryId'), '/datasets/sf_contacts')]",
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
-				"[concat(variables('factoryId'), '/datasets/db_members_rating')]",
-				"[concat(variables('factoryId'), '/datasets/sf_company')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/01a Create Customer In Salesforce')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "createNotFoundCustomers",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Update Batch",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetCustomerToCreateInSalesForce]",
-								"storedProcedureParameters": {
-									"batchid": {
-										"type": "Int32",
-										"value": {
-											"value": "@pipeline().parameters.pbatch_id",
-											"type": "Expression"
-										}
-									}
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"sink": {
-								"type": "SalesforceSink",
-								"writeBatchSize": 5000,
-								"writeBehavior": "insert",
-								"ignoreNullValues": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "Customer_Mailing_StreetName"
-										},
-										"sink": {
-											"name": "ShippingStreet",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Customer_Mailing_Suburb"
-										},
-										"sink": {
-											"name": "ShippingCity",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Customer_Mailing_State"
-										},
-										"sink": {
-											"name": "ShippingState",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Customer_Mailing_Postcode"
-										},
-										"sink": {
-											"name": "ShippingPostalCode",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Customer_ABN"
-										},
-										"sink": {
-											"name": "NO_ABN__c",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Customer_SAP_Number"
-										},
-										"sink": {
-											"name": "NO_SAP_Customer_Number__c",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Customer_TradingName"
-										},
-										"sink": {
-											"name": "Name",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Mailing_Country"
-										},
-										"sink": {
-											"name": "ShippingCountry",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "Customer_Organisation"
-										},
-										"sink": {
-											"name": "NO_Organisation_Type__c"
-										}
-									},
-									{
-										"source": {
-											"name": "sf_record_type"
-										},
-										"sink": {
-											"name": "RecordTypeId"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "db_stage_assessors",
-								"type": "DatasetReference",
-								"parameters": {
-									"pBatch_Id": 1
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "sf_company",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Update Batch",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
-							"storedProcedureParameters": {
-								"batch_id": {
-									"value": {
-										"value": "@pipeline().parameters.pbatch_id",
-										"type": "Expression"
-									},
-									"type": "Int32"
-								},
-								"process_name": {
-									"value": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"stage": {
-									"value": "In Progress",
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "NABERSStaging",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "usp_GetCustomers",
-						"type": "Lookup",
-						"dependsOn": [
-							{
-								"activity": "createNotFoundCustomers",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetCustomerToCreateInSalesForce]",
-								"storedProcedureParameters": {
-									"batchid": {
-										"type": "Int32",
-										"value": {
-											"value": "@pipeline().parameters.pbatch_id",
-											"type": "Expression"
-										}
-									}
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"dataset": {
-								"referenceName": "db_members_rating",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "forEachRow",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "Set Variable Rating",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@variables('_vnewCustomersInSF')",
-								"type": "Expression"
-							},
-							"isSequential": false,
-							"activities": [
-								{
-									"name": "Lookup Each Customer by ABN In Salesforce",
-									"type": "Lookup",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "SalesforceSource",
-											"query": {
-												"value": "Select id from Account\nwhere NO_ABN__c = '@{item().Customer_ABN}'",
-												"type": "Expression"
-											},
-											"readBehavior": "query"
-										},
-										"dataset": {
-											"referenceName": "sf_company",
-											"type": "DatasetReference",
-											"parameters": {}
-										},
-										"firstRowOnly": true
-									}
-								},
-								{
-									"name": "UpdateNewSalesforceIdForCustomer",
-									"type": "SqlServerStoredProcedure",
-									"dependsOn": [
-										{
-											"activity": "Lookup Each Customer by ABN In Salesforce",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"storedProcedureName": "[[dbo].[usp_UpdateNewSalesforceIdForCompany]",
-										"storedProcedureParameters": {
-											"batch_id": {
-												"value": {
-													"value": "@pipeline().parameters.pbatch_id",
-													"type": "Expression"
-												},
-												"type": "Int32"
-											},
-											"member_company_id": {
-												"value": {
-													"value": "@item().member_company_id",
-													"type": "Expression"
-												},
-												"type": "Int32"
-											},
-											"salesforce_company_Id": {
-												"value": {
-													"value": "@activity('Lookup Each Customer by ABN In Salesforce').output.firstRow.Id",
-													"type": "Expression"
-												},
-												"type": "String"
-											},
-											"account_type": {
-												"value": "customer",
-												"type": "String"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "NABERSStaging",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Set Variable Rating",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "usp_GetCustomers",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "_vnewCustomersInSF",
-							"value": {
-								"value": "@activity('usp_GetCustomers').output.value",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"parameters": {
-					"pbatch_id": {
-						"type": "int",
-						"defaultValue": 1
-					}
-				},
-				"variables": {
-					"_vnewCustomersInSF": {
-						"type": "Array"
-					},
-					"_vsf_CustomerRecord": {
-						"type": "String"
-					},
-					"_vnewCustomerInSF": {
-						"type": "Array"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/db_stage_assessors')]",
-				"[concat(variables('factoryId'), '/datasets/sf_company')]",
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
-				"[concat(variables('factoryId'), '/datasets/db_members_rating')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/01b Create Customer Contact Relation')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Update Batch",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
-							"storedProcedureParameters": {
-								"batch_id": {
-									"value": {
-										"value": "@pipeline().parameters.pbatch_id",
-										"type": "Expression"
-									},
-									"type": "Int32"
-								},
-								"process_name": {
-									"value": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"stage": {
-									"value": "In Progress",
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "NABERSStaging",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "createCustomerContactRelation",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Update Batch",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetCustomerContactRelationToCreateInSalesForce]",
-								"storedProcedureParameters": {
-									"batchid": {
-										"type": "Int32",
-										"value": {
-											"value": "@pipeline().parameters.pbatch_id",
-											"type": "Expression"
-										}
-									}
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"sink": {
-								"type": "SalesforceSink",
-								"writeBatchSize": 5000,
-								"writeBehavior": "insert",
-								"ignoreNullValues": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "sf_customercontact_id",
-											"type": "String"
-										},
-										"sink": {
-											"name": "ContactId",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "sf_customer_id",
-											"type": "String"
-										},
-										"sink": {
-											"name": "AccountId",
-											"type": "String"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "db_transformed_ratings",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "sf_customercontact",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Lookup Each Assessor by Email In Salesforce",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SalesforceSource",
-								"query": {
-									"value": "Select id from Contact\nwhere Email= 'Paul.Wall@dexus.com'",
-									"type": "Expression"
-								},
-								"readBehavior": "query"
-							},
-							"dataset": {
-								"referenceName": "sf_contacts",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": true
-						}
-					}
-				],
-				"parameters": {
-					"pbatch_id": {
-						"type": "int",
-						"defaultValue": 1
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
-				"[concat(variables('factoryId'), '/datasets/db_transformed_ratings')]",
-				"[concat(variables('factoryId'), '/datasets/sf_customercontact')]",
-				"[concat(variables('factoryId'), '/datasets/sf_contacts')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/01b Transform Company Assessors')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "01_Transform",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "Update Batch",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "01_Transform_Company_Assessor",
-								"type": "DataFlowReference",
-								"parameters": {
-									"pDefaultCountry": {
-										"value": "'@{'Australia'}'",
-										"type": "Expression"
-									},
-									"pbatch_id": {
-										"value": "@pipeline().parameters.pbatch_id",
-										"type": "Expression"
-									},
-									"pActive": "'Active'",
-									"pPortalAccess": "'NABERS Online'"
-								},
-								"datasetParameters": {
-									"getLookupCompany": {
-										"pbatch_id": {
-											"value": "@pipeline().parameters.pbatch_id",
-											"type": "Expression"
-										}
-									},
-									"getLookupAssessor": {
-										"pbatch_id": {
-											"value": "@pipeline().parameters.pbatch_id",
-											"type": "Expression"
-										}
-									},
-									"getStageAssessors": {
-										"pBatch_Id": 1
-									},
-									"targetLookupSalesforceAssessor": {
-										"pbatch_id": 1
-									},
-									"updateCleanedData": {
-										"pbatch_id": 1
-									}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							}
-						}
-					},
-					{
-						"name": "Update Batch",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
-							"storedProcedureParameters": {
-								"batch_id": {
-									"value": {
-										"value": "@pipeline().parameters.pbatch_id",
-										"type": "Expression"
-									},
-									"type": "Int32"
-								},
-								"process_name": {
-									"value": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"stage": {
-									"value": "In Progress",
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "NABERSStaging",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"parameters": {
-					"pbatch_id": {
-						"type": "int",
-						"defaultValue": 1
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/01_Transform_Company_Assessor')]",
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/01b Transform Country in Building')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "01_Transform",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "Update Batch",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "01_Transform_Country_In_Company",
-								"type": "DataFlowReference",
-								"parameters": {
-									"pbatch_id": "1"
-								},
-								"datasetParameters": {
-									"getLookupSFCompany": {},
-									"updateLookupSFCmpany": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							}
-						}
-					},
-					{
-						"name": "Update Batch",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
-							"storedProcedureParameters": {
-								"batch_id": {
-									"value": {
-										"value": "@pipeline().parameters.pbatch_id",
-										"type": "Expression"
-									},
-									"type": "Int32"
-								},
-								"process_name": {
-									"value": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"stage": {
-									"value": "In Progress",
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "NABERSStaging",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"parameters": {
-					"pbatch_id": {
-						"type": "int",
-						"defaultValue": 1
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/01_Transform_Country_In_Company')]",
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/01b Transform Ratings')]",
+			"name": "[concat(parameters('factoryName'), '/02 Transform Ratings')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -4866,7 +5016,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/02 Create Ratings')]",
+			"name": "[concat(parameters('factoryName'), '/03 Create Ratings')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -5519,7 +5669,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/03 Junction Building Rating')]",
+			"name": "[concat(parameters('factoryName'), '/03a Junction Building Rating')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -5945,6 +6095,162 @@
 														"parameters": {}
 													}
 												]
+											},
+											{
+												"name": "copyHoursOfSerivce",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "UpdateNewSalesforceIdForRating",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRatingHoursOfServiceToCreateInSalesforce]",
+														"storedProcedureParameters": {
+															"batch_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@pipeline().parameters.pbatch_id",
+																	"type": "Expression"
+																}
+															},
+															"source_rating_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@item().RatingHeaderId",
+																	"type": "Expression"
+																}
+															}
+														},
+														"queryTimeout": "02:00:00"
+													},
+													"sink": {
+														"type": "SalesforceSink",
+														"writeBatchSize": 5000,
+														"writeBehavior": "insert"
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"mappings": [
+															{
+																"source": {
+																	"name": "sf_rating_id",
+																	"type": "String",
+																	"physicalType": "varchar"
+																},
+																"sink": {
+																	"name": "Rating__c",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "TenancyName",
+																	"type": "String",
+																	"physicalType": "nvarchar"
+																},
+																"sink": {
+																	"name": "Area_Tenancy_Name__c",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "ListedArea",
+																	"type": "String",
+																	"physicalType": "nvarchar"
+																},
+																"sink": {
+																	"name": "Area__c",
+																	"type": "Decimal"
+																}
+															},
+															{
+																"source": {
+																	"name": "blocknumber",
+																	"type": "String",
+																	"physicalType": "nvarchar"
+																},
+																"sink": {
+																	"name": "Area_Block_Number__c",
+																	"type": "Decimal"
+																}
+															},
+															{
+																"source": {
+																	"name": "area_centrally_serviced"
+																},
+																"sink": {
+																	"name": "Area_Centrally_Serviced__c",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "tenancy_servicing",
+																	"physicalType": "nvarchar"
+																},
+																"sink": {
+																	"name": "Area_Tenancy_Servicing_Checked__c",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "WeeksVacant",
+																	"type": "String",
+																	"physicalType": "nvarchar"
+																},
+																"sink": {
+																	"name": "Area_Weeks_Vacant_During_Rating_Period__c",
+																	"type": "Decimal"
+																}
+															},
+															{
+																"source": {
+																	"name": "attribute_type"
+																},
+																"sink": {
+																	"name": "Rating_Attribute_Type__c",
+																	"type": "String"
+																}
+															}
+														],
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "db_transformed_ratings",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "sf_rating_attribute",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												]
 											}
 										]
 									}
@@ -5978,7 +6284,8 @@
 				"[concat(variables('factoryId'), '/datasets/sf_Ratings')]",
 				"[concat(variables('factoryId'), '/datasets/db_transformed_ratings')]",
 				"[concat(variables('factoryId'), '/datasets/sf_buiding_rating')]",
-				"[concat(variables('factoryId'), '/datasets/sf_rating_contact')]"
+				"[concat(variables('factoryId'), '/datasets/sf_rating_contact')]",
+				"[concat(variables('factoryId'), '/datasets/sf_rating_attribute')]"
 			]
 		},
 		{
@@ -7433,6 +7740,168 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/db_stage_hours_Of_service')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "staging"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RatingHeaderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AreaID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TenancyName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ListedArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "blocknumber",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsListedAsCentralServiced",
+						"type": "bit"
+					},
+					{
+						"name": "IsTenancyServicingCheck",
+						"type": "bit"
+					},
+					{
+						"name": "IsAreaConfirmed",
+						"type": "bit"
+					},
+					{
+						"name": "IsCentralServicingResult",
+						"type": "bit"
+					},
+					{
+						"name": "RatedCSArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "RatedGLAR",
+						"type": "nvarchar"
+					},
+					{
+						"name": "WeeksVacant",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ExtentedHours",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Hours",
+						"type": "nvarchar"
+					},
+					{
+						"name": "HoursArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsExtendedHoursEnabled",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsHoursEnabled",
+						"type": "nvarchar"
+					},
+					{
+						"name": "batch_id",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "HoursOfServiceStage"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/db_transformed_attribute_type')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "staging"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AreaId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "member_rating_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "batch_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "area_centrally_serviced",
+						"type": "varchar"
+					},
+					{
+						"name": "attribute_type",
+						"type": "varchar"
+					},
+					{
+						"name": "tenancy_servicing",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Transformed_AttributeType"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/db_transformed_ratings')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -7959,6 +8428,29 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/sf_rating_attribute')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NabersOnline",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "salesforce"
+				},
+				"annotations": [],
+				"type": "SalesforceObject",
+				"schema": [],
+				"typeProperties": {
+					"objectApiName": "NO_Rating_Attribute__c"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NabersOnline')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/sf_rating_contact')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -8188,6 +8680,47 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/01_Transform_HoursOfService')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "db_stage_hours_Of_service",
+								"type": "DatasetReference"
+							},
+							"name": "getStagedHoursOfService"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "db_transformed_attribute_type",
+								"type": "DatasetReference"
+							},
+							"name": "sinkTransformdAttributeType"
+						}
+					],
+					"transformations": [
+						{
+							"name": "filterByBatch"
+						},
+						{
+							"name": "transformedColumns"
+						}
+					],
+					"script": "parameters{\n\tpbatch_id as integer (1)\n}\nsource(output(\n\t\tid as integer,\n\t\tRatingHeaderID as integer,\n\t\tAreaID as integer,\n\t\tTenancyName as string,\n\t\tListedArea as string,\n\t\tblocknumber as string,\n\t\tIsListedAsCentralServiced as boolean,\n\t\tIsTenancyServicingCheck as boolean,\n\t\tIsAreaConfirmed as boolean,\n\t\tIsCentralServicingResult as boolean,\n\t\tRatedCSArea as string,\n\t\tRatedGLAR as string,\n\t\tWeeksVacant as string,\n\t\tExtentedHours as string,\n\t\tHours as string,\n\t\tHoursArea as string,\n\t\tIsExtendedHoursEnabled as string,\n\t\tIsHoursEnabled as string,\n\t\tbatch_id as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getStagedHoursOfService\ngetStagedHoursOfService filter(equals(toInteger(batch_id), $pbatch_id)) ~> filterByBatch\nfilterByBatch derive(D_RatingAttributeType = 'Area',\n\t\tD_Tenancy_Servcing = iif(IsTenancyServicingCheck,'Yes','No'),\n\t\tD_Centrally_Serviced = iif(IsListedAsCentralServiced, 'Centrally serviced','Not centrally serviced')) ~> transformedColumns\ntransformedColumns sink(input(\n\t\tId as integer,\n\t\tAreaId as integer,\n\t\tmember_rating_id as integer,\n\t\tbatch_id as integer,\n\t\tarea_centrally_serviced as string,\n\t\tattribute_type as string,\n\t\ttenancy_servicing as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAreaId = AreaID,\n\t\tmember_rating_id = RatingHeaderID,\n\t\tbatch_id,\n\t\tattribute_type = D_RatingAttributeType,\n\t\tarea_centrally_serviced = D_Centrally_Serviced,\n\t\ttenancy_servicing = D_Tenancy_Servcing\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkTransformdAttributeType"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/db_stage_hours_Of_service')]",
+				"[concat(variables('factoryId'), '/datasets/db_transformed_attribute_type')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/01_Transform_Rating')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -8295,483 +8828,6 @@
 				"[concat(variables('factoryId'), '/datasets/db_lookup_sf_officer_ids')]",
 				"[concat(variables('factoryId'), '/datasets/db_lookup_sf_company_ids')]",
 				"[concat(variables('factoryId'), '/datasets/db_transformed_ratings')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/sf_rating_attribute')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NabersOnline",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SalesforceObject",
-				"schema": [],
-				"typeProperties": {
-					"objectApiName": "NO_Rating_Attribute__c"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NabersOnline')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/db_stage_hours_Of_service')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "RatingHeaderID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "AreaID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "TenancyName",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ListedArea",
-						"type": "nvarchar"
-					},
-					{
-						"name": "blocknumber",
-						"type": "nvarchar"
-					},
-					{
-						"name": "IsListedAsCentralServiced",
-						"type": "bit"
-					},
-					{
-						"name": "IsTenancyServicingCheck",
-						"type": "bit"
-					},
-					{
-						"name": "IsAreaConfirmed",
-						"type": "bit"
-					},
-					{
-						"name": "IsCentralServicingResult",
-						"type": "bit"
-					},
-					{
-						"name": "RatedCSArea",
-						"type": "nvarchar"
-					},
-					{
-						"name": "RatedGLAR",
-						"type": "nvarchar"
-					},
-					{
-						"name": "WeeksVacant",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ExtentedHours",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Hours",
-						"type": "nvarchar"
-					},
-					{
-						"name": "HoursArea",
-						"type": "nvarchar"
-					},
-					{
-						"name": "IsExtendedHoursEnabled",
-						"type": "nvarchar"
-					},
-					{
-						"name": "IsHoursEnabled",
-						"type": "nvarchar"
-					},
-					{
-						"name": "batch_id",
-						"type": "int",
-						"precision": 10
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "HoursOfServiceStage"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/db_transformed_attribute_type')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "Id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "AreaId",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "member_rating_id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "batch_id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "area_centrally_serviced",
-						"type": "varchar"
-					},
-					{
-						"name": "attribute_type",
-						"type": "varchar"
-					},
-					{
-						"name": "tenancy_servicing",
-						"type": "varchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "Transformed_AttributeType"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/01_Transform_HoursOfService')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "db_stage_hours_Of_service",
-								"type": "DatasetReference"
-							},
-							"name": "getStagedHoursOfService"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "db_transformed_attribute_type",
-								"type": "DatasetReference"
-							},
-							"name": "sinkTransformdAttributeType"
-						}
-					],
-					"transformations": [
-						{
-							"name": "filterByBatch"
-						},
-						{
-							"name": "transformedColumns"
-						}
-					],
-					"script": "parameters{\n\tpbatch_id as integer (1)\n}\nsource(output(\n\t\tid as integer,\n\t\tRatingHeaderID as integer,\n\t\tAreaID as integer,\n\t\tTenancyName as string,\n\t\tListedArea as string,\n\t\tblocknumber as string,\n\t\tIsListedAsCentralServiced as boolean,\n\t\tIsTenancyServicingCheck as boolean,\n\t\tIsAreaConfirmed as boolean,\n\t\tIsCentralServicingResult as boolean,\n\t\tRatedCSArea as string,\n\t\tRatedGLAR as string,\n\t\tWeeksVacant as string,\n\t\tExtentedHours as string,\n\t\tHours as string,\n\t\tHoursArea as string,\n\t\tIsExtendedHoursEnabled as string,\n\t\tIsHoursEnabled as string,\n\t\tbatch_id as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getStagedHoursOfService\ngetStagedHoursOfService filter(equals(toInteger(batch_id), $pbatch_id)) ~> filterByBatch\nfilterByBatch derive(D_RatingAttributeType = 'Area',\n\t\tD_Tenancy_Servcing = iif(IsTenancyServicingCheck,'Yes','No') ,\n\t\tD_Centrally_Serviced = iif(IsListedAsCentralServiced, 'Centrally serviced','Not centrally serviced') ) ~> transformedColumns\ntransformedColumns sink(input(\n\t\tId as integer,\n\t\tAreaId as integer,\n\t\tmember_rating_id as integer,\n\t\tbatch_id as integer,\n\t\tarea_centrally_serviced as string,\n\t\tattribute_type as string,\n\t\ttenancy_servicing as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAreaId = AreaID,\n\t\tmember_rating_id = RatingHeaderID,\n\t\tbatch_id,\n\t\tattribute_type = D_RatingAttributeType,\n\t\tarea_centrally_serviced = D_Centrally_Serviced,\n\t\ttenancy_servicing = D_Tenancy_Servcing\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkTransformdAttributeType"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/db_stage_hours_Of_service')]",
-				"[concat(variables('factoryId'), '/datasets/db_transformed_attribute_type')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/04 Hours of Service')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Update Batch",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
-							"storedProcedureParameters": {
-								"batch_id": {
-									"value": {
-										"value": "@pipeline().parameters.pbatch_id",
-										"type": "Expression"
-									},
-									"type": "Int32"
-								},
-								"process_name": {
-									"value": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"type": "String"
-								},
-								"stage": {
-									"value": "In Progress",
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "NABERSStaging",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "copyHoursOfSerivce",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRatingHoursOfServiceToCreateInSalesforce]",
-								"storedProcedureParameters": {
-									"batch_id": {
-										"type": "Int32",
-										"value": {
-											"value": "@pipeline().parameters.pbatch_id",
-											"type": "Expression"
-										}
-									},
-									"source_rating_id": {
-										"type": "Int32",
-										"value": "22908"
-									}
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"sink": {
-								"type": "SalesforceSink",
-								"writeBatchSize": 5000,
-								"writeBehavior": "insert"
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "sf_rating_id",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "Rating__c",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "TenancyName",
-											"type": "String",
-											"physicalType": "nvarchar"
-										},
-										"sink": {
-											"name": "Area_Tenancy_Name__c",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "ListedArea",
-											"type": "String",
-											"physicalType": "nvarchar"
-										},
-										"sink": {
-											"name": "Area__c",
-											"type": "Decimal"
-										}
-									},
-									{
-										"source": {
-											"name": "blocknumber",
-											"type": "String",
-											"physicalType": "nvarchar"
-										},
-										"sink": {
-											"name": "Area_Block_Number__c",
-											"type": "Decimal"
-										}
-									},
-									{
-										"source": {
-											"name": "area_centrally_serviced"
-										},
-										"sink": {
-											"name": "Area_Centrally_Serviced__c",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "tenancy_servicing",
-											"physicalType": "nvarchar"
-										},
-										"sink": {
-											"name": "Area_Tenancy_Servicing_Checked__c",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "WeeksVacant",
-											"type": "String",
-											"physicalType": "nvarchar"
-										},
-										"sink": {
-											"name": "Area_Weeks_Vacant_During_Rating_Period__c",
-											"type": "Decimal"
-										}
-									},
-									{
-										"source": {
-											"name": "attribute_type"
-										},
-										"sink": {
-											"name": "Rating_Attribute_Type__c",
-											"type": "String"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "db_transformed_ratings",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "sf_rating_attribute",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "01_Transform_HoursOfService",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "Update Batch",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "01_Transform_HoursOfService",
-								"type": "DataFlowReference",
-								"parameters": {
-									"pbatch_id": {
-										"value": "@pipeline().parameters.pbatch_id",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"getStagedHoursOfService": {},
-									"sinkTransformdAttributeType": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							}
-						}
-					}
-				],
-				"parameters": {
-					"pbatch_id": {
-						"type": "int",
-						"defaultValue": 1
-					}
-				},
-				"variables": {
-					"_vnewBuildingsInSF": {
-						"type": "Array"
-					},
-					"_vsf_buildingRecord": {
-						"type": "Array"
-					},
-					"_vnewBuildingInSF": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
-				"[concat(variables('factoryId'), '/datasets/db_transformed_ratings')]",
-				"[concat(variables('factoryId'), '/datasets/sf_rating_attribute')]",
-				"[concat(variables('factoryId'), '/dataflows/01_Transform_HoursOfService')]"
 			]
 		}
 	]
