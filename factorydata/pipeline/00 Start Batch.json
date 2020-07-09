@@ -102,6 +102,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "01_Transform_HoursOfService",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"userProperties": [],
@@ -351,6 +357,42 @@
 							"value": "@variables('vbatch_id')",
 							"type": "Expression"
 						}
+					}
+				}
+			},
+			{
+				"name": "01_Transform_HoursOfService",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "01 Pull From Staging",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "01_Transform_HoursOfService",
+						"type": "DataFlowReference",
+						"parameters": {
+							"pbatch_id": {
+								"value": "@pipeline().parameters.pbatch_id",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
 					}
 				}
 			}
