@@ -451,7 +451,10 @@
 													},
 													"source_rating_id": {
 														"type": "Int32",
-														"value": "@item().RatingHeaderId"
+														"value": {
+															"value": "@item().RatingHeaderId",
+															"type": "Expression"
+														}
 													}
 												},
 												"queryTimeout": "02:00:00"
