@@ -82,7 +82,7 @@
 				}
 			},
 			{
-				"name": "01b Transform",
+				"name": "02 Transform",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -98,7 +98,7 @@
 						]
 					},
 					{
-						"activity": "01a Create Customer Contact",
+						"activity": "01c Create Customer Contact",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -107,7 +107,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "01b Transform Ratings",
+						"referenceName": "02 Transform Ratings",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -146,11 +146,11 @@
 				}
 			},
 			{
-				"name": "02 Create Ratings",
+				"name": "03 Create Ratings",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "01b Transform",
+						"activity": "02 Transform",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -159,7 +159,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "02 Create Ratings",
+						"referenceName": "03 Create Ratings",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -172,11 +172,11 @@
 				}
 			},
 			{
-				"name": "03 Junction Building Rating",
+				"name": "03a Junction Building Rating",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "02 Create Ratings",
+						"activity": "03 Create Ratings",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -185,7 +185,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "03 Junction Building Rating",
+						"referenceName": "03a Junction Building Rating",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -303,7 +303,7 @@
 				}
 			},
 			{
-				"name": "01a Create Customers",
+				"name": "01b Create Customers",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -316,7 +316,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "01a Create Customer In Salesforce",
+						"referenceName": "01b Create Customer In Salesforce",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -329,11 +329,11 @@
 				}
 			},
 			{
-				"name": "01a Create Customer Contact",
+				"name": "01c Create Customer Contact",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "01a Create Customers",
+						"activity": "01b Create Customers",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -342,7 +342,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "01a Create Customer Contact In Salesforce",
+						"referenceName": "01c Create Customer Contact In Salesforce",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
