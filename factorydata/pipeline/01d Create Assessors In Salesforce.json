@@ -515,7 +515,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from User\nwhere Email = @{item().Email}",
+										"value": "Select id from User\nwhere Email like '%@{item().Email}%'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
