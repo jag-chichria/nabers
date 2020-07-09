@@ -394,7 +394,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Set Variable Rating",
+						"activity": "waitForFewSecondsToAllowSFToCreateUser",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -591,6 +591,22 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "waitForFewSecondsToAllowSFToCreateUser",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Set Variable Rating",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 6
+				}
 			}
 		],
 		"parameters": {
