@@ -719,6 +719,10 @@
 					{
 						"name": "salesforce_user_id",
 						"type": "varchar"
+					},
+					{
+						"name": "phone_cleaned",
+						"type": "varchar"
 					}
 				],
 				"typeProperties": {
@@ -986,7 +990,7 @@
 						"type": "varchar"
 					},
 					{
-						"name": "Customer_Mailing_StreeNumber",
+						"name": "Customer_Mailing_StreetNumber",
 						"type": "varchar"
 					},
 					{
@@ -1013,6 +1017,14 @@
 						"name": "customer_id",
 						"type": "int",
 						"precision": 10
+					},
+					{
+						"name": "Customer_Organisation",
+						"type": "varchar"
+					},
+					{
+						"name": "Customer_SAP_Number",
+						"type": "varchar"
 					},
 					{
 						"name": "RatingPeriodFrom",
@@ -1631,6 +1643,12 @@
 						"type": "nvarchar"
 					},
 					{
+						"name": "CoreHours",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
 						"name": "batch_id",
 						"type": "int",
 						"precision": 10
@@ -2083,6 +2101,16 @@
 					{
 						"name": "sf_owner_id",
 						"type": "nchar"
+					},
+					{
+						"name": "hour_of_service_core_hours",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "has_extended_hours",
+						"type": "varchar"
 					}
 				],
 				"typeProperties": {
