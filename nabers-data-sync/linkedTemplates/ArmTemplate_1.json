@@ -714,7 +714,7 @@
 														},
 														"salesforce_user_id": {
 															"value": {
-																"value": "@activity('Lookup Assessor in User by Email Id In Salesforce').output.firstRow.Id",
+																"value": "@{IF(contains(string(activity('Lookup Assessor in User by Email Id In Salesforce').output), 'firstRow'), activity('Lookup Assessor in User by Email Id In Salesforce').output.firstRow.Id, '')}",
 																"type": "Expression"
 															},
 															"type": "String"
