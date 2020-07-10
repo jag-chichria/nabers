@@ -1371,6 +1371,11 @@
 				"type": "AzureSqlTable",
 				"schema": [
 					{
+						"name": "RatingHeaderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
 						"name": "companyid",
 						"type": "int",
 						"precision": 10
@@ -1439,6 +1444,10 @@
 					},
 					{
 						"name": "Phone",
+						"type": "varchar"
+					},
+					{
+						"name": "Mobile",
 						"type": "varchar"
 					},
 					{
