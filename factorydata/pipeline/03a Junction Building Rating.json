@@ -550,6 +550,14 @@
 															"name": "Rating_Attribute_Type__c",
 															"type": "String"
 														}
+													},
+													{
+														"source": {
+															"name": "Hours"
+														},
+														"sink": {
+															"name": "Hours_Per_Week__c"
+														}
 													}
 												],
 												"typeConversion": true,
