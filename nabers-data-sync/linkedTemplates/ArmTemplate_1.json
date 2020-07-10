@@ -742,7 +742,7 @@
 													"source": {
 														"type": "SalesforceSource",
 														"query": {
-															"value": "Select id from User\nwhere Email like '@{activity('Get Assessor Details by Assessor ID').output.firstRow.Email}'",
+															"value": "Select id from User\nwhere Email like '%@{activity('Get Assessor Details by Assessor ID').output.firstRow.Email}%'",
 															"type": "Expression"
 														},
 														"readBehavior": "query"
