@@ -377,6 +377,16 @@
 			{
 				"name": "sf_owner_id",
 				"type": "nchar"
+			},
+			{
+				"name": "hour_of_service_core_hours",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "has_extended_hours",
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
