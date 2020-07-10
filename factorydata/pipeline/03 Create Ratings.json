@@ -410,7 +410,7 @@
 							},
 							{
 								"source": {
-									"name": "weekly_core_hours_of_Service"
+									"name": "core_hours_of_service"
 								},
 								"sink": {
 									"name": "Weekly_Core_Hours_Of_Service__c"
@@ -614,6 +614,14 @@
 								},
 								"sink": {
 									"name": "Shopping_Centre_Size__c"
+								}
+							},
+							{
+								"source": {
+									"name": "has_extended_hours"
+								},
+								"sink": {
+									"name": "Has_Extended_Hours__c"
 								}
 							}
 						]
