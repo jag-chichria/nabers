@@ -288,6 +288,14 @@
 								"sink": {
 									"name": "NO_Regional__c"
 								}
+							},
+							{
+								"source": {
+									"name": "Mobile"
+								},
+								"sink": {
+									"name": "MobilePhone"
+								}
 							}
 						]
 					}
