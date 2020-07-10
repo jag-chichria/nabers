@@ -48,8 +48,7 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "Phone",
-									"type": "String"
+									"name": "phone_cleaned"
 								},
 								"sink": {
 									"name": "Phone",
