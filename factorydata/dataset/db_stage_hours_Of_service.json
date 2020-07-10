@@ -87,6 +87,12 @@
 				"type": "nvarchar"
 			},
 			{
+				"name": "CoreHours",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
 				"name": "batch_id",
 				"type": "int",
 				"precision": 10
