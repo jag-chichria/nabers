@@ -56,7 +56,7 @@
 				"type": "varchar"
 			},
 			{
-				"name": "Customer_Mailing_StreeNumber",
+				"name": "Customer_Mailing_StreetNumber",
 				"type": "varchar"
 			},
 			{
@@ -83,6 +83,14 @@
 				"name": "customer_id",
 				"type": "int",
 				"precision": 10
+			},
+			{
+				"name": "Customer_Organisation",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer_SAP_Number",
+				"type": "varchar"
 			},
 			{
 				"name": "RatingPeriodFrom",
