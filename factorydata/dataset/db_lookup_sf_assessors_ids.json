@@ -94,6 +94,10 @@
 			{
 				"name": "salesforce_user_id",
 				"type": "varchar"
+			},
+			{
+				"name": "phone_cleaned",
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
