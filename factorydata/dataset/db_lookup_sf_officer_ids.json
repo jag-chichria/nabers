@@ -45,7 +45,7 @@
 		],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "Lookup_SalesforceUsers"
+			"table": "Lookup_SalesforceTechOfficers"
 		}
 	}
 }
