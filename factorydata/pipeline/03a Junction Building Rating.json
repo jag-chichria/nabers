@@ -768,7 +768,7 @@
 															"name": "NumberSeatsOutOfSvcGT4Weeks"
 														},
 														"sink": {
-															"name": "Parking_Spaces_Unavailable_After_4_weeks__c"
+															"name": "Food_Courts_Unavailable_After_4_weeks__c"
 														}
 													},
 													{
@@ -776,7 +776,7 @@
 															"name": "OutOfServiceWeeks"
 														},
 														"sink": {
-															"name": "Parking_Spaces_Number_Weeks_Unavailabe__c"
+															"name": "Food_Courts_Week_Unavailable__c"
 														}
 													},
 													{
