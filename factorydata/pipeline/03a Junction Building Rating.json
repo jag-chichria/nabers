@@ -547,8 +547,7 @@
 															"name": "attribute_type"
 														},
 														"sink": {
-															"name": "Rating_Attribute_Type__c",
-															"type": "String"
+															"name": "Rating_Attribute_Type__c"
 														}
 													},
 													{
@@ -680,6 +679,14 @@
 														"sink": {
 															"name": "Parking_Spaces_Number_Weeks_Unavailabe__c"
 														}
+													},
+													{
+														"source": {
+															"name": "attribute_type"
+														},
+														"sink": {
+															"name": "Rating_Attribute_Type__c"
+														}
 													}
 												],
 												"typeConversion": true,
@@ -794,6 +801,14 @@
 														"sink": {
 															"name": "Food_Courts_Total_Seats__c"
 														}
+													},
+													{
+														"source": {
+															"name": "attribute_type"
+														},
+														"sink": {
+															"name": "Rating_Attribute_Type__c"
+														}
 													}
 												],
 												"typeConversion": true,
@@ -907,6 +922,136 @@
 														},
 														"sink": {
 															"name": "Number_of_theatrettes_in_cinema__c"
+														}
+													},
+													{
+														"source": {
+															"name": "attribute_type"
+														},
+														"sink": {
+															"name": "Rating_Attribute_Type__c"
+														}
+													}
+												],
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "db_transformed_ratings",
+												"type": "DatasetReference"
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "sf_rating_attribute",
+												"type": "DatasetReference"
+											}
+										]
+									},
+									{
+										"name": "copyGymnasiums",
+										"type": "Copy",
+										"dependsOn": [
+											{
+												"activity": "UpdateNewSalesforceIdForRating",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "AzureSqlSource",
+												"sqlReaderStoredProcedureName": "[dbo].[usp_GetRatingGymnasiumToCreateInSalesforce]",
+												"storedProcedureParameters": {
+													"batch_id": {
+														"type": "Int32",
+														"value": {
+															"value": "@pipeline().parameters.pbatch_id",
+															"type": "Expression"
+														}
+													},
+													"source_rating_id": {
+														"type": "Int32",
+														"value": {
+															"value": "@item().RatingHeaderId",
+															"type": "Expression"
+														}
+													}
+												},
+												"queryTimeout": "02:00:00"
+											},
+											"sink": {
+												"type": "SalesforceSink",
+												"writeBatchSize": 5000,
+												"writeBehavior": "insert"
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"mappings": [
+													{
+														"source": {
+															"name": "sf_rating_id",
+															"type": "String",
+															"physicalType": "varchar"
+														},
+														"sink": {
+															"name": "Rating__c",
+															"type": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "is_centrally_serviced"
+														},
+														"sink": {
+															"name": "Gym_Centrally_Serviced__c"
+														}
+													},
+													{
+														"source": {
+															"name": "OutOfServiceWeeks"
+														},
+														"sink": {
+															"name": "Weeks_Gym_Out_Of_Service__c"
+														}
+													},
+													{
+														"source": {
+															"name": "GymDesc"
+														},
+														"sink": {
+															"name": "Gym_Description__c"
+														}
+													},
+													{
+														"source": {
+															"name": "ConfirmedArea"
+														},
+														"sink": {
+															"name": "Verified_GLAR__c"
+														}
+													},
+													{
+														"source": {
+															"name": "attribute_type"
+														},
+														"sink": {
+															"name": "Rating_Attribute_Type__c"
 														}
 													}
 												],
