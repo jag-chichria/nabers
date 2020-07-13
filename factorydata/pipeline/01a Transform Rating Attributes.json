@@ -1,5 +1,5 @@
 {
-	"name": "01a Transform Hours of Service",
+	"name": "01a Transform Rating Attributes",
 	"properties": {
 		"activities": [
 			{
@@ -43,7 +43,7 @@
 				}
 			},
 			{
-				"name": "Transform HoursOfService",
+				"name": "Transform Rating Attributes Data Flow",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
@@ -63,7 +63,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "01_Transform_HoursOfService",
+						"referenceName": "01_Transform_Rating_Attributes",
 						"type": "DataFlowReference",
 						"parameters": {
 							"pbatch_id": {

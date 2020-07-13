@@ -375,7 +375,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "01a Transform Hours of Service",
+						"referenceName": "01a Transform Rating Attributes",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
