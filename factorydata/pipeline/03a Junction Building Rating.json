@@ -701,6 +701,234 @@
 												"type": "DatasetReference"
 											}
 										]
+									},
+									{
+										"name": "copyFoodCourt",
+										"type": "Copy",
+										"dependsOn": [
+											{
+												"activity": "UpdateNewSalesforceIdForRating",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "AzureSqlSource",
+												"sqlReaderStoredProcedureName": "[dbo].[usp_GetRatingFoodCourtToCreateInSalesforce]",
+												"storedProcedureParameters": {
+													"batch_id": {
+														"type": "Int32",
+														"value": {
+															"value": "@pipeline().parameters.pbatch_id",
+															"type": "Expression"
+														}
+													},
+													"source_rating_id": {
+														"type": "Int32",
+														"value": {
+															"value": "@item().RatingHeaderId",
+															"type": "Expression"
+														}
+													}
+												},
+												"queryTimeout": "02:00:00"
+											},
+											"sink": {
+												"type": "SalesforceSink",
+												"writeBatchSize": 5000,
+												"writeBehavior": "insert"
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"mappings": [
+													{
+														"source": {
+															"name": "sf_rating_id",
+															"type": "String",
+															"physicalType": "varchar"
+														},
+														"sink": {
+															"name": "Rating__c",
+															"type": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "NumberSeatsOutOfSvcGT4Weeks"
+														},
+														"sink": {
+															"name": "Parking_Spaces_Unavailable_After_4_weeks__c"
+														}
+													},
+													{
+														"source": {
+															"name": "OutOfServiceWeeks"
+														},
+														"sink": {
+															"name": "Parking_Spaces_Number_Weeks_Unavailabe__c"
+														}
+													},
+													{
+														"source": {
+															"name": "FoodCourtDesc"
+														},
+														"sink": {
+															"name": "Food_Courts_Description__c"
+														}
+													},
+													{
+														"source": {
+															"name": "NumberSeats"
+														},
+														"sink": {
+															"name": "Food_Courts_Total_Seats__c"
+														}
+													}
+												],
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "db_transformed_ratings",
+												"type": "DatasetReference"
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "sf_rating_attribute",
+												"type": "DatasetReference"
+											}
+										]
+									},
+									{
+										"name": "copyCinemas",
+										"type": "Copy",
+										"dependsOn": [
+											{
+												"activity": "UpdateNewSalesforceIdForRating",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "AzureSqlSource",
+												"sqlReaderStoredProcedureName": "[dbo].[usp_GetRatingCinemaToCreateInSalesforce]",
+												"storedProcedureParameters": {
+													"batch_id": {
+														"type": "Int32",
+														"value": {
+															"value": "@pipeline().parameters.pbatch_id",
+															"type": "Expression"
+														}
+													},
+													"source_rating_id": {
+														"type": "Int32",
+														"value": {
+															"value": "@item().RatingHeaderId",
+															"type": "Expression"
+														}
+													}
+												},
+												"queryTimeout": "02:00:00"
+											},
+											"sink": {
+												"type": "SalesforceSink",
+												"writeBatchSize": 5000,
+												"writeBehavior": "insert"
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"mappings": [
+													{
+														"source": {
+															"name": "sf_rating_id",
+															"type": "String",
+															"physicalType": "varchar"
+														},
+														"sink": {
+															"name": "Rating__c",
+															"type": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "NumberOutOfSvcGT4Weeks"
+														},
+														"sink": {
+															"name": "Number_of_theatrettes_unavailable__c"
+														}
+													},
+													{
+														"source": {
+															"name": "OutOfServiceWeeks"
+														},
+														"sink": {
+															"name": "Cinema_Weeks_unavailable__c"
+														}
+													},
+													{
+														"source": {
+															"name": "CinemaDesc"
+														},
+														"sink": {
+															"name": "Cinema_Description__c"
+														}
+													},
+													{
+														"source": {
+															"name": "NumberTheatrettes"
+														},
+														"sink": {
+															"name": "Number_of_theatrettes_in_cinema__c"
+														}
+													}
+												],
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "db_transformed_ratings",
+												"type": "DatasetReference"
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "sf_rating_attribute",
+												"type": "DatasetReference"
+											}
+										]
 									}
 								]
 							}
