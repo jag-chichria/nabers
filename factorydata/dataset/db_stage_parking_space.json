@@ -1,0 +1,60 @@
+{
+	"name": "db_stage_parking_space",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "RatingHeaderID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BlockID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BlockDesc",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VentilationType",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NumberParkingSpaces",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NumberOutOfSvcGT4Weeks",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OutOfServiceWeeks",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SpacesNatural",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SpacesMechanical",
+				"type": "nvarchar"
+			},
+			{
+				"name": "batch_id",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "ParkingSpaceStage"
+		}
+	}
+}
