@@ -31,7 +31,7 @@
 								"type": "Expression"
 							},
 							"vDefaultComplete": "'Complete'",
-							"vDefaultYes": "'Yes'"
+							"vYes": "'Yes'"
 						},
 						"datasetParameters": {
 							"getLookupSalesforceBuildings": {
@@ -47,6 +47,12 @@
 								}
 							},
 							"getLookupSalesforceTechOfficer": {
+								"pbatch_id": 1
+							},
+							"getLookupSalesforceCompany": {
+								"pbatch_id": 1
+							},
+							"getLookupSalesforceCustomers": {
 								"pbatch_id": 1
 							}
 						}
