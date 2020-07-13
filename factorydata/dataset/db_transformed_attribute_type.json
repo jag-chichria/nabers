@@ -17,7 +17,7 @@
 				"precision": 10
 			},
 			{
-				"name": "AreaId",
+				"name": "attribute_id",
 				"type": "int",
 				"precision": 10
 			},
