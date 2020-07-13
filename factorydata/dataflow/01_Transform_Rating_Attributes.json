@@ -1,5 +1,5 @@
 {
-	"name": "01_Transform_HoursOfService",
+	"name": "01_Transform_Rating_Attributes",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
