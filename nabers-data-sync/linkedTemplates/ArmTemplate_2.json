@@ -1011,7 +1011,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "AzureSqlSource",
-								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetTransformedRatings]",
+								"sqlReaderStoredProcedureName": "usp_GetRatingsToCreateInSalesforce",
 								"storedProcedureParameters": {
 									"batchid": {
 										"type": "Int32",
@@ -1113,14 +1113,6 @@
 										},
 										"sink": {
 											"name": "Rating_Start_Date__c"
-										}
-									},
-									{
-										"source": {
-											"name": "has_cinema"
-										},
-										"sink": {
-											"name": "hasCinema__c"
 										}
 									},
 									{
@@ -1241,30 +1233,6 @@
 										},
 										"sink": {
 											"name": "Water_page__c"
-										}
-									},
-									{
-										"source": {
-											"name": "has_parking_space"
-										},
-										"sink": {
-											"name": "Has_Parking_Space__c"
-										}
-									},
-									{
-										"source": {
-											"name": "has_gym"
-										},
-										"sink": {
-											"name": "Has_Gym__c"
-										}
-									},
-									{
-										"source": {
-											"name": "has_food_court"
-										},
-										"sink": {
-											"name": "Has_Food_Court__c"
 										}
 									},
 									{
@@ -1569,6 +1537,38 @@
 										},
 										"sink": {
 											"name": "Has_Extended_Hours__c"
+										}
+									},
+									{
+										"source": {
+											"name": "has_food_court"
+										},
+										"sink": {
+											"name": "Has_Food_Court__c"
+										}
+									},
+									{
+										"source": {
+											"name": "has_gym"
+										},
+										"sink": {
+											"name": "Has_Gym__c"
+										}
+									},
+									{
+										"source": {
+											"name": "has_parking_space"
+										},
+										"sink": {
+											"name": "Has_Parking_Space__c"
+										}
+									},
+									{
+										"source": {
+											"name": "has_cinema"
+										},
+										"sink": {
+											"name": "hasCinema__c"
 										}
 									}
 								]
