@@ -1553,6 +1553,181 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/db_stage_cinemas')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "staging"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "RatingHeaderID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CinemaID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CinemaDesc",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NumberTheatrettes",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NumberOutOfSvcGT4Weeks",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OutOfServiceWeeks",
+						"type": "nvarchar"
+					},
+					{
+						"name": "RatedNumberTheatrettes",
+						"type": "nvarchar"
+					},
+					{
+						"name": "batch_id",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "CinemaStage"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/db_stage_food_courts')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "staging"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "RatingHeaderID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FoodCourtID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FoodCourtDesc",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NumberSeats",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NumberSeatsOutOfSvcGT4Weeks",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OutOfServiceWeeks",
+						"type": "nvarchar"
+					},
+					{
+						"name": "RatedNumberSeats",
+						"type": "nvarchar"
+					},
+					{
+						"name": "batch_id",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "FoodCourtStage"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/db_stage_gymnasiums')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "staging"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "RatingHeaderID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "GymID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "GymDesc",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ConfirmedArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsEstimate",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsCentralServicing",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OutOfServiceWeeks",
+						"type": "nvarchar"
+					},
+					{
+						"name": "RatedGymArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "batch_id",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "GymnasiumStage"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/db_stage_hours_Of_service')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1657,6 +1832,71 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "HoursOfServiceStage"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/db_stage_parking_space')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "staging"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "RatingHeaderID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BlockID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BlockDesc",
+						"type": "nvarchar"
+					},
+					{
+						"name": "VentilationType",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NumberParkingSpaces",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NumberOutOfSvcGT4Weeks",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OutOfServiceWeeks",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SpacesNatural",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SpacesMechanical",
+						"type": "nvarchar"
+					},
+					{
+						"name": "batch_id",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "ParkingSpaceStage"
 				}
 			},
 			"dependsOn": [
@@ -2158,246 +2398,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/db_stage_food_courts')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "staging"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "RatingHeaderID",
-						"type": "nvarchar"
-					},
-					{
-						"name": "FoodCourtID",
-						"type": "nvarchar"
-					},
-					{
-						"name": "FoodCourtDesc",
-						"type": "nvarchar"
-					},
-					{
-						"name": "NumberSeats",
-						"type": "nvarchar"
-					},
-					{
-						"name": "NumberSeatsOutOfSvcGT4Weeks",
-						"type": "nvarchar"
-					},
-					{
-						"name": "OutOfServiceWeeks",
-						"type": "nvarchar"
-					},
-					{
-						"name": "RatedNumberSeats",
-						"type": "nvarchar"
-					},
-					{
-						"name": "batch_id",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "FoodCourtStage"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/db_stage_parking_space')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "staging"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "RatingHeaderID",
-						"type": "nvarchar"
-					},
-					{
-						"name": "BlockID",
-						"type": "nvarchar"
-					},
-					{
-						"name": "BlockDesc",
-						"type": "nvarchar"
-					},
-					{
-						"name": "VentilationType",
-						"type": "nvarchar"
-					},
-					{
-						"name": "NumberParkingSpaces",
-						"type": "nvarchar"
-					},
-					{
-						"name": "NumberOutOfSvcGT4Weeks",
-						"type": "nvarchar"
-					},
-					{
-						"name": "OutOfServiceWeeks",
-						"type": "nvarchar"
-					},
-					{
-						"name": "SpacesNatural",
-						"type": "nvarchar"
-					},
-					{
-						"name": "SpacesMechanical",
-						"type": "nvarchar"
-					},
-					{
-						"name": "batch_id",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "ParkingSpaceStage"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/db_stage_cinemas')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "staging"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "RatingHeaderID",
-						"type": "nvarchar"
-					},
-					{
-						"name": "CinemaID",
-						"type": "nvarchar"
-					},
-					{
-						"name": "CinemaDesc",
-						"type": "nvarchar"
-					},
-					{
-						"name": "NumberTheatrettes",
-						"type": "nvarchar"
-					},
-					{
-						"name": "NumberOutOfSvcGT4Weeks",
-						"type": "nvarchar"
-					},
-					{
-						"name": "OutOfServiceWeeks",
-						"type": "nvarchar"
-					},
-					{
-						"name": "RatedNumberTheatrettes",
-						"type": "nvarchar"
-					},
-					{
-						"name": "batch_id",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "CinemaStage"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/db_stage_gymnasiums')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NABERSStaging",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "staging"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "RatingHeaderID",
-						"type": "nvarchar"
-					},
-					{
-						"name": "GymID",
-						"type": "nvarchar"
-					},
-					{
-						"name": "GymDesc",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ConfirmedArea",
-						"type": "nvarchar"
-					},
-					{
-						"name": "IsEstimate",
-						"type": "nvarchar"
-					},
-					{
-						"name": "IsCentralServicing",
-						"type": "nvarchar"
-					},
-					{
-						"name": "OutOfServiceWeeks",
-						"type": "nvarchar"
-					},
-					{
-						"name": "RatedGymArea",
-						"type": "nvarchar"
-					},
-					{
-						"name": "batch_id",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "GymnasiumStage"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
 			]
 		},
 		{
