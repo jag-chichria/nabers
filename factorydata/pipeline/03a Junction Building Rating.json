@@ -514,7 +514,7 @@
 													},
 													{
 														"source": {
-															"name": "area_centrally_serviced"
+															"name": "is_centrally_serviced"
 														},
 														"sink": {
 															"name": "Area_Centrally_Serviced__c",
