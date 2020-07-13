@@ -634,7 +634,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "01a Transform Hours of Service",
+								"referenceName": "01a Transform Rating Attributes",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -668,7 +668,7 @@
 				"[concat(variables('factoryId'), '/pipelines/01b Transform Country in master entities')]",
 				"[concat(variables('factoryId'), '/pipelines/01b Create Customer In Salesforce')]",
 				"[concat(variables('factoryId'), '/pipelines/01c Create Customer Contact In Salesforce')]",
-				"[concat(variables('factoryId'), '/pipelines/01a Transform Hours of Service')]"
+				"[concat(variables('factoryId'), '/pipelines/01a Transform Rating Attributes')]"
 			]
 		},
 		{
@@ -2460,7 +2460,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/01a Transform Hours of Service')]",
+			"name": "[concat(parameters('factoryName'), '/01a Transform Rating Attributes')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -2506,7 +2506,7 @@
 						}
 					},
 					{
-						"name": "Transform HoursOfService",
+						"name": "Transform Rating Attributes Data Flow",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
@@ -2526,7 +2526,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "01_Transform_HoursOfService",
+								"referenceName": "01_Transform_Rating_Attributes",
 								"type": "DataFlowReference",
 								"parameters": {
 									"pbatch_id": {
@@ -2536,7 +2536,15 @@
 								},
 								"datasetParameters": {
 									"getStagedHoursOfService": {},
-									"sinkTransformdAttributeType": {}
+									"getStageFoodCourt": {},
+									"getStageGymnasiums": {},
+									"getStageCinemas": {},
+									"getStageParkingSpace": {},
+									"sinkTransformdAttributeType": {},
+									"sink1": {},
+									"sink2": {},
+									"sink3": {},
+									"sink4": {}
 								}
 							},
 							"staging": {},
@@ -2568,7 +2576,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
-				"[concat(variables('factoryId'), '/dataflows/01_Transform_HoursOfService')]"
+				"[concat(variables('factoryId'), '/dataflows/01_Transform_Rating_Attributes')]"
 			]
 		},
 		{
@@ -6284,7 +6292,7 @@
 															},
 															{
 																"source": {
-																	"name": "area_centrally_serviced"
+																	"name": "is_centrally_serviced"
 																},
 																"sink": {
 																	"name": "Area_Centrally_Serviced__c",
@@ -6317,8 +6325,7 @@
 																	"name": "attribute_type"
 																},
 																"sink": {
-																	"name": "Rating_Attribute_Type__c",
-																	"type": "String"
+																	"name": "Rating_Attribute_Type__c"
 																}
 															},
 															{
@@ -6327,6 +6334,510 @@
 																},
 																"sink": {
 																	"name": "Hours_Per_Week__c"
+																}
+															}
+														],
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "db_transformed_ratings",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "sf_rating_attribute",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												]
+											},
+											{
+												"name": "copyParkingSpace",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "UpdateNewSalesforceIdForRating",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRatingParkingSpaceToCreateInSalesforce]",
+														"storedProcedureParameters": {
+															"batch_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@pipeline().parameters.pbatch_id",
+																	"type": "Expression"
+																}
+															},
+															"source_rating_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@item().RatingHeaderId",
+																	"type": "Expression"
+																}
+															}
+														},
+														"queryTimeout": "02:00:00"
+													},
+													"sink": {
+														"type": "SalesforceSink",
+														"writeBatchSize": 5000,
+														"writeBehavior": "insert"
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"mappings": [
+															{
+																"source": {
+																	"name": "sf_rating_id",
+																	"type": "String",
+																	"physicalType": "varchar"
+																},
+																"sink": {
+																	"name": "Rating__c",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "BlockDesc"
+																},
+																"sink": {
+																	"name": "Parking_Spaces_Block_Description__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "ventilation_type"
+																},
+																"sink": {
+																	"name": "Parking_Spaces_Ventilation_Type__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "NumberOfParkingSpaces"
+																},
+																"sink": {
+																	"name": "Parking_Spaces_Total_Number__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "NumberOutOfSvcGT4Weeks"
+																},
+																"sink": {
+																	"name": "Parking_Spaces_Unavailable_After_4_weeks__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "OutOfServiceWeeks"
+																},
+																"sink": {
+																	"name": "Parking_Spaces_Number_Weeks_Unavailabe__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "attribute_type"
+																},
+																"sink": {
+																	"name": "Rating_Attribute_Type__c"
+																}
+															}
+														],
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "db_transformed_ratings",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "sf_rating_attribute",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												]
+											},
+											{
+												"name": "copyFoodCourt",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "UpdateNewSalesforceIdForRating",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRatingFoodCourtToCreateInSalesforce]",
+														"storedProcedureParameters": {
+															"batch_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@pipeline().parameters.pbatch_id",
+																	"type": "Expression"
+																}
+															},
+															"source_rating_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@item().RatingHeaderId",
+																	"type": "Expression"
+																}
+															}
+														},
+														"queryTimeout": "02:00:00"
+													},
+													"sink": {
+														"type": "SalesforceSink",
+														"writeBatchSize": 5000,
+														"writeBehavior": "insert"
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"mappings": [
+															{
+																"source": {
+																	"name": "sf_rating_id",
+																	"type": "String",
+																	"physicalType": "varchar"
+																},
+																"sink": {
+																	"name": "Rating__c",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "NumberSeatsOutOfSvcGT4Weeks"
+																},
+																"sink": {
+																	"name": "Food_Courts_Unavailable_After_4_weeks__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "OutOfServiceWeeks"
+																},
+																"sink": {
+																	"name": "Food_Courts_Week_Unavailable__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "FoodCourtDesc"
+																},
+																"sink": {
+																	"name": "Food_Courts_Description__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "NumberSeats"
+																},
+																"sink": {
+																	"name": "Food_Courts_Total_Seats__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "attribute_type"
+																},
+																"sink": {
+																	"name": "Rating_Attribute_Type__c"
+																}
+															}
+														],
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "db_transformed_ratings",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "sf_rating_attribute",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												]
+											},
+											{
+												"name": "copyCinemas",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "UpdateNewSalesforceIdForRating",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRatingCinemaToCreateInSalesforce]",
+														"storedProcedureParameters": {
+															"batch_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@pipeline().parameters.pbatch_id",
+																	"type": "Expression"
+																}
+															},
+															"source_rating_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@item().RatingHeaderId",
+																	"type": "Expression"
+																}
+															}
+														},
+														"queryTimeout": "02:00:00"
+													},
+													"sink": {
+														"type": "SalesforceSink",
+														"writeBatchSize": 5000,
+														"writeBehavior": "insert"
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"mappings": [
+															{
+																"source": {
+																	"name": "sf_rating_id",
+																	"type": "String",
+																	"physicalType": "varchar"
+																},
+																"sink": {
+																	"name": "Rating__c",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "NumberOutOfSvcGT4Weeks"
+																},
+																"sink": {
+																	"name": "Number_of_theatrettes_unavailable__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "OutOfServiceWeeks"
+																},
+																"sink": {
+																	"name": "Cinema_Weeks_unavailable__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "CinemaDesc"
+																},
+																"sink": {
+																	"name": "Cinema_Description__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "NumberTheatrettes"
+																},
+																"sink": {
+																	"name": "Number_of_theatrettes_in_cinema__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "attribute_type"
+																},
+																"sink": {
+																	"name": "Rating_Attribute_Type__c"
+																}
+															}
+														],
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "db_transformed_ratings",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "sf_rating_attribute",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												]
+											},
+											{
+												"name": "copyGymnasiums",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "UpdateNewSalesforceIdForRating",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRatingGymnasiumToCreateInSalesforce]",
+														"storedProcedureParameters": {
+															"batch_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@pipeline().parameters.pbatch_id",
+																	"type": "Expression"
+																}
+															},
+															"source_rating_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@item().RatingHeaderId",
+																	"type": "Expression"
+																}
+															}
+														},
+														"queryTimeout": "02:00:00"
+													},
+													"sink": {
+														"type": "SalesforceSink",
+														"writeBatchSize": 5000,
+														"writeBehavior": "insert"
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"mappings": [
+															{
+																"source": {
+																	"name": "sf_rating_id",
+																	"type": "String",
+																	"physicalType": "varchar"
+																},
+																"sink": {
+																	"name": "Rating__c",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "is_centrally_serviced"
+																},
+																"sink": {
+																	"name": "Gym_Centrally_Serviced__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "OutOfServiceWeeks"
+																},
+																"sink": {
+																	"name": "Weeks_Gym_Out_Of_Service__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "GymDesc"
+																},
+																"sink": {
+																	"name": "Gym_Description__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "ConfirmedArea"
+																},
+																"sink": {
+																	"name": "Verified_GLAR__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "attribute_type"
+																},
+																"sink": {
+																	"name": "Rating_Attribute_Type__c"
 																}
 															}
 														],
@@ -8008,9 +8519,17 @@
 						"precision": 10
 					},
 					{
-						"name": "AreaId",
+						"name": "attribute_id",
 						"type": "int",
 						"precision": 10
+					},
+					{
+						"name": "attribute_desc",
+						"type": "varchar"
+					},
+					{
+						"name": "attribute_type",
+						"type": "varchar"
 					},
 					{
 						"name": "member_rating_id",
@@ -8027,11 +8546,11 @@
 						"type": "varchar"
 					},
 					{
-						"name": "attribute_type",
+						"name": "tenancy_servicing",
 						"type": "varchar"
 					},
 					{
-						"name": "tenancy_servicing",
+						"name": "ventilation_type",
 						"type": "varchar"
 					}
 				],
@@ -8837,7 +9356,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/01_Transform_HoursOfService')]",
+			"name": "[concat(parameters('factoryName'), '/01_Transform_Rating_Attributes')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -8850,6 +9369,34 @@
 								"type": "DatasetReference"
 							},
 							"name": "getStagedHoursOfService"
+						},
+						{
+							"dataset": {
+								"referenceName": "db_stage_food_courts",
+								"type": "DatasetReference"
+							},
+							"name": "getStageFoodCourt"
+						},
+						{
+							"dataset": {
+								"referenceName": "db_stage_gymnasiums",
+								"type": "DatasetReference"
+							},
+							"name": "getStageGymnasiums"
+						},
+						{
+							"dataset": {
+								"referenceName": "db_stage_cinemas",
+								"type": "DatasetReference"
+							},
+							"name": "getStageCinemas"
+						},
+						{
+							"dataset": {
+								"referenceName": "db_stage_parking_space",
+								"type": "DatasetReference"
+							},
+							"name": "getStageParkingSpace"
 						}
 					],
 					"sinks": [
@@ -8859,6 +9406,34 @@
 								"type": "DatasetReference"
 							},
 							"name": "sinkTransformdAttributeType"
+						},
+						{
+							"dataset": {
+								"referenceName": "db_transformed_attribute_type",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "db_transformed_attribute_type",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						},
+						{
+							"dataset": {
+								"referenceName": "db_transformed_attribute_type",
+								"type": "DatasetReference"
+							},
+							"name": "sink3"
+						},
+						{
+							"dataset": {
+								"referenceName": "db_transformed_attribute_type",
+								"type": "DatasetReference"
+							},
+							"name": "sink4"
 						}
 					],
 					"transformations": [
@@ -8867,13 +9442,41 @@
 						},
 						{
 							"name": "transformedColumns"
+						},
+						{
+							"name": "filterStageFoodCourtByBatch"
+						},
+						{
+							"name": "filterStageGymnasiumByBatch"
+						},
+						{
+							"name": "filterStageCinemasByBatch"
+						},
+						{
+							"name": "filterStageParkingByBatch"
+						},
+						{
+							"name": "transformedFoodCourtColumns"
+						},
+						{
+							"name": "transformedGymnasium"
+						},
+						{
+							"name": "DerivedColumn1"
+						},
+						{
+							"name": "DerivedColumn2"
 						}
 					],
-					"script": "parameters{\n\tpbatch_id as integer (1)\n}\nsource(output(\n\t\tid as integer,\n\t\tRatingHeaderID as integer,\n\t\tAreaID as integer,\n\t\tTenancyName as string,\n\t\tListedArea as string,\n\t\tblocknumber as string,\n\t\tIsListedAsCentralServiced as boolean,\n\t\tIsTenancyServicingCheck as boolean,\n\t\tIsAreaConfirmed as boolean,\n\t\tIsCentralServicingResult as boolean,\n\t\tRatedCSArea as string,\n\t\tRatedGLAR as string,\n\t\tWeeksVacant as string,\n\t\tExtentedHours as string,\n\t\tHours as string,\n\t\tHoursArea as string,\n\t\tIsExtendedHoursEnabled as string,\n\t\tIsHoursEnabled as string,\n\t\tCoreHours as decimal(12,3),\n\t\tbatch_id as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getStagedHoursOfService\ngetStagedHoursOfService filter(equals(toInteger(batch_id), $pbatch_id)) ~> filterByBatch\nfilterByBatch derive(D_RatingAttributeType = 'Area',\n\t\tD_Tenancy_Servcing = iif(IsTenancyServicingCheck,'Yes','No'),\n\t\tD_Centrally_Serviced = iif(IsListedAsCentralServiced, 'Centrally serviced','Not centrally serviced')) ~> transformedColumns\ntransformedColumns sink(input(\n\t\tId as integer,\n\t\tAreaId as integer,\n\t\tmember_rating_id as integer,\n\t\tbatch_id as integer,\n\t\tarea_centrally_serviced as string,\n\t\tattribute_type as string,\n\t\ttenancy_servicing as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAreaId = AreaID,\n\t\tmember_rating_id = RatingHeaderID,\n\t\tbatch_id,\n\t\tattribute_type = D_RatingAttributeType,\n\t\tarea_centrally_serviced = D_Centrally_Serviced,\n\t\ttenancy_servicing = D_Tenancy_Servcing\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkTransformdAttributeType"
+					"script": "parameters{\n\tpbatch_id as integer (1)\n}\nsource(output(\n\t\tid as integer,\n\t\tRatingHeaderID as integer,\n\t\tAreaID as integer,\n\t\tTenancyName as string,\n\t\tListedArea as string,\n\t\tblocknumber as string,\n\t\tIsListedAsCentralServiced as boolean,\n\t\tIsTenancyServicingCheck as boolean,\n\t\tIsAreaConfirmed as boolean,\n\t\tIsCentralServicingResult as boolean,\n\t\tRatedCSArea as string,\n\t\tRatedGLAR as string,\n\t\tWeeksVacant as string,\n\t\tExtentedHours as string,\n\t\tHours as string,\n\t\tHoursArea as string,\n\t\tIsExtendedHoursEnabled as string,\n\t\tIsHoursEnabled as string,\n\t\tCoreHours as decimal(12,3),\n\t\tbatch_id as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getStagedHoursOfService\nsource(output(\n\t\tRatingHeaderID as string,\n\t\tFoodCourtID as string,\n\t\tFoodCourtDesc as string,\n\t\tNumberSeats as string,\n\t\tNumberSeatsOutOfSvcGT4Weeks as string,\n\t\tOutOfServiceWeeks as string,\n\t\tRatedNumberSeats as string,\n\t\tbatch_id as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getStageFoodCourt\nsource(output(\n\t\tRatingHeaderID as string,\n\t\tGymID as string,\n\t\tGymDesc as string,\n\t\tConfirmedArea as string,\n\t\tIsEstimate as string,\n\t\tIsCentralServicing as string,\n\t\tOutOfServiceWeeks as string,\n\t\tRatedGymArea as string,\n\t\tbatch_id as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getStageGymnasiums\nsource(output(\n\t\tRatingHeaderID as string,\n\t\tCinemaID as string,\n\t\tCinemaDesc as string,\n\t\tNumberTheatrettes as string,\n\t\tNumberOutOfSvcGT4Weeks as string,\n\t\tOutOfServiceWeeks as string,\n\t\tRatedNumberTheatrettes as string,\n\t\tbatch_id as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getStageCinemas\nsource(output(\n\t\tRatingHeaderID as string,\n\t\tBlockID as string,\n\t\tBlockDesc as string,\n\t\tVentilationType as string,\n\t\tNumberParkingSpaces as string,\n\t\tNumberOutOfSvcGT4Weeks as string,\n\t\tOutOfServiceWeeks as string,\n\t\tSpacesNatural as string,\n\t\tSpacesMechanical as string,\n\t\tbatch_id as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getStageParkingSpace\ngetStagedHoursOfService filter(equals(toInteger(batch_id), $pbatch_id)) ~> filterByBatch\nfilterByBatch derive(D_RatingAttributeType = 'Area',\n\t\tD_Tenancy_Servcing = iif(IsTenancyServicingCheck,'Yes','No'),\n\t\tD_Centrally_Serviced = iif(IsListedAsCentralServiced, 'Centrally serviced','Not centrally serviced')) ~> transformedColumns\ngetStageFoodCourt filter(equals(toInteger(batch_id), $pbatch_id) && !isNull(FoodCourtDesc)) ~> filterStageFoodCourtByBatch\ngetStageGymnasiums filter(equals(toInteger(batch_id), $pbatch_id) && !isNull(GymDesc)) ~> filterStageGymnasiumByBatch\ngetStageCinemas filter(equals(toInteger(batch_id), $pbatch_id) && !isNull(CinemaDesc)) ~> filterStageCinemasByBatch\ngetStageParkingSpace filter(equals(toInteger(batch_id), $pbatch_id) && !isNull(BlockDesc)) ~> filterStageParkingByBatch\nfilterStageFoodCourtByBatch derive(D_RatingAttribute = 'Food courts') ~> transformedFoodCourtColumns\nfilterStageGymnasiumByBatch derive(D_RatingAttribute = 'Gymnasiums',\n\t\tD_IsCentrallyServiced = iif(equals(lower(IsCentralServicing), 'y'), 'Yes', 'No')) ~> transformedGymnasium\nfilterStageCinemasByBatch derive(D_RatingAttribute = 'Cinemas') ~> DerivedColumn1\nfilterStageParkingByBatch derive(D_RatingAttribute = 'Parking spaces',\n\t\tD_VentilationType = iif(equals(lower(VentilationType), 'nat'), 'Natural', 'Mechanical')) ~> DerivedColumn2\ntransformedColumns sink(input(\n\t\tId as integer,\n\t\tattribute_id as integer,\n\t\tattribute_desc as string,\n\t\tattribute_type as string,\n\t\tmember_rating_id as integer,\n\t\tbatch_id as integer,\n\t\tarea_centrally_serviced as string,\n\t\ttenancy_servicing as string,\n\t\tventilation_type as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tattribute_id = AreaID,\n\t\tmember_rating_id = RatingHeaderID,\n\t\tbatch_id,\n\t\tattribute_type = D_RatingAttributeType,\n\t\tarea_centrally_serviced = D_Centrally_Serviced,\n\t\ttenancy_servicing = D_Tenancy_Servcing\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkTransformdAttributeType\ntransformedFoodCourtColumns sink(input(\n\t\tId as integer,\n\t\tattribute_id as integer,\n\t\tattribute_desc as string,\n\t\tattribute_type as string,\n\t\tmember_rating_id as integer,\n\t\tbatch_id as integer,\n\t\tarea_centrally_serviced as string,\n\t\ttenancy_servicing as string,\n\t\tventilation_type as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tattribute_id = FoodCourtID,\n\t\tmember_rating_id = RatingHeaderID,\n\t\tbatch_id,\n\t\tattribute_type = D_RatingAttribute,\n\t\tattribute_desc = FoodCourtDesc\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1\ntransformedGymnasium sink(input(\n\t\tId as integer,\n\t\tattribute_id as integer,\n\t\tattribute_desc as string,\n\t\tattribute_type as string,\n\t\tmember_rating_id as integer,\n\t\tbatch_id as integer,\n\t\tarea_centrally_serviced as string,\n\t\ttenancy_servicing as string,\n\t\tventilation_type as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tattribute_id = GymID,\n\t\tmember_rating_id = RatingHeaderID,\n\t\tbatch_id,\n\t\tattribute_type = D_RatingAttribute,\n\t\tattribute_desc = GymDesc,\n\t\ttenancy_servicing = D_IsCentrallyServiced\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2\nDerivedColumn1 sink(input(\n\t\tId as integer,\n\t\tattribute_id as integer,\n\t\tattribute_desc as string,\n\t\tattribute_type as string,\n\t\tmember_rating_id as integer,\n\t\tbatch_id as integer,\n\t\tarea_centrally_serviced as string,\n\t\ttenancy_servicing as string,\n\t\tventilation_type as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tattribute_id = CinemaID,\n\t\tmember_rating_id = RatingHeaderID,\n\t\tbatch_id,\n\t\tattribute_type = D_RatingAttribute,\n\t\tattribute_desc = CinemaDesc\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink3\nDerivedColumn2 sink(input(\n\t\tId as integer,\n\t\tattribute_id as integer,\n\t\tattribute_desc as string,\n\t\tattribute_type as string,\n\t\tmember_rating_id as integer,\n\t\tbatch_id as integer,\n\t\tarea_centrally_serviced as string,\n\t\ttenancy_servicing as string,\n\t\tventilation_type as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tattribute_id = BlockID,\n\t\tmember_rating_id = RatingHeaderID,\n\t\tbatch_id,\n\t\tattribute_type = D_RatingAttribute,\n\t\tattribute_desc = BlockDesc,\n\t\tventilation_type = D_VentilationType\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink4"
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/db_stage_hours_Of_service')]",
+				"[concat(variables('factoryId'), '/datasets/db_stage_food_courts')]",
+				"[concat(variables('factoryId'), '/datasets/db_stage_gymnasiums')]",
+				"[concat(variables('factoryId'), '/datasets/db_stage_cinemas')]",
+				"[concat(variables('factoryId'), '/datasets/db_stage_parking_space')]",
 				"[concat(variables('factoryId'), '/datasets/db_transformed_attribute_type')]"
 			]
 		},
@@ -8985,6 +9588,246 @@
 				"[concat(variables('factoryId'), '/datasets/db_lookup_sf_officer_ids')]",
 				"[concat(variables('factoryId'), '/datasets/db_lookup_sf_company_ids')]",
 				"[concat(variables('factoryId'), '/datasets/db_transformed_ratings')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/db_stage_food_courts')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "staging"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "RatingHeaderID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FoodCourtID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FoodCourtDesc",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NumberSeats",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NumberSeatsOutOfSvcGT4Weeks",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OutOfServiceWeeks",
+						"type": "nvarchar"
+					},
+					{
+						"name": "RatedNumberSeats",
+						"type": "nvarchar"
+					},
+					{
+						"name": "batch_id",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "FoodCourtStage"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/db_stage_parking_space')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "staging"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "RatingHeaderID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BlockID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BlockDesc",
+						"type": "nvarchar"
+					},
+					{
+						"name": "VentilationType",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NumberParkingSpaces",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NumberOutOfSvcGT4Weeks",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OutOfServiceWeeks",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SpacesNatural",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SpacesMechanical",
+						"type": "nvarchar"
+					},
+					{
+						"name": "batch_id",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "ParkingSpaceStage"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/db_stage_cinemas')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "staging"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "RatingHeaderID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CinemaID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CinemaDesc",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NumberTheatrettes",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NumberOutOfSvcGT4Weeks",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OutOfServiceWeeks",
+						"type": "nvarchar"
+					},
+					{
+						"name": "RatedNumberTheatrettes",
+						"type": "nvarchar"
+					},
+					{
+						"name": "batch_id",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "CinemaStage"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/db_stage_gymnasiums')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "staging"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "RatingHeaderID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "GymID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "GymDesc",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ConfirmedArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsEstimate",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsCentralServicing",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OutOfServiceWeeks",
+						"type": "nvarchar"
+					},
+					{
+						"name": "RatedGymArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "batch_id",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "GymnasiumStage"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
 			]
 		}
 	]
