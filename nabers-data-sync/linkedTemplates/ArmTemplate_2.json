@@ -861,7 +861,7 @@
 										"type": "Expression"
 									},
 									"vDefaultComplete": "'Complete'",
-									"vDefaultYes": "'Yes'"
+									"vYes": "'Yes'"
 								},
 								"datasetParameters": {
 									"getRatings": {},
@@ -880,8 +880,12 @@
 									"getLookupSalesforceTechOfficer": {
 										"pbatch_id": 1
 									},
-									"getLookupSalesforceCompany": {},
-									"getLookupSalesforceCustomers": {},
+									"getLookupSalesforceCompany": {
+										"pbatch_id": 1
+									},
+									"getLookupSalesforceCustomers": {
+										"pbatch_id": 1
+									},
 									"dumpToSFTransofrmedRatings": {}
 								}
 							},
