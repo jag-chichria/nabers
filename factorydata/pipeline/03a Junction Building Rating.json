@@ -658,7 +658,7 @@
 													},
 													{
 														"source": {
-															"name": "NumberOfParkingSpaces"
+															"name": "NumberParkingSpaces"
 														},
 														"sink": {
 															"name": "Parking_Spaces_Total_Number__c"
