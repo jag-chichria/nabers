@@ -22,6 +22,10 @@
 				"precision": 10
 			},
 			{
+				"name": "attribute_desc",
+				"type": "varchar"
+			},
+			{
 				"name": "member_rating_id",
 				"type": "int",
 				"precision": 10
