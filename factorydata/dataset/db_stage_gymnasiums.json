@@ -1,0 +1,56 @@
+{
+	"name": "db_stage_gymnasiums",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "RatingHeaderID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "GymID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "GymDesc",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ConfirmedArea",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IsEstimate",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IsCentralServicing",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OutOfServiceWeeks",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RatedGymArea",
+				"type": "nvarchar"
+			},
+			{
+				"name": "batch_id",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "GymnasiumStage"
+		}
+	}
+}
