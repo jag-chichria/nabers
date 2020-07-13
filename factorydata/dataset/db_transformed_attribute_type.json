@@ -26,6 +26,10 @@
 				"type": "varchar"
 			},
 			{
+				"name": "attribute_type",
+				"type": "varchar"
+			},
+			{
 				"name": "member_rating_id",
 				"type": "int",
 				"precision": 10
@@ -40,11 +44,11 @@
 				"type": "varchar"
 			},
 			{
-				"name": "attribute_type",
+				"name": "tenancy_servicing",
 				"type": "varchar"
 			},
 			{
-				"name": "tenancy_servicing",
+				"name": "ventilation_type",
 				"type": "varchar"
 			}
 		],
