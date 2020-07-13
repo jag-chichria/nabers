@@ -1947,7 +1947,7 @@
 						"precision": 10
 					},
 					{
-						"name": "area_centrally_serviced",
+						"name": "is_centrally_serviced",
 						"type": "varchar"
 					},
 					{
