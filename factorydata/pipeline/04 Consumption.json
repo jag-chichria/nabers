@@ -424,7 +424,7 @@
 							}
 						},
 						{
-							"name": "if Rating was successfully created",
+							"name": "if Metering Device was created successfully",
 							"type": "IfCondition",
 							"dependsOn": [
 								{
@@ -491,7 +491,7 @@
 								],
 								"ifTrueActivities": [
 									{
-										"name": "UpdateNewSalesforceIdForRating",
+										"name": "UpdateNewSalesforceIdForMeteringDevice",
 										"type": "SqlServerStoredProcedure",
 										"dependsOn": [],
 										"policy": {
