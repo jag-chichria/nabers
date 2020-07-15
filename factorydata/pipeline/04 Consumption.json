@@ -287,19 +287,78 @@
 							{
 								"source": {
 									"name": "sf_rating_id",
+									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "Rating__c"
+									"name": "Rating__c",
+									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "sf_building_id",
+									"name": "sf_meter_device_id",
+									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "Building__c"
+									"name": "Metering_Device__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "StartBilledPeriod",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "Meter_Reading_Start_Date__c",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "EndBilledPeriod",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "Meter_Reading_End_Date__c",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "IsMissingEstimated",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Billing_Missing_or_Estimated__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Consumption",
+									"type": "Decimal",
+									"physicalType": "decimal"
+								},
+								"sink": {
+									"name": "Consumption__c",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "PercentRecycled",
+									"type": "Decimal",
+									"physicalType": "decimal"
+								},
+								"sink": {
+									"name": "Percentage_of_Green_Power__c",
+									"type": "Decimal"
 								}
 							}
 						],
@@ -318,7 +377,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "sf_buiding_rating",
+						"referenceName": "sf_consumption",
 						"type": "DatasetReference"
 					}
 				]
