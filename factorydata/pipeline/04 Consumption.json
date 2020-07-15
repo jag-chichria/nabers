@@ -79,7 +79,7 @@
 				}
 			},
 			{
-				"name": "copyJunctionBuildingRating",
+				"name": "copyMeterData",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -165,7 +165,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "copyJunctionBuildingRating",
+						"activity": "copyMeterData",
 						"dependencyConditions": [
 							"Succeeded"
 						]
