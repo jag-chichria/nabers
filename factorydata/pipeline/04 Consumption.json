@@ -155,7 +155,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "sf_buiding_rating",
+						"referenceName": "sf_meters",
 						"type": "DatasetReference"
 					}
 				]
