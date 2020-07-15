@@ -100,19 +100,12 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderStoredProcedureName": "[dbo].[usp_GetRatingBuildingForJunctionInSalesforce]",
+						"sqlReaderStoredProcedureName": "usp_GetRatingsMeterToCreateInSalesforce",
 						"storedProcedureParameters": {
-							"batch_id": {
+							"batchid": {
 								"type": "Int32",
 								"value": {
-									"value": "@pipeline().parameters.pbatch_id",
-									"type": "Expression"
-								}
-							},
-							"source_rating_id": {
-								"type": "Int32",
-								"value": {
-									"value": "@item().RatingHeaderId",
+									"value": "@pipeline().parameters.pBatch_Id",
 									"type": "Expression"
 								}
 							}
