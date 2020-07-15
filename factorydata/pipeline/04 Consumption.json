@@ -383,7 +383,8 @@
 					"dataset": {
 						"referenceName": "db_energy_meter",
 						"type": "DatasetReference"
-					}
+					},
+					"firstRowOnly": false
 				}
 			},
 			{
