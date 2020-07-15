@@ -503,7 +503,7 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"storedProcedureName": "[dbo].[usp_UpdateNewSalesforceIdForRating]",
+											"storedProcedureName": "[usp_UpdateNewSalesforceIdForMeterDevice]",
 											"storedProcedureParameters": {
 												"batch_id": {
 													"value": {
@@ -512,14 +512,14 @@
 													},
 													"type": "Int32"
 												},
-												"member_rating_id": {
+												"unique_meter_id": {
 													"value": {
 														"value": "@item().ratingheaderid",
 														"type": "Expression"
 													},
 													"type": "Int32"
 												},
-												"salesforceratingId": {
+												"sf_meter_device_Id": {
 													"value": {
 														"value": "@activity('Lookup Each Rating by Member Rating Id In Salesforce').output.firstRow.Id",
 														"type": "Expression"
