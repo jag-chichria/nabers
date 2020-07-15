@@ -242,7 +242,7 @@
 				]
 			},
 			{
-				"name": "copyJunctionBuildingRating_copy1",
+				"name": "copyConsumptionData",
 				"type": "Copy",
 				"dependsOn": [
 					{
