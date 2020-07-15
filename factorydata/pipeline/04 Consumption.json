@@ -427,7 +427,7 @@
 								"source": {
 									"type": "SalesforceSource",
 									"query": {
-										"value": "Select id from NO_Metering_Device__c\nwhere  NO_DS_Meter_ID__c = @{item().unique_meter_id}",
+										"value": "Select id from NO_Metering_Device__c\nwhere  NO_DS_Meter_ID__c = '@{item().unique_meter_id}'",
 										"type": "Expression"
 									},
 									"readBehavior": "query"
