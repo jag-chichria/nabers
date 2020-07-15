@@ -622,6 +622,93 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/db_energy_meter')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "unique_meter_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RatingHeaderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "UniqueAccountID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Supplier",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountNumber",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Nmi",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Coverage",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Start12MonthBillPeriod",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "End12MonthBillPeriod",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "MeterType",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BillsTable",
+						"type": "xml"
+					},
+					{
+						"name": "batch_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "sf_meter_device_id",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "EnergyUtilityMeterStage"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/db_lookup_sf_assessors_ids')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2620,29 +2707,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/db_company')]",
 				"[concat(variables('factoryId'), '/datasets/cn_db_rating_stage')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/sf_Buildings')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NabersOnline",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "salesforce"
-				},
-				"annotations": [],
-				"type": "SalesforceObject",
-				"schema": [],
-				"typeProperties": {
-					"objectApiName": "NO_Building__c"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NabersOnline')]"
 			]
 		}
 	]
