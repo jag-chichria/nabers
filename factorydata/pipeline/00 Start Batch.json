@@ -110,7 +110,7 @@
 						]
 					},
 					{
-						"activity": "Stored procedure1",
+						"activity": "Try Consumption",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -421,7 +421,7 @@
 				}
 			},
 			{
-				"name": "Stored procedure1",
+				"name": "Try Consumption",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
