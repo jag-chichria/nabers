@@ -1,6 +1,37 @@
 {
 	"name": "04 Consumption",
 	"properties": {
+		"activities": [
+			{
+				"name": "Try Consumption",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[usp_FormulateConsumption]",
+					"storedProcedureParameters": {
+						"batch_id": {
+							"value": {
+								"value": "@variables('vbatch_id')",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
 		"annotations": []
 	}
 }
