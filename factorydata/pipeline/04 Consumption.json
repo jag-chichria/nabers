@@ -525,7 +525,7 @@
 												},
 												"unique_meter_id": {
 													"value": {
-														"value": "@item().ratingheaderid",
+														"value": "@item().unique_meter_id",
 														"type": "Expression"
 													},
 													"type": "Int32"
