@@ -339,6 +339,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "getMeterIds",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -351,25 +357,9 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderStoredProcedureName": "[dbo].[usp_GetRatingBuildingForJunctionInSalesforce]",
-						"storedProcedureParameters": {
-							"batch_id": {
-								"type": "Int32",
-								"value": {
-									"value": "@pipeline().parameters.pbatch_id",
-									"type": "Expression"
-								}
-							},
-							"source_rating_id": {
-								"type": "Int32",
-								"value": {
-									"value": "@item().RatingHeaderId",
-									"type": "Expression"
-								}
-							}
-						},
-						"queryTimeout": "02:00:00"
+						"type": "SalesforceSource",
+						"query": "Select Id ",
+						"readBehavior": "query"
 					},
 					"sink": {
 						"type": "SalesforceSink",
@@ -408,7 +398,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "db_transformed_ratings",
+						"referenceName": "sf_meters",
 						"type": "DatasetReference"
 					}
 				],
@@ -418,6 +408,46 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "getMeterIds",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Update Batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_GetMeterIds]",
+						"storedProcedureParameters": {
+							"batch_id": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.pBatch_Id",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "db_energy_meter",
+						"type": "DatasetReference"
+					}
+				}
 			}
 		],
 		"parameters": {
