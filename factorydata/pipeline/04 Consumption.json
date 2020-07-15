@@ -488,7 +488,7 @@
 												},
 												"anomaly_desc": {
 													"value": {
-														"value": "No Rating found for this Rating header Id.",
+														"value": "No Metering device found for this Rating header Id.",
 														"type": "Expression"
 													},
 													"type": "String"
