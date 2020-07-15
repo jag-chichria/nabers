@@ -26,7 +26,7 @@
 					"storedProcedureParameters": {
 						"batch_id": {
 							"value": {
-								"value": "@variables('vbatch_id')",
+								"value": "@pipeline().parameters.pBatch_Id",
 								"type": "Expression"
 							},
 							"type": "Int32"
@@ -257,6 +257,12 @@
 				]
 			}
 		],
+		"parameters": {
+			"pBatch_Id": {
+				"type": "int",
+				"defaultValue": 1
+			}
+		},
 		"annotations": []
 	}
 }
