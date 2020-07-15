@@ -77,6 +77,47 @@
 					"referenceName": "NABERSStaging",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "usp_GetRatings",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Try Consumption",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_GetRating]",
+						"storedProcedureParameters": {
+							"batchid": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.pbatch_id",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "db_members_rating",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
 			}
 		],
 		"annotations": []
