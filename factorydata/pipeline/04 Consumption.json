@@ -124,19 +124,100 @@
 							{
 								"source": {
 									"name": "sf_rating_id",
+									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "Rating__c"
+									"name": "Rating__c",
+									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "sf_building_id",
-									"physicalType": "varchar"
+									"name": "unique_meter_id",
+									"type": "Int32",
+									"physicalType": "int"
 								},
 								"sink": {
-									"name": "Building__c"
+									"name": "NO_DS_Meter_ID__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Supplier",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Supplier_1_Name__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "AccountNumber",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Supplier_1_Account_Number__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Nmi",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "NMI__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Coverage",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Description_of_Coverage__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Start12MonthBillPeriod",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "Billing_Start_Date__c",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "End12MonthBillPeriod",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "Billing_End_Date__c",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "MeterType",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Meter_Type__c",
+									"type": "String"
 								}
 							}
 						],
