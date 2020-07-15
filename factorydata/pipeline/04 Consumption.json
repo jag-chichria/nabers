@@ -358,7 +358,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "SalesforceSource",
-						"query": "Select Id ",
+						"query": {
+							"value": "@Select Id from NO_Metering_Device__c where NO_DS_Meter_ID__c In (activity('getMeterIds').output.value.firstRow.meter_ids)",
+							"type": "Expression"
+						},
 						"readBehavior": "query"
 					},
 					"sink": {
