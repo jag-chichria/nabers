@@ -246,7 +246,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "copy",
+						"activity": "forEachRow",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -331,86 +331,6 @@
 				]
 			},
 			{
-				"name": "copy",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "getMeterIds",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "copyMeterData",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "SalesforceSource",
-						"query": {
-							"value": "Select Id from NO_Metering_Device__c where NO_DS_Meter_ID__c In ('@{activity('getMeterIds').output.firstRow.meter_ids}')",
-							"type": "Expression"
-						},
-						"readBehavior": "query"
-					},
-					"sink": {
-						"type": "AzureSqlSink"
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"name": "sf_rating_id",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Rating__c"
-								}
-							},
-							{
-								"source": {
-									"name": "sf_building_id",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Building__c"
-								}
-							}
-						],
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "sf_meters",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "db_energy_meter",
-						"type": "DatasetReference"
-					}
-				]
-			},
-			{
 				"name": "getMeterIds",
 				"type": "Lookup",
 				"dependsOn": [
@@ -448,6 +368,175 @@
 						"referenceName": "db_energy_meter",
 						"type": "DatasetReference"
 					}
+				}
+			},
+			{
+				"name": "forEachRow",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "copyMeterData",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "getMeterIds",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('getMeterIds').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Lookup Each Rating by Member Rating Id In Salesforce",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SalesforceSource",
+									"query": {
+										"value": "Select id from NO_Metering_Device__c\nwhere  NO_DS_Meter_ID__c = @{item().unique_meter_id}",
+										"type": "Expression"
+									},
+									"readBehavior": "query"
+								},
+								"dataset": {
+									"referenceName": "sf_meters",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": true
+							}
+						},
+						{
+							"name": "if Rating was successfully created",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Lookup Each Rating by Member Rating Id In Salesforce",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@contains(string(activity('Lookup Each Rating by Member Rating Id In Salesforce').output), 'firstRow')",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Insert Anomaly",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[dbo].[usp_InsertDataSyncAnomalies]",
+											"storedProcedureParameters": {
+												"batch_id": {
+													"value": {
+														"value": "@pipeline().parameters.pbatch_id",
+														"type": "Expression"
+													},
+													"type": "Int32"
+												},
+												"process_name": {
+													"value": {
+														"value": "@pipeline().Pipeline",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"anomaly_desc": {
+													"value": {
+														"value": "No Rating found for this Rating header Id.",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"anomaly_type": {
+													"value": "Error",
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "NABERSStaging",
+											"type": "LinkedServiceReference"
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "UpdateNewSalesforceIdForRating",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[dbo].[usp_UpdateNewSalesforceIdForRating]",
+											"storedProcedureParameters": {
+												"batch_id": {
+													"value": {
+														"value": "@pipeline().parameters.pbatch_id",
+														"type": "Expression"
+													},
+													"type": "Int32"
+												},
+												"member_rating_id": {
+													"value": {
+														"value": "@item().ratingheaderid",
+														"type": "Expression"
+													},
+													"type": "Int32"
+												},
+												"salesforceratingId": {
+													"value": {
+														"value": "@activity('Lookup Each Rating by Member Rating Id In Salesforce').output.firstRow.Id",
+														"type": "Expression"
+													},
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "NABERSStaging",
+											"type": "LinkedServiceReference"
+										}
+									}
+								]
+							}
+						}
+					]
 				}
 			}
 		],
