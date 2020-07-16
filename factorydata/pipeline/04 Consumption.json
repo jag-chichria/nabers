@@ -183,6 +183,14 @@
 									"name": "Meter_Type__c",
 									"type": "String"
 								}
+							},
+							{
+								"source": {
+									"name": ""
+								},
+								"sink": {
+									"name": "Utility__c"
+								}
 							}
 						],
 						"typeConversion": true,
