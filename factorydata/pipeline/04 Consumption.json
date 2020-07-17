@@ -186,7 +186,7 @@
 							},
 							{
 								"source": {
-									"name": ""
+									"name": "utility"
 								},
 								"sink": {
 									"name": "Utility__c"
