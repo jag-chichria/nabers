@@ -10,13 +10,6 @@
 						"type": "DatasetReference"
 					},
 					"name": "getLookupSFCompany"
-				},
-				{
-					"dataset": {
-						"referenceName": "db_meter_bills_table",
-						"type": "DatasetReference"
-					},
-					"name": "getLookup"
 				}
 			],
 			"sinks": [
@@ -26,13 +19,6 @@
 						"type": "DatasetReference"
 					},
 					"name": "updateLookupSFCmpany"
-				},
-				{
-					"dataset": {
-						"referenceName": "db_bills_table",
-						"type": "DatasetReference"
-					},
-					"name": "InsertIntoTransformed"
 				}
 			],
 			"transformations": [
@@ -43,16 +29,10 @@
 					"name": "newColumns"
 				},
 				{
-					"name": "filterByBatch"
-				},
-				{
 					"name": "filterByBatchCompany"
-				},
-				{
-					"name": "transformedColumns"
 				}
 			],
-			"script": "parameters{\n\tpbatch_id as integer (1)\n}\nsource(output(\n\t\tid as integer,\n\t\tsalesforce_company_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_company_id as integer,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string,\n\t\tsync_status as string,\n\t\taccount_type as string,\n\t\tsf_record_type as string,\n\t\tmailing_street as string,\n\t\tbilling_street as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getLookupSFCompany\nsource(output(\n\t\tid as integer,\n\t\tStartBilledPeriod as timestamp,\n\t\tEndBilledPeriod as timestamp,\n\t\tIsMissingEstimated as string,\n\t\tConsumption as decimal(12,3),\n\t\tDaysIn12MonthPeriod as integer,\n\t\tPercentRecycled as decimal(12,3),\n\t\tConsumptionIn12MonthPeriod as decimal(12,3),\n\t\tunique_meter_id as integer,\n\t\tbatch_id as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getLookup\nfilterByBatchCompany alterRow(updateIf(isNull(Mailing_Country)||isNull(Billing_Country))) ~> alterByMailingBillingCountry\nalterByMailingBillingCountry derive(DefaultMailingCountry = \"Australia\",\n\t\tDefaultBillingCountry = \"Australia\",\n\t\tid = id) ~> newColumns\ngetLookup filter(equals(batch_id, $pbatch_id)) ~> filterByBatch\ngetLookupSFCompany filter(equals(batch_id, $pbatch_id)) ~> filterByBatchCompany\nfilterByBatch derive(D_IsMissingEstimated = iif(instr(lower(IsMissingEstimated), 'yes') > 0, 'Yes', 'No')) ~> transformedColumns\nnewColumns sink(input(\n\t\tid as integer,\n\t\tsalesforce_company_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_company_id as integer,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string,\n\t\tsync_status as string,\n\t\taccount_type as string,\n\t\tsf_record_type as string,\n\t\tmailing_street as string,\n\t\tbilling_street as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['id'],\n\tformat: 'table',\n\tmapColumn(\n\t\tMailing_Country = DefaultMailingCountry,\n\t\tBilling_Country = DefaultBillingCountry,\n\t\tid\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> updateLookupSFCmpany\ntransformedColumns sink(input(\n\t\tid as integer,\n\t\tbillstable_id as integer,\n\t\tmissing_or_estimated as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tbillstable_id = id,\n\t\tmissing_or_estimated = D_IsMissingEstimated\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> InsertIntoTransformed"
+			"script": "parameters{\n\tpbatch_id as integer (1)\n}\nsource(output(\n\t\tid as integer,\n\t\tsalesforce_company_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_company_id as integer,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string,\n\t\tsync_status as string,\n\t\taccount_type as string,\n\t\tsf_record_type as string,\n\t\tmailing_street as string,\n\t\tbilling_street as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getLookupSFCompany\nfilterByBatchCompany alterRow(updateIf(isNull(Mailing_Country)||isNull(Billing_Country))) ~> alterByMailingBillingCountry\nalterByMailingBillingCountry derive(DefaultMailingCountry = \"Australia\",\n\t\tDefaultBillingCountry = \"Australia\",\n\t\tid = id) ~> newColumns\ngetLookupSFCompany filter(equals(batch_id, $pbatch_id)) ~> filterByBatchCompany\nnewColumns sink(input(\n\t\tid as integer,\n\t\tsalesforce_company_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_company_id as integer,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string,\n\t\tsync_status as string,\n\t\taccount_type as string,\n\t\tsf_record_type as string,\n\t\tmailing_street as string,\n\t\tbilling_street as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['id'],\n\tformat: 'table',\n\tmapColumn(\n\t\tMailing_Country = DefaultMailingCountry,\n\t\tBilling_Country = DefaultBillingCountry,\n\t\tid\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> updateLookupSFCmpany"
 		}
 	}
 }
