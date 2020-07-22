@@ -325,12 +325,18 @@
 							{
 								"source": {
 									"name": "PercentRecycled",
-									"type": "Decimal",
 									"physicalType": "decimal"
 								},
 								"sink": {
-									"name": "Percentage_of_Green_Power__c",
-									"type": "Decimal"
+									"name": "Percentage_of_Green_Power__c"
+								}
+							},
+							{
+								"source": {
+									"name": "PercentRecycled_Water"
+								},
+								"sink": {
+									"name": "Percentage_of_Recycled_Water__c"
 								}
 							}
 						],
