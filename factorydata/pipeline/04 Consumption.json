@@ -734,6 +734,14 @@
 								"sink": {
 									"name": "Pressure_Correction_Factor__c"
 								}
+							},
+							{
+								"source": {
+									"name": "ValidationDate"
+								},
+								"sink": {
+									"name": "Date_Of_Meter_Validation__c"
+								}
 							}
 						],
 						"typeConversion": true,
