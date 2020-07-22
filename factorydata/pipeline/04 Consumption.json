@@ -664,16 +664,6 @@
 							},
 							{
 								"source": {
-									"name": "Consumption",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "Consumption__c",
-									"type": "Decimal"
-								}
-							},
-							{
-								"source": {
 									"name": "CTFactor",
 									"physicalType": "decimal"
 								},
