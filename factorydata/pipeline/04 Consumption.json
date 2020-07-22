@@ -548,7 +548,7 @@
 														"value": "@item().unique_meter_id",
 														"type": "Expression"
 													},
-													"type": "Int32"
+													"type": "String"
 												},
 												"sf_meter_device_Id": {
 													"value": {
