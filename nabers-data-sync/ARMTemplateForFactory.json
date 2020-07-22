@@ -672,7 +672,16 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"storedProcedureName": "dbo.usp_FormulateConsumption"
+							"storedProcedureName": "dbo.usp_FormulateConsumption",
+							"storedProcedureParameters": {
+								"batch_id": {
+									"value": {
+										"value": "@variables('vbatch_id')",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								}
+							}
 						},
 						"linkedServiceName": {
 							"referenceName": "NABERSStaging",
@@ -6980,42 +6989,6 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Try Consumption",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "Update Batch",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[usp_FormulateConsumption]",
-							"storedProcedureParameters": {
-								"batch_id": {
-									"value": {
-										"value": "@pipeline().parameters.pBatch_Id",
-										"type": "Expression"
-									},
-									"type": "Int32"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "NABERSStaging",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
 						"name": "Update Batch",
 						"type": "SqlServerStoredProcedure",
 						"dependsOn": [],
@@ -7060,7 +7033,7 @@
 						"type": "Copy",
 						"dependsOn": [
 							{
-								"activity": "Try Consumption",
+								"activity": "Update Batch",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -7195,6 +7168,14 @@
 										"sink": {
 											"name": "Meter_Type__c",
 											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "utility"
+										},
+										"sink": {
+											"name": "Utility__c"
 										}
 									}
 								],
@@ -7401,7 +7382,8 @@
 								"referenceName": "db_energy_meter",
 								"type": "DatasetReference",
 								"parameters": {}
-							}
+							},
+							"firstRowOnly": false
 						}
 					},
 					{
@@ -7409,13 +7391,13 @@
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "copyMeterData",
+								"activity": "getMeterIds",
 								"dependencyConditions": [
 									"Succeeded"
 								]
 							},
 							{
-								"activity": "getMeterIds",
+								"activity": "copyMeterData",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -7445,7 +7427,7 @@
 										"source": {
 											"type": "SalesforceSource",
 											"query": {
-												"value": "Select id from NO_Metering_Device__c\nwhere  NO_DS_Meter_ID__c = @{item().unique_meter_id}",
+												"value": "Select id from NO_Metering_Device__c\nwhere  NO_DS_Meter_ID__c = '@{item().unique_meter_id}'",
 												"type": "Expression"
 											},
 											"readBehavior": "query"
@@ -7507,7 +7489,7 @@
 														},
 														"anomaly_desc": {
 															"value": {
-																"value": "No Rating found for this Rating header Id.",
+																"value": "No Metering device found for this Rating header Id.",
 																"type": "Expression"
 															},
 															"type": "String"
@@ -7549,7 +7531,7 @@
 														},
 														"unique_meter_id": {
 															"value": {
-																"value": "@item().ratingheaderid",
+																"value": "@item().unique_meter_id",
 																"type": "Expression"
 															},
 															"type": "Int32"
@@ -7573,6 +7555,204 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "copyConsumptionData_copy1",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "forEachRow",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[usp_GetRatingsConsumptionExclusionToCreateInSalesforce]",
+								"storedProcedureParameters": {
+									"batchid": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.pBatch_Id",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "SalesforceSink",
+								"writeBatchSize": 5000,
+								"writeBehavior": "insert"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "sf_rating_id",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "Rating__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "sf_meter_device_id",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "Metering_Device__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Coverage",
+											"physicalType": "datetime"
+										},
+										"sink": {
+											"name": "Description_of_Coverage__c"
+										}
+									},
+									{
+										"source": {
+											"name": "MeterID",
+											"physicalType": "datetime"
+										},
+										"sink": {
+											"name": "Meter_Id__c"
+										}
+									},
+									{
+										"source": {
+											"name": "UsesCurrentTransformer",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "Current_Transformer__c"
+										}
+									},
+									{
+										"source": {
+											"name": "Consumption",
+											"physicalType": "decimal"
+										},
+										"sink": {
+											"name": "Consumption__c",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "CTFactor",
+											"physicalType": "decimal"
+										},
+										"sink": {
+											"name": "CT_Factor__c"
+										}
+									},
+									{
+										"source": {
+											"name": "InfoSource"
+										},
+										"sink": {
+											"name": "Information_Source__c"
+										}
+									},
+									{
+										"source": {
+											"name": "FrequencyReading"
+										},
+										"sink": {
+											"name": "Frequency_of_readings__c"
+										}
+									},
+									{
+										"source": {
+											"name": "FirstReadingDate"
+										},
+										"sink": {
+											"name": "Meter_Reading_Start_Date__c"
+										}
+									},
+									{
+										"source": {
+											"name": "FirstReadingValue"
+										},
+										"sink": {
+											"name": "First_Meter_Read__c"
+										}
+									},
+									{
+										"source": {
+											"name": "LastReadingDate"
+										},
+										"sink": {
+											"name": "Meter_Reading_End_Date__c"
+										}
+									},
+									{
+										"source": {
+											"name": "LastReadingValue"
+										},
+										"sink": {
+											"name": "Last_Meter_Read__c"
+										}
+									},
+									{
+										"source": {
+											"name": "AnnualHeatingValue"
+										},
+										"sink": {
+											"name": "Annual_Heating_Value__c"
+										}
+									},
+									{
+										"source": {
+											"name": "PressureCorrectionFactor"
+										},
+										"sink": {
+											"name": "Pressure_Correction_Factor__c"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "db_transformed_ratings",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sf_consumption",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
 				"parameters": {
@@ -7589,26 +7769,6 @@
 				"[concat(variables('factoryId'), '/datasets/sf_meters')]",
 				"[concat(variables('factoryId'), '/datasets/sf_consumption')]",
 				"[concat(variables('factoryId'), '/datasets/db_energy_meter')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SalesforceObject1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NabersOnline",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SalesforceObject",
-				"schema": [],
-				"typeProperties": {
-					"objectApiName": "NO_Consumption__c"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NabersOnline')]"
 			]
 		},
 		{
@@ -8031,6 +8191,45 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/db_bills_table')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "staging"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "billstable_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "missing_or_estimated",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Transformed_BillsTable"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/db_company')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -8176,6 +8375,9 @@
 				"linkedServiceName": {
 					"referenceName": "NABERSStaging",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "staging"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -8989,6 +9191,85 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "RatingHeaderStage"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/db_meter_bills_table')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "staging"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "StartBilledPeriod",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "EndBilledPeriod",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "IsMissingEstimated",
+						"type": "varchar"
+					},
+					{
+						"name": "Consumption",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "DaysIn12MonthPeriod",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "PercentRecycled",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "ConsumptionIn12MonthPeriod",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
+						"name": "unique_meter_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "batch_id",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "EnergyBillsTableStage"
 				}
 			},
 			"dependsOn": [
@@ -10105,6 +10386,9 @@
 					"referenceName": "NabersOnline",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "salesforce"
+				},
 				"annotations": [],
 				"type": "SalesforceObject",
 				"schema": [],
@@ -10170,6 +10454,9 @@
 				"linkedServiceName": {
 					"referenceName": "NabersOnline",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "salesforce"
 				},
 				"annotations": [],
 				"type": "SalesforceObject",
@@ -10314,6 +10601,47 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/01_Transform_Billing_Consumption_Data')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "db_meter_bills_table",
+								"type": "DatasetReference"
+							},
+							"name": "getLookup"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "db_bills_table",
+								"type": "DatasetReference"
+							},
+							"name": "InsertIntoTransformed"
+						}
+					],
+					"transformations": [
+						{
+							"name": "filterByBatch"
+						},
+						{
+							"name": "transformedColumns"
+						}
+					],
+					"script": "parameters{\n\tpbatch_id as integer (1)\n}\nsource(output(\n\t\tid as integer,\n\t\tStartBilledPeriod as timestamp,\n\t\tEndBilledPeriod as timestamp,\n\t\tIsMissingEstimated as string,\n\t\tConsumption as decimal(12,3),\n\t\tDaysIn12MonthPeriod as integer,\n\t\tPercentRecycled as decimal(12,3),\n\t\tConsumptionIn12MonthPeriod as decimal(12,3),\n\t\tunique_meter_id as integer,\n\t\tbatch_id as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getLookup\ngetLookup filter(equals(batch_id, $pbatch_id)) ~> filterByBatch\nfilterByBatch derive(D_IsMissingEstimated = iif(instr(lower(IsMissingEstimated), 'yes') > 0, 'Yes', 'No')) ~> transformedColumns\ntransformedColumns sink(input(\n\t\tid as integer,\n\t\tbillstable_id as integer,\n\t\tmissing_or_estimated as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tbillstable_id = id,\n\t\tmissing_or_estimated = D_IsMissingEstimated\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> InsertIntoTransformed"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/db_meter_bills_table')]",
+				"[concat(variables('factoryId'), '/datasets/db_bills_table')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/01_Transform_Company_Assessor')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -10425,9 +10753,12 @@
 						},
 						{
 							"name": "newColumns"
+						},
+						{
+							"name": "filterByBatchCompany"
 						}
 					],
-					"script": "parameters{\n\tpbatch_id as integer (1)\n}\nsource(output(\n\t\tid as integer,\n\t\tsalesforce_company_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_company_id as integer,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string,\n\t\tsync_status as string,\n\t\taccount_type as string,\n\t\tsf_record_type as string,\n\t\tmailing_street as string,\n\t\tbilling_street as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getLookupSFCompany\ngetLookupSFCompany alterRow(updateIf(isNull(Mailing_Country)||isNull(Billing_Country))) ~> alterByMailingBillingCountry\nalterByMailingBillingCountry derive(DefaultMailingCountry = \"Australia\",\n\t\tDefaultBillingCountry = \"Australia\",\n\t\tid = id) ~> newColumns\nnewColumns sink(input(\n\t\tid as integer,\n\t\tsalesforce_company_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_company_id as integer,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string,\n\t\tsync_status as string,\n\t\taccount_type as string,\n\t\tsf_record_type as string,\n\t\tmailing_street as string,\n\t\tbilling_street as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['id'],\n\tformat: 'table',\n\tmapColumn(\n\t\tMailing_Country = DefaultMailingCountry,\n\t\tBilling_Country = DefaultBillingCountry,\n\t\tid\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> updateLookupSFCmpany"
+					"script": "parameters{\n\tpbatch_id as integer (1)\n}\nsource(output(\n\t\tid as integer,\n\t\tsalesforce_company_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_company_id as integer,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string,\n\t\tsync_status as string,\n\t\taccount_type as string,\n\t\tsf_record_type as string,\n\t\tmailing_street as string,\n\t\tbilling_street as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getLookupSFCompany\nfilterByBatchCompany alterRow(updateIf(isNull(Mailing_Country)||isNull(Billing_Country))) ~> alterByMailingBillingCountry\nalterByMailingBillingCountry derive(DefaultMailingCountry = \"Australia\",\n\t\tDefaultBillingCountry = \"Australia\",\n\t\tid = id) ~> newColumns\ngetLookupSFCompany filter(equals(batch_id, $pbatch_id)) ~> filterByBatchCompany\nnewColumns sink(input(\n\t\tid as integer,\n\t\tsalesforce_company_Id as string,\n\t\tbatch_id as integer,\n\t\tcreated_on as timestamp,\n\t\tmember_company_id as integer,\n\t\tMailing_Country as string,\n\t\tBilling_Country as string,\n\t\tsync_status as string,\n\t\taccount_type as string,\n\t\tsf_record_type as string,\n\t\tmailing_street as string,\n\t\tbilling_street as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['id'],\n\tformat: 'table',\n\tmapColumn(\n\t\tMailing_Country = DefaultMailingCountry,\n\t\tBilling_Country = DefaultBillingCountry,\n\t\tid\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> updateLookupSFCmpany"
 				}
 			},
 			"dependsOn": [

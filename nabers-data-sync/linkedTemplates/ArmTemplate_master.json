@@ -56,18 +56,6 @@
 					},
 					"NABERSStaging_connectionString": {
 						"value": "[parameters('NABERSStaging_connectionString')]"
-					},
-					"NabersOnline_password": {
-						"value": "[parameters('NabersOnline_password')]"
-					},
-					"NabersOnline_securityToken": {
-						"value": "[parameters('NabersOnline_securityToken')]"
-					},
-					"NabersOnline_properties_typeProperties_environmentUrl": {
-						"value": "[parameters('NabersOnline_properties_typeProperties_environmentUrl')]"
-					},
-					"NabersOnline_properties_typeProperties_username": {
-						"value": "[parameters('NabersOnline_properties_typeProperties_username')]"
 					}
 				}
 			},
@@ -86,6 +74,18 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"NabersOnline_password": {
+						"value": "[parameters('NabersOnline_password')]"
+					},
+					"NabersOnline_securityToken": {
+						"value": "[parameters('NabersOnline_securityToken')]"
+					},
+					"NabersOnline_properties_typeProperties_environmentUrl": {
+						"value": "[parameters('NabersOnline_properties_typeProperties_environmentUrl')]"
+					},
+					"NabersOnline_properties_typeProperties_username": {
+						"value": "[parameters('NabersOnline_properties_typeProperties_username')]"
 					}
 				}
 			},
