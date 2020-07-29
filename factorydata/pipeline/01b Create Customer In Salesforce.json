@@ -136,7 +136,7 @@
 							},
 							{
 								"source": {
-									"name": "Customer_TradingName"
+									"name": "Customer_TradingName_Trimmed"
 								},
 								"sink": {
 									"name": "NO_Short_Name__c"
