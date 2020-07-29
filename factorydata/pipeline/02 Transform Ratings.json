@@ -230,7 +230,7 @@
 									},
 									"salesforceratingId": {
 										"value": {
-											"value": "@activity('Lookup Each Building by Name In Salesforce').output.firstrow.Id",
+											"value": "@if(contains(string(activity('Lookup Each Building by Name In Salesforce').output), 'firstRow'), activity('Lookup Each Building by Name In Salesforce').output.firstrow.Id, '')",
 											"type": "Expression"
 										},
 										"type": "String"
