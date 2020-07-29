@@ -1495,6 +1495,10 @@
 						"precision": 10
 					},
 					{
+						"name": "SequenceNo",
+						"type": "varchar"
+					},
+					{
 						"name": "StartBilledPeriod",
 						"type": "datetime",
 						"precision": 23,
@@ -1534,9 +1538,14 @@
 						"scale": 3
 					},
 					{
+						"name": "GasHeatingValue",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
 						"name": "unique_meter_id",
-						"type": "int",
-						"precision": 10
+						"type": "varchar"
 					},
 					{
 						"name": "batch_id",
@@ -1546,7 +1555,7 @@
 				],
 				"typeProperties": {
 					"schema": "dbo",
-					"table": "EnergyBillsTableStage"
+					"table": "MeterConsumptionStage"
 				}
 			},
 			"dependsOn": [

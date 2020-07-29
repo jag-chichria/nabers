@@ -3439,7 +3439,7 @@
 									},
 									{
 										"source": {
-											"name": "Customer_TradingName"
+											"name": "Customer_TradingName_Trimmed"
 										},
 										"sink": {
 											"name": "NO_Short_Name__c"
@@ -5101,7 +5101,8 @@
 										"type": "Expression"
 									},
 									"vDefaultComplete": "'Complete'",
-									"vYes": "'Yes'"
+									"vYes": "'Yes'",
+									"vNo": "'No'"
 								},
 								"datasetParameters": {
 									"getRatings": {},
@@ -5175,6 +5176,149 @@
 							"referenceName": "NABERSStaging",
 							"type": "LinkedServiceReference"
 						}
+					},
+					{
+						"name": "usp_GetSalesforce",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "01_Transform",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[usp_GetRatingsToCreateInSalesforce]",
+								"storedProcedureParameters": {
+									"batchid": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "db_members_rating",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "forEachRow",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "usp_GetSalesforce",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('usp_GetSalesforce').output.value",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "Lookup Each Building by Name In Salesforce",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SalesforceSource",
+											"query": {
+												"value": "Select id from NO_Rating__c \nwhere NO_Member_Rating_Id__c= @{item().source_rating_id}",
+												"type": "Expression"
+											},
+											"readBehavior": "query"
+										},
+										"dataset": {
+											"referenceName": "sf_Buildings",
+											"type": "DatasetReference",
+											"parameters": {}
+										},
+										"firstRowOnly": true
+									}
+								},
+								{
+									"name": "UpdateNewSalesforceIdForBuilding",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "Lookup Each Building by Name In Salesforce",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[[usp_UpdateNewSalesforceIdForRating]",
+										"storedProcedureParameters": {
+											"batch_id": {
+												"value": {
+													"value": "@pipeline().parameters.pbatch_id",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"member_rating_id": {
+												"value": {
+													"value": "@item().source_rating_id",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"salesforceratingId": {
+												"value": {
+													"value": "@activity('Lookup Each Building by Name In Salesforce').output.firstrow.Id",
+													"type": "Expression"
+												},
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "NABERSStaging",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
 					}
 				],
 				"parameters": {
@@ -5187,7 +5331,9 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/01_Transform_Rating')]",
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
+				"[concat(variables('factoryId'), '/datasets/db_members_rating')]",
+				"[concat(variables('factoryId'), '/datasets/sf_Buildings')]"
 			]
 		},
 		{
@@ -7313,12 +7459,18 @@
 									{
 										"source": {
 											"name": "PercentRecycled",
-											"type": "Decimal",
 											"physicalType": "decimal"
 										},
 										"sink": {
-											"name": "Percentage_of_Green_Power__c",
-											"type": "Decimal"
+											"name": "Percentage_of_Green_Power__c"
+										}
+									},
+									{
+										"source": {
+											"name": "PercentRecycled_Water"
+										},
+										"sink": {
+											"name": "Percentage_of_Recycled_Water__c"
 										}
 									}
 								],
@@ -7534,7 +7686,7 @@
 																"value": "@item().unique_meter_id",
 																"type": "Expression"
 															},
-															"type": "Int32"
+															"type": "String"
 														},
 														"sf_meter_device_Id": {
 															"value": {
@@ -7650,16 +7802,6 @@
 									},
 									{
 										"source": {
-											"name": "Consumption",
-											"physicalType": "decimal"
-										},
-										"sink": {
-											"name": "Consumption__c",
-											"type": "Decimal"
-										}
-									},
-									{
-										"source": {
 											"name": "CTFactor",
 											"physicalType": "decimal"
 										},
@@ -7729,6 +7871,14 @@
 										},
 										"sink": {
 											"name": "Pressure_Correction_Factor__c"
+										}
+									},
+									{
+										"source": {
+											"name": "ValidationDate"
+										},
+										"sink": {
+											"name": "Date_Of_Meter_Validation__c"
 										}
 									}
 								],
@@ -9218,6 +9368,10 @@
 						"precision": 10
 					},
 					{
+						"name": "SequenceNo",
+						"type": "varchar"
+					},
+					{
 						"name": "StartBilledPeriod",
 						"type": "datetime",
 						"precision": 23,
@@ -9257,9 +9411,14 @@
 						"scale": 3
 					},
 					{
+						"name": "GasHeatingValue",
+						"type": "decimal",
+						"precision": 12,
+						"scale": 3
+					},
+					{
 						"name": "unique_meter_id",
-						"type": "int",
-						"precision": 10
+						"type": "varchar"
 					},
 					{
 						"name": "batch_id",
@@ -9269,7 +9428,7 @@
 				],
 				"typeProperties": {
 					"schema": "dbo",
-					"table": "EnergyBillsTableStage"
+					"table": "MeterConsumptionStage"
 				}
 			},
 			"dependsOn": [
@@ -10633,7 +10792,7 @@
 							"name": "transformedColumns"
 						}
 					],
-					"script": "parameters{\n\tpbatch_id as integer (1)\n}\nsource(output(\n\t\tid as integer,\n\t\tStartBilledPeriod as timestamp,\n\t\tEndBilledPeriod as timestamp,\n\t\tIsMissingEstimated as string,\n\t\tConsumption as decimal(12,3),\n\t\tDaysIn12MonthPeriod as integer,\n\t\tPercentRecycled as decimal(12,3),\n\t\tConsumptionIn12MonthPeriod as decimal(12,3),\n\t\tunique_meter_id as integer,\n\t\tbatch_id as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getLookup\ngetLookup filter(equals(batch_id, $pbatch_id)) ~> filterByBatch\nfilterByBatch derive(D_IsMissingEstimated = iif(instr(lower(IsMissingEstimated), 'yes') > 0, 'Yes', 'No')) ~> transformedColumns\ntransformedColumns sink(input(\n\t\tid as integer,\n\t\tbillstable_id as integer,\n\t\tmissing_or_estimated as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tbillstable_id = id,\n\t\tmissing_or_estimated = D_IsMissingEstimated\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> InsertIntoTransformed"
+					"script": "parameters{\n\tpbatch_id as integer (1)\n}\nsource(output(\n\t\tid as integer,\n\t\tSequenceNo as string,\n\t\tStartBilledPeriod as timestamp,\n\t\tEndBilledPeriod as timestamp,\n\t\tIsMissingEstimated as string,\n\t\tConsumption as decimal(12,3),\n\t\tDaysIn12MonthPeriod as integer,\n\t\tPercentRecycled as decimal(12,3),\n\t\tConsumptionIn12MonthPeriod as decimal(12,3),\n\t\tGasHeatingValue as decimal(12,3),\n\t\tunique_meter_id as string,\n\t\tbatch_id as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> getLookup\ngetLookup filter(equals(batch_id, $pbatch_id)) ~> filterByBatch\nfilterByBatch derive(D_IsMissingEstimated = iif(instr(lower(IsMissingEstimated), 'yes') > 0, 'Yes', 'No')) ~> transformedColumns\ntransformedColumns sink(input(\n\t\tid as integer,\n\t\tbillstable_id as integer,\n\t\tmissing_or_estimated as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tbillstable_id = id,\n\t\tmissing_or_estimated = D_IsMissingEstimated\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> InsertIntoTransformed"
 				}
 			},
 			"dependsOn": [
