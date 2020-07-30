@@ -1068,7 +1068,7 @@
 							},
 							{
 								"source": {
-									"name": "HoursOfOperation"
+									"name": "AnnualHoursOfOperation"
 								},
 								"sink": {
 									"name": "Annual_Hours_Of_Operation__c"
