@@ -5,6 +5,11 @@
 			"referenceName": "NABERSStaging",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"pbatch_id": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "staging"
 		},
