@@ -763,6 +763,109 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "copyConsumptionFinRecExclData",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "forEachRow",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[usp_GetRatingsConsumptionFinRecExclusionToCreateInSalesforce]",
+						"storedProcedureParameters": {
+							"batchid": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.pBatch_Id",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "SalesforceSink",
+						"writeBatchSize": 5000,
+						"writeBehavior": "insert"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "sf_rating_id",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Rating__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "sf_meter_device_id",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Metering_Device__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Coverage",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "Description_of_Coverage__c"
+								}
+							},
+							{
+								"source": {
+									"name": "ProportionToExclude"
+								},
+								"sink": {
+									"name": "Proportion_to_exclude__c"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "db_transformed_ratings",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sf_consumption",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"parameters": {
