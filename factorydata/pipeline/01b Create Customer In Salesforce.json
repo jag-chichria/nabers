@@ -204,14 +204,7 @@
 			{
 				"name": "usp_GetCustomers",
 				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "createNotFoundCustomers",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -327,7 +320,7 @@
 									},
 									"salesforce_company_Id": {
 										"value": {
-											"value": "@activity('Lookup Each Customer by ABN In Salesforce').output.firstRow.Id",
+											"value": "@{IF(contains(string(activity('Lookup Each Customer by ABN In Salesforce').output), 'firstRow'), activity('Lookup Each Customer by ABN In Salesforce').output.firstRow.Id, '')}",
 											"type": "Expression"
 										},
 										"type": "String"

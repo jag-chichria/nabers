@@ -368,7 +368,7 @@
 									},
 									"salesforce_company_Id": {
 										"value": {
-											"value": "@activity('Lookup Each Customer Contact by Email In Salesforce').output.firstRow.Id",
+											"value": "@{IF(contains(string(activity('Lookup Each Customer Contact by Email In Salesforce').output), 'firstRow'), activity('Lookup Each Customer Contact by Email In Salesforce').output.firstRow.Id, '')}",
 											"type": "Expression"
 										},
 										"type": "String"

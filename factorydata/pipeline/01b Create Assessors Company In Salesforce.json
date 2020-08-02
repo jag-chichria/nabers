@@ -417,7 +417,7 @@
 									},
 									"salesforce_company_Id": {
 										"value": {
-											"value": "@activity('Lookup Each Building by Name In Salesforce').output.firstRow.Id",
+											"value": "@{IF(contains(string(activity('Lookup Each Building by Name In Salesforce').output), 'firstRow'), activity('Lookup Each Building by Name In Salesforce').output.firstRow.Id, '')}",
 											"type": "Expression"
 										},
 										"type": "String"
