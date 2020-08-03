@@ -234,6 +234,10 @@
 												"account_type": {
 													"value": "customer contact",
 													"type": "String"
+												},
+												"sf_record_type": {
+													"value": null,
+													"type": "String"
 												}
 											}
 										},
