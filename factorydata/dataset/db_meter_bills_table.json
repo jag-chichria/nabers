@@ -1,0 +1,83 @@
+{
+	"name": "db_meter_bills_table",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "SequenceNo",
+				"type": "varchar"
+			},
+			{
+				"name": "StartBilledPeriod",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "EndBilledPeriod",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "IsMissingEstimated",
+				"type": "varchar"
+			},
+			{
+				"name": "Consumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "DaysIn12MonthPeriod",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PercentRecycled",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "ConsumptionIn12MonthPeriod",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "GasHeatingValue",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "unique_meter_id",
+				"type": "varchar"
+			},
+			{
+				"name": "batch_id",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "MeterConsumptionStage"
+		}
+	}
+}

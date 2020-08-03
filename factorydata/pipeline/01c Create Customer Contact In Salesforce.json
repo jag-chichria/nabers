@@ -1,0 +1,430 @@
+{
+	"name": "01c Create Customer Contact In Salesforce",
+	"properties": {
+		"activities": [
+			{
+				"name": "createNotFoundCustomerContact",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Update Batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_GetCustomerContactToCreateInSalesForce]",
+						"storedProcedureParameters": {
+							"batchid": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.pbatch_id",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "SalesforceSink",
+						"writeBatchSize": 5000,
+						"writeBehavior": "insert",
+						"ignoreNullValues": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "StreetName",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MailingStreet",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Suburb",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MailingCity",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Postcode",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MailingPostalCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "State",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MailingState",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "phone",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Phone",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Mobile",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MobilePhone",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "fax",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Fax",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Email",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Email",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "AccountManagerFlag",
+									"type": "Boolean"
+								},
+								"sink": {
+									"name": "NO_Account_Manager__c",
+									"type": "Boolean"
+								}
+							},
+							{
+								"source": {
+									"name": "FirstName",
+									"type": "String"
+								},
+								"sink": {
+									"name": "FirstName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LastName",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LastName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Title"
+								},
+								"sink": {
+									"name": "Title",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "sf_record_type",
+									"type": "String"
+								},
+								"sink": {
+									"name": "RecordTypeId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "sf_company_id"
+								},
+								"sink": {
+									"name": "AccountId"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "db_stage_assessors",
+						"type": "DatasetReference",
+						"parameters": {
+							"pBatch_Id": 1
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sf_contacts",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Update Batch",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[usp_LogBatchDetails]",
+					"storedProcedureParameters": {
+						"batch_id": {
+							"value": {
+								"value": "@pipeline().parameters.pbatch_id",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
+						"process_name": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"stage": {
+							"value": "In Progress",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "usp_GetCustomers",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "createNotFoundCustomerContact",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_GetCustomerContactToCreateInSalesForce]",
+						"storedProcedureParameters": {
+							"batchid": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.pbatch_id",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "db_members_rating",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "forEachRow",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Set Variable Rating",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('_vnewCustomersInSF')",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Lookup Each Customer Contact by Email In Salesforce",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SalesforceSource",
+									"query": {
+										"value": "Select id from Contact\nwhere Email= '@{replace(item().Email, '''', '''''')}'",
+										"type": "Expression"
+									},
+									"readBehavior": "query"
+								},
+								"dataset": {
+									"referenceName": "sf_company",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": true
+							}
+						},
+						{
+							"name": "UpdateNewSalesforceIdForCustomer",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Lookup Each Customer Contact by Email In Salesforce",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[usp_UpdateNewSalesforceIdForCompany]",
+								"storedProcedureParameters": {
+									"batch_id": {
+										"value": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									},
+									"member_company_id": {
+										"value": {
+											"value": "@item().member_company_id",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									},
+									"salesforce_company_Id": {
+										"value": {
+											"value": "@{IF(contains(string(activity('Lookup Each Customer Contact by Email In Salesforce').output), 'firstRow'), activity('Lookup Each Customer Contact by Email In Salesforce').output.firstRow.Id, '')}",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"account_type": {
+										"value": "customer contact",
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "NABERSStaging",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Set Variable Rating",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "usp_GetCustomers",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "_vnewCustomersInSF",
+					"value": {
+						"value": "@activity('usp_GetCustomers').output.value",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"pbatch_id": {
+				"type": "int",
+				"defaultValue": 1
+			}
+		},
+		"variables": {
+			"_vnewCustomersInSF": {
+				"type": "Array"
+			},
+			"_vsf_CustomerRecord": {
+				"type": "String"
+			},
+			"_vnewCustomerInSF": {
+				"type": "Array"
+			}
+		},
+		"annotations": []
+	}
+}

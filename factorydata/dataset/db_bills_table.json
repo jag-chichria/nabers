@@ -1,0 +1,34 @@
+{
+	"name": "db_bills_table",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "billstable_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "missing_or_estimated",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Transformed_BillsTable"
+		}
+	}
+}

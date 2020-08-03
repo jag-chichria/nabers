@@ -1,0 +1,79 @@
+{
+	"name": "db_lookup_sf_company_ids",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"pbatch_id": {
+				"type": "int",
+				"defaultValue": 1
+			}
+		},
+		"folder": {
+			"name": "staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "salesforce_company_Id",
+				"type": "varchar"
+			},
+			{
+				"name": "batch_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "created_on",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "member_company_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Mailing_Country",
+				"type": "varchar"
+			},
+			{
+				"name": "Billing_Country",
+				"type": "varchar"
+			},
+			{
+				"name": "sync_status",
+				"type": "varchar"
+			},
+			{
+				"name": "account_type",
+				"type": "varchar"
+			},
+			{
+				"name": "sf_record_type",
+				"type": "varchar"
+			},
+			{
+				"name": "mailing_street",
+				"type": "varchar"
+			},
+			{
+				"name": "billing_street",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Lookup_SalesforceCompany"
+		}
+	}
+}

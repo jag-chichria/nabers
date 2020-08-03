@@ -1,0 +1,85 @@
+{
+	"name": "db_energy_meter",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "unique_meter_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RatingHeaderID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "UniqueAccountID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Supplier",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountNumber",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Nmi",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Coverage",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Start12MonthBillPeriod",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "End12MonthBillPeriod",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "MeterType",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BillsTable",
+				"type": "xml"
+			},
+			{
+				"name": "batch_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "sf_meter_device_id",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "EnergyUtilityMeterStage"
+		}
+	}
+}

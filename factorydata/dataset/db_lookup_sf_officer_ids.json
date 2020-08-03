@@ -1,0 +1,51 @@
+{
+	"name": "db_lookup_sf_officer_ids",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"pbatch_id": {
+				"type": "int",
+				"defaultValue": 1
+			}
+		},
+		"folder": {
+			"name": "staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "salesforce_user_Id",
+				"type": "varchar"
+			},
+			{
+				"name": "member_officer_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "batch_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "created_on",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Lookup_SalesforceTechOfficers"
+		}
+	}
+}

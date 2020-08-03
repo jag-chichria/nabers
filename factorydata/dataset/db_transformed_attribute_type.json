@@ -1,0 +1,60 @@
+{
+	"name": "db_transformed_attribute_type",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "attribute_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "attribute_desc",
+				"type": "varchar"
+			},
+			{
+				"name": "attribute_type",
+				"type": "varchar"
+			},
+			{
+				"name": "member_rating_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "batch_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "is_centrally_serviced",
+				"type": "varchar"
+			},
+			{
+				"name": "tenancy_servicing",
+				"type": "varchar"
+			},
+			{
+				"name": "ventilation_type",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Transformed_AttributeType"
+		}
+	}
+}

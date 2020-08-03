@@ -1,0 +1,51 @@
+{
+	"name": "db_lookup_sf_buildings_ids",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"pbatch_id": {
+				"type": "int",
+				"defaultValue": 1
+			}
+		},
+		"folder": {
+			"name": "staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "salesforce_building_Id",
+				"type": "varchar"
+			},
+			{
+				"name": "batch_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "created_on",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "member_premise_id",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Lookup_SalesforceBuildings"
+		}
+	}
+}

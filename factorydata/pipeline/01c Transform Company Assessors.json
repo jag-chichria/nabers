@@ -1,0 +1,119 @@
+{
+	"name": "01c Transform Company Assessors",
+	"properties": {
+		"activities": [
+			{
+				"name": "01_Transform",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Update Batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "01_Transform_Company_Assessor",
+						"type": "DataFlowReference",
+						"parameters": {
+							"pDefaultCountry": {
+								"value": "'@{'Australia'}'",
+								"type": "Expression"
+							},
+							"pbatch_id": {
+								"value": "@pipeline().parameters.pbatch_id",
+								"type": "Expression"
+							},
+							"pActive": "'Active'",
+							"pPortalAccess": "'NABERS Online'"
+						},
+						"datasetParameters": {
+							"getLookupCompany": {
+								"pbatch_id": {
+									"value": "@pipeline().parameters.pbatch_id",
+									"type": "Expression"
+								}
+							},
+							"getLookupAssessor": {
+								"pbatch_id": {
+									"value": "@pipeline().parameters.pbatch_id",
+									"type": "Expression"
+								}
+							},
+							"getStageAssessors": {
+								"pBatch_Id": 1
+							},
+							"targetLookupSalesforceAssessor": {
+								"pbatch_id": 1
+							},
+							"updateCleanedData": {
+								"pbatch_id": 1
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					}
+				}
+			},
+			{
+				"name": "Update Batch",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[usp_LogBatchDetails]",
+					"storedProcedureParameters": {
+						"batch_id": {
+							"value": {
+								"value": "@pipeline().parameters.pbatch_id",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
+						"process_name": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"stage": {
+							"value": "In Progress",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"pbatch_id": {
+				"type": "int",
+				"defaultValue": 1
+			}
+		},
+		"annotations": []
+	}
+}

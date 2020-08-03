@@ -1,0 +1,52 @@
+{
+	"name": "db_stage_cinemas",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "RatingHeaderID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CinemaID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CinemaDesc",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NumberTheatrettes",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NumberOutOfSvcGT4Weeks",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OutOfServiceWeeks",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RatedNumberTheatrettes",
+				"type": "nvarchar"
+			},
+			{
+				"name": "batch_id",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "CinemaStage"
+		}
+	}
+}

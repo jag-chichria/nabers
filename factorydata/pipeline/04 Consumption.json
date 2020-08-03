@@ -1,0 +1,1140 @@
+{
+	"name": "04 Consumption",
+	"properties": {
+		"activities": [
+			{
+				"name": "Update Batch",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[usp_LogBatchDetails]",
+					"storedProcedureParameters": {
+						"batch_id": {
+							"value": {
+								"value": "@pipeline().parameters.pbatch_id",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
+						"process_name": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"stage": {
+							"value": "In Progress",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "copyMeterData",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Update Batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "usp_GetRatingsMeterToCreateInSalesforce",
+						"storedProcedureParameters": {
+							"batchid": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.pBatch_Id",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "SalesforceSink",
+						"writeBatchSize": 5000,
+						"writeBehavior": "insert"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "sf_rating_id",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Rating__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "unique_meter_id",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "NO_DS_Meter_ID__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Supplier",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Supplier_1_Name__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "AccountNumber",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Supplier_1_Account_Number__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Nmi",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "NMI__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Coverage",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Description_of_Coverage__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Start12MonthBillPeriod",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "Billing_Start_Date__c",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "End12MonthBillPeriod",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "Billing_End_Date__c",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "MeterType",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Meter_Type__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "utility"
+								},
+								"sink": {
+									"name": "Utility__c"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "db_transformed_ratings",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sf_meters",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "copyConsumptionData",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "forEachRow",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_GetRatingsConsumptionToCreateInSalesforce]",
+						"storedProcedureParameters": {
+							"batchid": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.pBatch_Id",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "SalesforceSink",
+						"writeBatchSize": 5000,
+						"writeBehavior": "insert"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "sf_rating_id",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Rating__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "sf_meter_device_id",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Metering_Device__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "StartBilledPeriod",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "Meter_Reading_Start_Date__c",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "EndBilledPeriod",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "Meter_Reading_End_Date__c",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "IsMissingEstimated",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Billing_Missing_or_Estimated__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Consumption",
+									"type": "Decimal",
+									"physicalType": "decimal"
+								},
+								"sink": {
+									"name": "Consumption__c",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "PercentRecycled",
+									"physicalType": "decimal"
+								},
+								"sink": {
+									"name": "Percentage_of_Green_Power__c"
+								}
+							},
+							{
+								"source": {
+									"name": "PercentRecycled_Water"
+								},
+								"sink": {
+									"name": "Percentage_of_Recycled_Water__c"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "db_transformed_ratings",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sf_consumption",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "getMeterIds",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Update Batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_GetRatingsMeterToCreateInSalesforce]",
+						"storedProcedureParameters": {
+							"batchid": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.pBatch_Id",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "db_energy_meter",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "forEachRow",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "getMeterIds",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "copyMeterData",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "01_Transform_Billing_Consumption_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('getMeterIds').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Lookup Each Rating by Member Rating Id In Salesforce",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SalesforceSource",
+									"query": {
+										"value": "Select id from NO_Metering_Device__c\nwhere  NO_DS_Meter_ID__c = '@{item().unique_meter_id}'",
+										"type": "Expression"
+									},
+									"readBehavior": "query"
+								},
+								"dataset": {
+									"referenceName": "sf_meters",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": true
+							}
+						},
+						{
+							"name": "if Metering Device was created successfully",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Lookup Each Rating by Member Rating Id In Salesforce",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@contains(string(activity('Lookup Each Rating by Member Rating Id In Salesforce').output), 'firstRow')",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Insert Anomaly",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[dbo].[usp_InsertDataSyncAnomalies]",
+											"storedProcedureParameters": {
+												"batch_id": {
+													"value": {
+														"value": "@pipeline().parameters.pbatch_id",
+														"type": "Expression"
+													},
+													"type": "Int32"
+												},
+												"process_name": {
+													"value": {
+														"value": "@pipeline().Pipeline",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"anomaly_desc": {
+													"value": {
+														"value": "No Metering device found for this Rating header Id.",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"anomaly_type": {
+													"value": "Error",
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "NABERSStaging",
+											"type": "LinkedServiceReference"
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "UpdateNewSalesforceIdForMeteringDevice",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[usp_UpdateNewSalesforceIdForMeterDevice]",
+											"storedProcedureParameters": {
+												"batch_id": {
+													"value": {
+														"value": "@pipeline().parameters.pbatch_id",
+														"type": "Expression"
+													},
+													"type": "Int32"
+												},
+												"unique_meter_id": {
+													"value": {
+														"value": "@item().unique_meter_id",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"sf_meter_device_Id": {
+													"value": {
+														"value": "@activity('Lookup Each Rating by Member Rating Id In Salesforce').output.firstRow.Id",
+														"type": "Expression"
+													},
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "NABERSStaging",
+											"type": "LinkedServiceReference"
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "copyConsumptionData_copy1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "forEachRow",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[usp_GetRatingsConsumptionExclusionToCreateInSalesforce]",
+						"storedProcedureParameters": {
+							"batchid": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.pBatch_Id",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "SalesforceSink",
+						"writeBatchSize": 5000,
+						"writeBehavior": "insert"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "sf_rating_id",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Rating__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "sf_meter_device_id",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Metering_Device__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Coverage",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "Description_of_Coverage__c"
+								}
+							},
+							{
+								"source": {
+									"name": "MeterID",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "Meter_Id__c"
+								}
+							},
+							{
+								"source": {
+									"name": "UsesCurrentTransformer",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Current_Transformer__c"
+								}
+							},
+							{
+								"source": {
+									"name": "CTFactor",
+									"physicalType": "decimal"
+								},
+								"sink": {
+									"name": "CT_Factor__c"
+								}
+							},
+							{
+								"source": {
+									"name": "InfoSource"
+								},
+								"sink": {
+									"name": "Information_Source__c"
+								}
+							},
+							{
+								"source": {
+									"name": "FrequencyReading"
+								},
+								"sink": {
+									"name": "Frequency_of_readings__c"
+								}
+							},
+							{
+								"source": {
+									"name": "FirstReadingDate"
+								},
+								"sink": {
+									"name": "Meter_Reading_Start_Date__c"
+								}
+							},
+							{
+								"source": {
+									"name": "FirstReadingValue"
+								},
+								"sink": {
+									"name": "First_Meter_Read__c"
+								}
+							},
+							{
+								"source": {
+									"name": "LastReadingDate"
+								},
+								"sink": {
+									"name": "Meter_Reading_End_Date__c"
+								}
+							},
+							{
+								"source": {
+									"name": "LastReadingValue"
+								},
+								"sink": {
+									"name": "Last_Meter_Read__c"
+								}
+							},
+							{
+								"source": {
+									"name": "AnnualHeatingValue"
+								},
+								"sink": {
+									"name": "Annual_Heating_Value__c"
+								}
+							},
+							{
+								"source": {
+									"name": "PressureCorrectionFactor"
+								},
+								"sink": {
+									"name": "Pressure_Correction_Factor__c"
+								}
+							},
+							{
+								"source": {
+									"name": "ValidationDate"
+								},
+								"sink": {
+									"name": "Date_Of_Meter_Validation__c"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "db_transformed_ratings",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sf_consumption",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "copyConsumptionFinRecExclData",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "forEachRow",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[usp_GetRatingsConsumptionFinRecExclusionToCreateInSalesforce]",
+						"storedProcedureParameters": {
+							"batchid": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.pBatch_Id",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "SalesforceSink",
+						"writeBatchSize": 5000,
+						"writeBehavior": "insert"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "sf_rating_id",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Rating__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "sf_meter_device_id",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Metering_Device__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Coverage",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "Description_of_Coverage__c"
+								}
+							},
+							{
+								"source": {
+									"name": "ProportionToExclude"
+								},
+								"sink": {
+									"name": "Proportion_to_exclude__c"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "db_transformed_ratings",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sf_consumption",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "copyConsumptionStandardThermalData",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "forEachRow",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[dbo].[usp_GetRatingsConsumptionStandardThermalToCreateInSalesforce]",
+						"storedProcedureParameters": {
+							"batchid": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.pBatch_Id",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "SalesforceSink",
+						"writeBatchSize": 5000,
+						"writeBehavior": "insert"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "sf_rating_id",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Rating__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "sf_meter_device_id",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Metering_Device__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Coverage",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "Description_of_Coverage__c"
+								}
+							},
+							{
+								"source": {
+									"name": "Consumption"
+								},
+								"sink": {
+									"name": "Consumption__c"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "db_transformed_ratings",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sf_consumption",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "copyConsumptionSmallEndUse",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "forEachRow",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[usp_GetRatingsConsumptionSmallEndUseToCreateInSalesforce]",
+						"storedProcedureParameters": {
+							"batchid": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.pBatch_Id",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "SalesforceSink",
+						"writeBatchSize": 5000,
+						"writeBehavior": "insert"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "sf_rating_id",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Rating__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "sf_meter_device_id",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Metering_Device__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Coverage",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "Description_of_Coverage__c"
+								}
+							},
+							{
+								"source": {
+									"name": "Consumption"
+								},
+								"sink": {
+									"name": "Consumption__c"
+								}
+							},
+							{
+								"source": {
+									"name": "DutyCycle"
+								},
+								"sink": {
+									"name": "Duty_Cycle__c"
+								}
+							},
+							{
+								"source": {
+									"name": "AnnualHoursOfOperation"
+								},
+								"sink": {
+									"name": "Annual_Hours_Of_Operation__c"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "db_transformed_ratings",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sf_consumption",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "01_Transform_Billing_Consumption_Data",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Update Batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "01_Transform_Billing_Consumption_Data",
+						"type": "DataFlowReference",
+						"parameters": {
+							"pbatch_id": "1"
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"pBatch_Id": {
+				"type": "int",
+				"defaultValue": 1
+			}
+		},
+		"annotations": []
+	}
+}

@@ -1,0 +1,397 @@
+{
+	"name": "db_transformed_ratings",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "batch_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "building_type",
+				"type": "varchar"
+			},
+			{
+				"name": "source_rating_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "sf_company_id",
+				"type": "varchar"
+			},
+			{
+				"name": "sf_building_id",
+				"type": "varchar"
+			},
+			{
+				"name": "sf_rating_id",
+				"type": "varchar"
+			},
+			{
+				"name": "sf_assessor_id",
+				"type": "varchar"
+			},
+			{
+				"name": "sf_customer_id",
+				"type": "varchar"
+			},
+			{
+				"name": "assessor_email",
+				"type": "varchar"
+			},
+			{
+				"name": "customer_email",
+				"type": "varchar"
+			},
+			{
+				"name": "cert_building_name",
+				"type": "varchar"
+			},
+			{
+				"name": "cert_customer_name",
+				"type": "varchar"
+			},
+			{
+				"name": "rating_type",
+				"type": "varchar"
+			},
+			{
+				"name": "rating_main_purpose",
+				"type": "varchar"
+			},
+			{
+				"name": "has_cinema",
+				"type": "bit"
+			},
+			{
+				"name": "period_from",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "period_to",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "status",
+				"type": "varchar"
+			},
+			{
+				"name": "cert_valid_from",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "cert_valid_to",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "rating_ref_number",
+				"type": "varchar"
+			},
+			{
+				"name": "lodged_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "rating_scope",
+				"type": "varchar"
+			},
+			{
+				"name": "publicly_listed",
+				"type": "bit"
+			},
+			{
+				"name": "sf_officer_id",
+				"type": "varchar"
+			},
+			{
+				"name": "last_update_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "renew_replace",
+				"type": "varchar"
+			},
+			{
+				"name": "sync_status",
+				"type": "varchar"
+			},
+			{
+				"name": "review_summary_page",
+				"type": "varchar"
+			},
+			{
+				"name": "using_latest_rules",
+				"type": "varchar"
+			},
+			{
+				"name": "rating_information_page",
+				"type": "varchar"
+			},
+			{
+				"name": "lodge_rating_page",
+				"type": "varchar"
+			},
+			{
+				"name": "rating_details_page",
+				"type": "varchar"
+			},
+			{
+				"name": "parking_space_page",
+				"type": "varchar"
+			},
+			{
+				"name": "water_page",
+				"type": "varchar"
+			},
+			{
+				"name": "has_parking_space",
+				"type": "varchar"
+			},
+			{
+				"name": "has_gym",
+				"type": "varchar"
+			},
+			{
+				"name": "has_food_court",
+				"type": "varchar"
+			},
+			{
+				"name": "conflict_of_interest",
+				"type": "varchar"
+			},
+			{
+				"name": "compliant_with_current_rules",
+				"type": "varchar"
+			},
+			{
+				"name": "relodged_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "rating_data_complete",
+				"type": "varchar"
+			},
+			{
+				"name": "assessor_declaration",
+				"type": "varchar"
+			},
+			{
+				"name": "customer_aware_of_star_rating",
+				"type": "varchar"
+			},
+			{
+				"name": "water_star_rating_with_recycle",
+				"type": "varchar"
+			},
+			{
+				"name": "water_star_rating_without_recycle",
+				"type": "varchar"
+			},
+			{
+				"name": "energy_star_rating_with_recycle",
+				"type": "varchar"
+			},
+			{
+				"name": "energy_star_rating_without_recycle",
+				"type": "varchar"
+			},
+			{
+				"name": "total_energy_consumption",
+				"type": "decimal",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "weekly_core_hours_of_Service",
+				"type": "decimal",
+				"precision": 8,
+				"scale": 2
+			},
+			{
+				"name": "total_electricity_consumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "total_diesel_consumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "water_consumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "recycle_normalised_water_consumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "total_water_consumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "total_recycled_water_percent",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "total_gas_consumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "rating_lodgement_fees",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "predicted_greenhouse_gas_intensity",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "predicted_average_water_use",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "number_of_trading_days",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "no_recycle_predicted_average_water_use",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "no_greenpower_ghg_intensity_scope_12",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "no_greenpower_ghg_intensity_scope_123",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "no_greenpower_ghg_emissions_scope_12",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "no_greenpower_ghg_emissions_scope_123",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "greenhouse_gas_intensity_scope_123",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "greenhouse_gas_emissions_scope_123",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "energy_intensity",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "explain_why_not_compliant",
+				"type": "varchar"
+			},
+			{
+				"name": "is_small_shopping_centre",
+				"type": "varchar"
+			},
+			{
+				"name": "using_latest_rules_water",
+				"type": "varchar"
+			},
+			{
+				"name": "using_latest_rules_energy",
+				"type": "varchar"
+			},
+			{
+				"name": "single_or_multi_storey",
+				"type": "varchar"
+			},
+			{
+				"name": "shopping_centre_size",
+				"type": "varchar"
+			},
+			{
+				"name": "sf_owner_id",
+				"type": "nchar"
+			},
+			{
+				"name": "hour_of_service_core_hours",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "has_extended_hours",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Transformed_Ratings"
+		}
+	}
+}

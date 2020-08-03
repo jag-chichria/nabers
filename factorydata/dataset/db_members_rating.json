@@ -1,0 +1,426 @@
+{
+	"name": "db_members_rating",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "RatingHeaderID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RatingReferenceNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "PremiseTypeID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PremiseType",
+				"type": "varchar"
+			},
+			{
+				"name": "PremiseID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PremiseName",
+				"type": "varchar"
+			},
+			{
+				"name": "AssessorID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "AssessorEmail",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer_Name",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer_TradingName",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer_Mailing_StreetNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer_Mailing_StreetName",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer_Mailing_Suburb",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer_Mailing_Postcode",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer_Mailing_State",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer_ABN",
+				"type": "varchar"
+			},
+			{
+				"name": "customer_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Customer_Organisation",
+				"type": "varchar"
+			},
+			{
+				"name": "Customer_SAP_Number",
+				"type": "varchar"
+			},
+			{
+				"name": "RatingPeriodFrom",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "RatingPeriodTo",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "PublicListingFlag",
+				"type": "bit"
+			},
+			{
+				"name": "OfficerID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RatingStatusID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RatingStatus",
+				"type": "varchar"
+			},
+			{
+				"name": "LodgedDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "PaymentStatusID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PaymentStatus",
+				"type": "varchar"
+			},
+			{
+				"name": "PaidDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "CertificateValidFrom",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "CertificateValidTo",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "PremiseNameOnCert",
+				"type": "varchar"
+			},
+			{
+				"name": "CustomerNameOnCert",
+				"type": "varchar"
+			},
+			{
+				"name": "Certificate_Customer_Email",
+				"type": "varchar"
+			},
+			{
+				"name": "LastActionDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "ReplaceFlag",
+				"type": "bit"
+			},
+			{
+				"name": "RenewFlag",
+				"type": "bit"
+			},
+			{
+				"name": "PreviousRatingHeaderID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "NewRatingHeaderID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "StreetNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "StreetName",
+				"type": "varchar"
+			},
+			{
+				"name": "Suburb",
+				"type": "varchar"
+			},
+			{
+				"name": "Postcode",
+				"type": "varchar"
+			},
+			{
+				"name": "State",
+				"type": "varchar"
+			},
+			{
+				"name": "RatingTypes",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CinemaTheatres",
+				"type": "decimal",
+				"precision": 8,
+				"scale": 2
+			},
+			{
+				"name": "ShoppingCentreWaterSummaryID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FloorConfiguration",
+				"type": "varchar"
+			},
+			{
+				"name": "ParkingSpacesMechanical",
+				"type": "decimal",
+				"precision": 8,
+				"scale": 2
+			},
+			{
+				"name": "ParkingSpacesNatural",
+				"type": "decimal",
+				"precision": 8,
+				"scale": 2
+			},
+			{
+				"name": "TotalGymGLAR",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "FoodCourtSeats",
+				"type": "decimal",
+				"precision": 8,
+				"scale": 2
+			},
+			{
+				"name": "conflictOfInterestFlag",
+				"type": "bit"
+			},
+			{
+				"name": "InComplianceWithCurrentRules",
+				"type": "bit"
+			},
+			{
+				"name": "WaterStarRatingWRecycle",
+				"type": "varchar"
+			},
+			{
+				"name": "WaterStarRatingWoRecycle",
+				"type": "varchar"
+			},
+			{
+				"name": "EnergyStarRatingWRecycle",
+				"type": "varchar"
+			},
+			{
+				"name": "EnergyStarRatingWoRecycle",
+				"type": "varchar"
+			},
+			{
+				"name": "totalEnergyConsumption",
+				"type": "decimal",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "WeeklyCoreHoursOfService",
+				"type": "decimal",
+				"precision": 8,
+				"scale": 2
+			},
+			{
+				"name": "TotalElectricityConsumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "TotalDieselConsumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "WaterConsumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "RecycleNormalisedWaterConsumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "TotalWaterConsumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "TotalRecycledWaterPercent",
+				"type": "decimal",
+				"precision": 6,
+				"scale": 2
+			},
+			{
+				"name": "TotalGasConsumption",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "RatingLodgementFees",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 2
+			},
+			{
+				"name": "PredictedGreenhouseGasIntensity",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "PredictedAverageWaterUse",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "NumberOfTradingDays",
+				"type": "decimal",
+				"precision": 8,
+				"scale": 2
+			},
+			{
+				"name": "NoRecyclePredictedAverageWaterUse",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "NoGreenPower_GHG_IntensityScope_12",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "NoGreenPowerGHGIntensityScope123",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "NoGreenPowerGHGEmissionsScope12",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "NoGreenPowerGHGEmissionsScope123",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "GreenhouseGasIntensityScope123",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "GreenhouseGasEmissionsScope123",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "EnergyIntensity",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "ExplainWhyNotCompliant",
+				"type": "varchar"
+			},
+			{
+				"name": "IsSmallShoppingCentre",
+				"type": "bit"
+			},
+			{
+				"name": "batch_id",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "RatingHeaderStage"
+		}
+	}
+}

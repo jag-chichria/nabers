@@ -1,0 +1,106 @@
+{
+	"name": "db_stage_hours_Of_service",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RatingHeaderID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "AreaID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "TenancyName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ListedArea",
+				"type": "nvarchar"
+			},
+			{
+				"name": "blocknumber",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IsListedAsCentralServiced",
+				"type": "bit"
+			},
+			{
+				"name": "IsTenancyServicingCheck",
+				"type": "bit"
+			},
+			{
+				"name": "IsAreaConfirmed",
+				"type": "bit"
+			},
+			{
+				"name": "IsCentralServicingResult",
+				"type": "bit"
+			},
+			{
+				"name": "RatedCSArea",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RatedGLAR",
+				"type": "nvarchar"
+			},
+			{
+				"name": "WeeksVacant",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ExtentedHours",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Hours",
+				"type": "nvarchar"
+			},
+			{
+				"name": "HoursArea",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IsExtendedHoursEnabled",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IsHoursEnabled",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CoreHours",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 3
+			},
+			{
+				"name": "batch_id",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "HoursOfServiceStage"
+		}
+	}
+}

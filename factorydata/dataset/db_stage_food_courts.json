@@ -1,0 +1,52 @@
+{
+	"name": "db_stage_food_courts",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "RatingHeaderID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FoodCourtID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FoodCourtDesc",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NumberSeats",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NumberSeatsOutOfSvcGT4Weeks",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OutOfServiceWeeks",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RatedNumberSeats",
+				"type": "nvarchar"
+			},
+			{
+				"name": "batch_id",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "FoodCourtStage"
+		}
+	}
+}

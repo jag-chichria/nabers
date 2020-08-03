@@ -1,0 +1,108 @@
+{
+	"name": "db_lookup_sf_assessors_ids",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"pbatch_id": {
+				"type": "int",
+				"defaultValue": 1
+			}
+		},
+		"folder": {
+			"name": "staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "salesforce_assessor_Id",
+				"type": "varchar"
+			},
+			{
+				"name": "batch_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "created_on",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "member_assessor_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "salesforce_company_id",
+				"type": "varchar"
+			},
+			{
+				"name": "member_company_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "sync_status",
+				"type": "varchar"
+			},
+			{
+				"name": "mailing_country",
+				"type": "varchar"
+			},
+			{
+				"name": "billing_country",
+				"type": "varchar"
+			},
+			{
+				"name": "accredition",
+				"type": "varchar"
+			},
+			{
+				"name": "rating_type",
+				"type": "varchar"
+			},
+			{
+				"name": "regional_cleaned",
+				"type": "varchar"
+			},
+			{
+				"name": "salesforce_contact_type",
+				"type": "varchar"
+			},
+			{
+				"name": "salesforce_portal_access",
+				"type": "varchar"
+			},
+			{
+				"name": "salesforce_user_active",
+				"type": "varchar"
+			},
+			{
+				"name": "metropolitan_cleaned",
+				"type": "varchar"
+			},
+			{
+				"name": "salesforce_user_id",
+				"type": "varchar"
+			},
+			{
+				"name": "phone_cleaned",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Lookup_SalesforceAssessors"
+		}
+	}
+}

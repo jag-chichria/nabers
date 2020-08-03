@@ -1,0 +1,186 @@
+{
+	"name": "db_stage_assessors",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"pBatch_Id": {
+				"type": "int",
+				"defaultValue": 1
+			}
+		},
+		"folder": {
+			"name": "staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "RatingHeaderID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "companyid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "AssessorId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "UserId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FirstName",
+				"type": "varchar"
+			},
+			{
+				"name": "LastName",
+				"type": "varchar"
+			},
+			{
+				"name": "Title",
+				"type": "varchar"
+			},
+			{
+				"name": "Mailing_StreetNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "Mailing_StreetName",
+				"type": "varchar"
+			},
+			{
+				"name": "Mailing_Suburb",
+				"type": "varchar"
+			},
+			{
+				"name": "Mailing_Postcode",
+				"type": "varchar"
+			},
+			{
+				"name": "Mailing_State",
+				"type": "varchar"
+			},
+			{
+				"name": "Billing_StreetNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "Billing_StreetName",
+				"type": "varchar"
+			},
+			{
+				"name": "Billing_Suburb",
+				"type": "varchar"
+			},
+			{
+				"name": "Billing_Postcode",
+				"type": "varchar"
+			},
+			{
+				"name": "Billing_State",
+				"type": "varchar"
+			},
+			{
+				"name": "Phone",
+				"type": "varchar"
+			},
+			{
+				"name": "Mobile",
+				"type": "varchar"
+			},
+			{
+				"name": "Email",
+				"type": "varchar"
+			},
+			{
+				"name": "JoinedDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "AccreditationDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "AccreditationExpiryDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "AccreditationNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "EnergyFlag",
+				"type": "bit"
+			},
+			{
+				"name": "WaterFlag",
+				"type": "bit"
+			},
+			{
+				"name": "WasteFlag",
+				"type": "bit"
+			},
+			{
+				"name": "batch_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RequireSupervisionSC",
+				"type": "bit"
+			},
+			{
+				"name": "Metropolitan",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Regional",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RetailFlag",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HospitalFlag",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HotelFlag",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OfficeFlag",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ApartmentBuildingFlag",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "AssessorsStage"
+		}
+	}
+}
