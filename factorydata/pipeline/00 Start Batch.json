@@ -390,6 +390,11 @@
 				}
 			}
 		],
+		"parameters": {
+			"pBatchId": {
+				"type": "string"
+			}
+		},
 		"variables": {
 			"vbatch_id": {
 				"type": "String",
