@@ -84,7 +84,47 @@
 				"typeProperties": {
 					"variableName": "deltaRowHeaderIds",
 					"value": {
-						"value": "@activity('00 Delta RowVersions').output",
+						"value": "@activity('00 Delta RowVersions').output.deltaRowHederIds",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "00 Start Batch",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "copyRatings",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "00 Start Batch",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Set variable1_copy1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "00 Delta RowVersions",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "deltaRowHeaderIds",
+					"value": {
+						"value": "@activity('00 Delta RowVersions').output.NewBatchId",
 						"type": "Expression"
 					}
 				}
