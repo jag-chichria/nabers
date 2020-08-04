@@ -135,8 +135,8 @@
 				}
 			},
 			{
-				"name": "Set variable1",
-				"type": "SetVariable",
+				"name": "If Condition1",
+				"type": "IfCondition",
 				"dependsOn": [
 					{
 						"activity": "Lookup1",
@@ -147,11 +147,25 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "deltaRatingHeaderIds",
-					"value": {
-						"value": "@activity('Lookup1').output.firstrow.value",
+					"expression": {
+						"value": "@contains(string(activity('Lookup1').output), 'firstRow')",
 						"type": "Expression"
-					}
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "deltaRatingHeaderIds",
+								"value": {
+									"value": "@activity('Lookup1').output.firstrow.value",
+									"type": "Expression"
+								}
+							}
+						}
+					]
 				}
 			}
 		],
