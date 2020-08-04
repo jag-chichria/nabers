@@ -112,7 +112,13 @@
 						"referenceName": "00 Start Batch",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"pBatchId": {
+							"value": "@variables('newBatchId')",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
@@ -128,7 +134,7 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "deltaRowHeaderIds",
+					"variableName": "newBatchId",
 					"value": {
 						"value": "@activity('00 Delta RowVersions').output.NewBatchId",
 						"type": "Expression"
