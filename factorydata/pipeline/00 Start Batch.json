@@ -10,7 +10,7 @@
 				"typeProperties": {
 					"variableName": "vbatch_id",
 					"value": {
-						"value": "@string(activity('usp_StartBatch').output.firstRow.NewBatchId)",
+						"value": "@pipeline().parameters.pBatchId",
 						"type": "Expression"
 					}
 				}
