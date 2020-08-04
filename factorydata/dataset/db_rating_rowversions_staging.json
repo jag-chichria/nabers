@@ -27,7 +27,7 @@
 		],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "RatingHeader_RowVersions_Staging"
+			"table": "RatingHeader_RowVersions_Transient"
 		}
 	}
 }
