@@ -151,6 +151,52 @@
 						"value": "@contains(string(activity('Lookup1').output), 'firstRow')",
 						"type": "Expression"
 					},
+					"ifFalseActivities": [
+						{
+							"name": "Insert Anomaly",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[usp_InsertDataSyncAnomalies]",
+								"storedProcedureParameters": {
+									"batch_id": {
+										"value": null,
+										"type": "Int32"
+									},
+									"process_name": {
+										"value": {
+											"value": "@pipeline().Pipeline",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"anomaly_desc": {
+										"value": {
+											"value": "No Ratings found.",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"anomaly_type": {
+										"value": "Warning",
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "NABERSStaging",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
 					"ifTrueActivities": [
 						{
 							"name": "Set variable1",
