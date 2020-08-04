@@ -1,5 +1,5 @@
 {
-	"name": "db_rating_rowversions_stage",
+	"name": "db_target_rating_rowversions_stage",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "NABERSStaging",
