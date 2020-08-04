@@ -130,7 +130,8 @@
 					"dataset": {
 						"referenceName": "db_target_rating_rowversions_stage",
 						"type": "DatasetReference"
-					}
+					},
+					"firstRowOnly": true
 				}
 			},
 			{
@@ -148,7 +149,7 @@
 				"typeProperties": {
 					"variableName": "deltaRatingHeaderIds",
 					"value": {
-						"value": "@activity('Lookup1').output",
+						"value": "@activity('Lookup1').output.firstrow.value",
 						"type": "Expression"
 					}
 				}
