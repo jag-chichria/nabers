@@ -1,6 +1,81 @@
 {
 	"name": "00 Delta RowVersions",
 	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "Select RowTimestamp, rh.RatingHeaderID  from \ntblRatingHeader rh\nWhere rh.PremiseTypeID = 55 and RatingStatusID in (157,158)\t\t\t\norder by RatingHeaderID",
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBatchSize": 500,
+						"preCopyScript": "Update RatingHeader_RowVersions set prod_timestamp = Null\nGO\nTruncate table RatingHeader_RowVersions_Staging",
+						"maxConcurrentConnections": 2,
+						"disableMetricsCollection": true
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "RowTimestamp",
+									"physicalType": "timestamp"
+								},
+								"sink": {
+									"name": "prod_timestamp",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "RatingHeaderID",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "RatingHeaderID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "db_rating_rowversions",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "db_rating_rowversions_staging",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
 		"annotations": []
 	}
 }
