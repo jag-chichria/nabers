@@ -278,6 +278,9 @@
 		"variables": {
 			"deltaRatingHeaderIds": {
 				"type": "String"
+			},
+			"vbatch_id": {
+				"type": "String"
 			}
 		},
 		"annotations": []
