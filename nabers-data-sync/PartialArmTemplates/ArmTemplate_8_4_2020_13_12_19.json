@@ -1,0 +1,1135 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "nabers-data-sync"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/03a Junction Building Rating')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Update Batch",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_LogBatchDetails]",
+							"storedProcedureParameters": {
+								"batch_id": {
+									"value": {
+										"value": "@pipeline().parameters.pbatch_id",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"process_name": {
+									"value": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"stage": {
+									"value": "In Progress",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "NABERSStaging",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "usp_GetRatings",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "Update Batch",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRating]",
+								"storedProcedureParameters": {
+									"batchid": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.pbatch_id",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "db_members_rating",
+								"type": "DatasetReference"
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "forEachRow",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "usp_GetRatings",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('usp_GetRatings').output.value",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "Lookup Each Rating by Member Rating Id In Salesforce",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SalesforceSource",
+											"query": {
+												"value": "Select id from NO_Rating__c \nwhere NO_Member_Rating_Id__c = @{item().RatingHeaderID}",
+												"type": "Expression"
+											},
+											"readBehavior": "query"
+										},
+										"dataset": {
+											"referenceName": "sf_Ratings",
+											"type": "DatasetReference"
+										},
+										"firstRowOnly": true
+									}
+								},
+								{
+									"name": "if Rating was successfully created",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "Lookup Each Rating by Member Rating Id In Salesforce",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@contains(string(activity('Lookup Each Rating by Member Rating Id In Salesforce').output), 'firstRow')",
+											"type": "Expression"
+										},
+										"ifFalseActivities": [
+											{
+												"name": "Insert Anomaly",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[dbo].[usp_InsertDataSyncAnomalies]",
+													"storedProcedureParameters": {
+														"batch_id": {
+															"value": {
+																"value": "@pipeline().parameters.pbatch_id",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"process_name": {
+															"value": {
+																"value": "@pipeline().Pipeline",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"anomaly_desc": {
+															"value": {
+																"value": "No Rating found for this Rating header Id.",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"anomaly_type": {
+															"value": "Error",
+															"type": "String"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "NABERSStaging",
+													"type": "LinkedServiceReference"
+												}
+											}
+										],
+										"ifTrueActivities": [
+											{
+												"name": "UpdateNewSalesforceIdForRating",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[dbo].[usp_UpdateNewSalesforceIdForRating]",
+													"storedProcedureParameters": {
+														"batch_id": {
+															"value": {
+																"value": "@pipeline().parameters.pbatch_id",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"member_rating_id": {
+															"value": {
+																"value": "@item().ratingheaderid",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"salesforceratingId": {
+															"value": {
+																"value": "@activity('Lookup Each Rating by Member Rating Id In Salesforce').output.firstRow.Id",
+																"type": "Expression"
+															},
+															"type": "String"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "NABERSStaging",
+													"type": "LinkedServiceReference"
+												}
+											},
+											{
+												"name": "copyJunctionBuildingRating",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "UpdateNewSalesforceIdForRating",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRatingBuildingForJunctionInSalesforce]",
+														"storedProcedureParameters": {
+															"batch_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@pipeline().parameters.pbatch_id",
+																	"type": "Expression"
+																}
+															},
+															"source_rating_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@item().RatingHeaderId",
+																	"type": "Expression"
+																}
+															}
+														},
+														"queryTimeout": "02:00:00"
+													},
+													"sink": {
+														"type": "SalesforceSink",
+														"writeBatchSize": 5000,
+														"writeBehavior": "insert",
+														"ignoreNullValues": false,
+														"maxConcurrentConnections": 1
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"mappings": [
+															{
+																"source": {
+																	"name": "sf_rating_id",
+																	"physicalType": "varchar"
+																},
+																"sink": {
+																	"name": "Rating__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "sf_building_id",
+																	"physicalType": "varchar"
+																},
+																"sink": {
+																	"name": "Building__c"
+																}
+															}
+														],
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "db_transformed_ratings",
+														"type": "DatasetReference"
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "sf_buiding_rating",
+														"type": "DatasetReference"
+													}
+												]
+											},
+											{
+												"name": "copyJunctionRatingContact",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "UpdateNewSalesforceIdForRating",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRatingCustomerContactForJunctionInSalesforce]",
+														"storedProcedureParameters": {
+															"batch_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@pipeline().parameters.pbatch_id",
+																	"type": "Expression"
+																}
+															},
+															"source_rating_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@item().RatingHeaderId",
+																	"type": "Expression"
+																}
+															}
+														},
+														"queryTimeout": "02:00:00"
+													},
+													"sink": {
+														"type": "SalesforceSink",
+														"writeBatchSize": 5000,
+														"writeBehavior": "insert",
+														"ignoreNullValues": false,
+														"maxConcurrentConnections": 1
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"mappings": [
+															{
+																"source": {
+																	"name": "sf_rating_id",
+																	"physicalType": "varchar"
+																},
+																"sink": {
+																	"name": "Rating__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "sf_customercontact_id",
+																	"physicalType": "varchar"
+																},
+																"sink": {
+																	"name": "Contact__c"
+																}
+															}
+														],
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "db_transformed_ratings",
+														"type": "DatasetReference"
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "sf_rating_contact",
+														"type": "DatasetReference"
+													}
+												]
+											},
+											{
+												"name": "copyHoursOfSerivce",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "UpdateNewSalesforceIdForRating",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRatingHoursOfServiceToCreateInSalesforce]",
+														"storedProcedureParameters": {
+															"batch_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@pipeline().parameters.pbatch_id",
+																	"type": "Expression"
+																}
+															},
+															"source_rating_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@item().RatingHeaderId",
+																	"type": "Expression"
+																}
+															}
+														},
+														"queryTimeout": "02:00:00"
+													},
+													"sink": {
+														"type": "SalesforceSink",
+														"writeBatchSize": 5000,
+														"writeBehavior": "insert",
+														"ignoreNullValues": false,
+														"maxConcurrentConnections": 1
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"mappings": [
+															{
+																"source": {
+																	"name": "sf_rating_id",
+																	"type": "String",
+																	"physicalType": "varchar"
+																},
+																"sink": {
+																	"name": "Rating__c",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "TenancyName",
+																	"type": "String",
+																	"physicalType": "nvarchar"
+																},
+																"sink": {
+																	"name": "Area_Tenancy_Name__c",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "ListedArea",
+																	"type": "String",
+																	"physicalType": "nvarchar"
+																},
+																"sink": {
+																	"name": "Area__c",
+																	"type": "Decimal"
+																}
+															},
+															{
+																"source": {
+																	"name": "blocknumber",
+																	"type": "String",
+																	"physicalType": "nvarchar"
+																},
+																"sink": {
+																	"name": "Area_Block_Number__c",
+																	"type": "Decimal"
+																}
+															},
+															{
+																"source": {
+																	"name": "is_centrally_serviced"
+																},
+																"sink": {
+																	"name": "Area_Centrally_Serviced__c",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "tenancy_servicing",
+																	"physicalType": "nvarchar"
+																},
+																"sink": {
+																	"name": "Area_Tenancy_Servicing_Checked__c",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "WeeksVacant",
+																	"type": "String",
+																	"physicalType": "nvarchar"
+																},
+																"sink": {
+																	"name": "Area_Weeks_Vacant_During_Rating_Period__c",
+																	"type": "Decimal"
+																}
+															},
+															{
+																"source": {
+																	"name": "attribute_type"
+																},
+																"sink": {
+																	"name": "Rating_Attribute_Type__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "Hours"
+																},
+																"sink": {
+																	"name": "Hours_Per_Week__c"
+																}
+															}
+														],
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "db_transformed_ratings",
+														"type": "DatasetReference"
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "sf_rating_attribute",
+														"type": "DatasetReference"
+													}
+												]
+											},
+											{
+												"name": "copyParkingSpace",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "UpdateNewSalesforceIdForRating",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRatingParkingSpaceToCreateInSalesforce]",
+														"storedProcedureParameters": {
+															"batch_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@pipeline().parameters.pbatch_id",
+																	"type": "Expression"
+																}
+															},
+															"source_rating_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@item().RatingHeaderId",
+																	"type": "Expression"
+																}
+															}
+														},
+														"queryTimeout": "02:00:00"
+													},
+													"sink": {
+														"type": "SalesforceSink",
+														"writeBatchSize": 5000,
+														"writeBehavior": "insert",
+														"ignoreNullValues": false,
+														"maxConcurrentConnections": 1
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"mappings": [
+															{
+																"source": {
+																	"name": "sf_rating_id",
+																	"type": "String",
+																	"physicalType": "varchar"
+																},
+																"sink": {
+																	"name": "Rating__c",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "BlockDesc"
+																},
+																"sink": {
+																	"name": "Parking_Spaces_Block_Description__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "ventilation_type"
+																},
+																"sink": {
+																	"name": "Parking_Spaces_Ventilation_Type__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "NumberParkingSpaces"
+																},
+																"sink": {
+																	"name": "Parking_Spaces_Total_Number__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "NumberOutOfSvcGT4Weeks"
+																},
+																"sink": {
+																	"name": "Parking_Spaces_Unavailable_After_4_weeks__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "OutOfServiceWeeks"
+																},
+																"sink": {
+																	"name": "Parking_Spaces_Number_Weeks_Unavailabe__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "attribute_type"
+																},
+																"sink": {
+																	"name": "Rating_Attribute_Type__c"
+																}
+															}
+														],
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "db_transformed_ratings",
+														"type": "DatasetReference"
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "sf_rating_attribute",
+														"type": "DatasetReference"
+													}
+												]
+											},
+											{
+												"name": "copyFoodCourt",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "UpdateNewSalesforceIdForRating",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRatingFoodCourtToCreateInSalesforce]",
+														"storedProcedureParameters": {
+															"batch_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@pipeline().parameters.pbatch_id",
+																	"type": "Expression"
+																}
+															},
+															"source_rating_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@item().RatingHeaderId",
+																	"type": "Expression"
+																}
+															}
+														},
+														"queryTimeout": "02:00:00"
+													},
+													"sink": {
+														"type": "SalesforceSink",
+														"writeBatchSize": 5000,
+														"writeBehavior": "insert",
+														"ignoreNullValues": false,
+														"maxConcurrentConnections": 1
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"mappings": [
+															{
+																"source": {
+																	"name": "sf_rating_id",
+																	"type": "String",
+																	"physicalType": "varchar"
+																},
+																"sink": {
+																	"name": "Rating__c",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "NumberSeatsOutOfSvcGT4Weeks"
+																},
+																"sink": {
+																	"name": "Food_Courts_Unavailable_After_4_weeks__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "OutOfServiceWeeks"
+																},
+																"sink": {
+																	"name": "Food_Courts_Week_Unavailable__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "FoodCourtDesc"
+																},
+																"sink": {
+																	"name": "Food_Courts_Description__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "NumberSeats"
+																},
+																"sink": {
+																	"name": "Food_Courts_Total_Seats__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "attribute_type"
+																},
+																"sink": {
+																	"name": "Rating_Attribute_Type__c"
+																}
+															}
+														],
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "db_transformed_ratings",
+														"type": "DatasetReference"
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "sf_rating_attribute",
+														"type": "DatasetReference"
+													}
+												]
+											},
+											{
+												"name": "copyCinemas",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "UpdateNewSalesforceIdForRating",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRatingCinemaToCreateInSalesforce]",
+														"storedProcedureParameters": {
+															"batch_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@pipeline().parameters.pbatch_id",
+																	"type": "Expression"
+																}
+															},
+															"source_rating_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@item().RatingHeaderId",
+																	"type": "Expression"
+																}
+															}
+														},
+														"queryTimeout": "02:00:00"
+													},
+													"sink": {
+														"type": "SalesforceSink",
+														"writeBatchSize": 5000,
+														"writeBehavior": "insert",
+														"ignoreNullValues": false,
+														"maxConcurrentConnections": 1
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"mappings": [
+															{
+																"source": {
+																	"name": "sf_rating_id",
+																	"type": "String",
+																	"physicalType": "varchar"
+																},
+																"sink": {
+																	"name": "Rating__c",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "NumberOutOfSvcGT4Weeks"
+																},
+																"sink": {
+																	"name": "Number_of_theatrettes_unavailable__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "OutOfServiceWeeks"
+																},
+																"sink": {
+																	"name": "Cinema_Weeks_unavailable__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "CinemaDesc"
+																},
+																"sink": {
+																	"name": "Cinema_Description__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "NumberTheatrettes"
+																},
+																"sink": {
+																	"name": "Number_of_theatrettes_in_cinema__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "attribute_type"
+																},
+																"sink": {
+																	"name": "Rating_Attribute_Type__c"
+																}
+															}
+														],
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "db_transformed_ratings",
+														"type": "DatasetReference"
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "sf_rating_attribute",
+														"type": "DatasetReference"
+													}
+												]
+											},
+											{
+												"name": "copyGymnasiums",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "UpdateNewSalesforceIdForRating",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderStoredProcedureName": "[[dbo].[usp_GetRatingGymnasiumToCreateInSalesforce]",
+														"storedProcedureParameters": {
+															"batch_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@pipeline().parameters.pbatch_id",
+																	"type": "Expression"
+																}
+															},
+															"source_rating_id": {
+																"type": "Int32",
+																"value": {
+																	"value": "@item().RatingHeaderId",
+																	"type": "Expression"
+																}
+															}
+														},
+														"queryTimeout": "02:00:00"
+													},
+													"sink": {
+														"type": "SalesforceSink",
+														"writeBatchSize": 5000,
+														"writeBehavior": "insert"
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"mappings": [
+															{
+																"source": {
+																	"name": "sf_rating_id",
+																	"type": "String",
+																	"physicalType": "varchar"
+																},
+																"sink": {
+																	"name": "Rating__c",
+																	"type": "String"
+																}
+															},
+															{
+																"source": {
+																	"name": "is_centrally_serviced"
+																},
+																"sink": {
+																	"name": "Gym_Centrally_Serviced__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "OutOfServiceWeeks"
+																},
+																"sink": {
+																	"name": "Weeks_Gym_Out_Of_Service__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "GymDesc"
+																},
+																"sink": {
+																	"name": "Gym_Description__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "ConfirmedArea"
+																},
+																"sink": {
+																	"name": "Verified_GLAR__c"
+																}
+															},
+															{
+																"source": {
+																	"name": "attribute_type"
+																},
+																"sink": {
+																	"name": "Rating_Attribute_Type__c"
+																}
+															}
+														],
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "db_transformed_ratings",
+														"type": "DatasetReference"
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "sf_rating_attribute",
+														"type": "DatasetReference"
+													}
+												]
+											}
+										]
+									}
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"pbatch_id": {
+						"type": "int",
+						"defaultValue": 1
+					}
+				},
+				"variables": {
+					"_vnewBuildingsInSF": {
+						"type": "Array"
+					},
+					"_vsf_buildingRecord": {
+						"type": "Array"
+					},
+					"_vnewBuildingInSF": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		}
+	]
+}

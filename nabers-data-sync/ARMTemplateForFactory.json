@@ -6255,7 +6255,9 @@
 													"sink": {
 														"type": "SalesforceSink",
 														"writeBatchSize": 5000,
-														"writeBehavior": "insert"
+														"writeBehavior": "insert",
+														"ignoreNullValues": false,
+														"maxConcurrentConnections": 1
 													},
 													"enableStaging": false,
 													"translator": {
@@ -6346,7 +6348,9 @@
 													"sink": {
 														"type": "SalesforceSink",
 														"writeBatchSize": 5000,
-														"writeBehavior": "insert"
+														"writeBehavior": "insert",
+														"ignoreNullValues": false,
+														"maxConcurrentConnections": 1
 													},
 													"enableStaging": false,
 													"translator": {
@@ -6437,7 +6441,9 @@
 													"sink": {
 														"type": "SalesforceSink",
 														"writeBatchSize": 5000,
-														"writeBehavior": "insert"
+														"writeBehavior": "insert",
+														"ignoreNullValues": false,
+														"maxConcurrentConnections": 1
 													},
 													"enableStaging": false,
 													"translator": {
@@ -6600,7 +6606,9 @@
 													"sink": {
 														"type": "SalesforceSink",
 														"writeBatchSize": 5000,
-														"writeBehavior": "insert"
+														"writeBehavior": "insert",
+														"ignoreNullValues": false,
+														"maxConcurrentConnections": 1
 													},
 													"enableStaging": false,
 													"translator": {
@@ -6732,7 +6740,9 @@
 													"sink": {
 														"type": "SalesforceSink",
 														"writeBatchSize": 5000,
-														"writeBehavior": "insert"
+														"writeBehavior": "insert",
+														"ignoreNullValues": false,
+														"maxConcurrentConnections": 1
 													},
 													"enableStaging": false,
 													"translator": {
@@ -6856,7 +6866,9 @@
 													"sink": {
 														"type": "SalesforceSink",
 														"writeBatchSize": 5000,
-														"writeBehavior": "insert"
+														"writeBehavior": "insert",
+														"ignoreNullValues": false,
+														"maxConcurrentConnections": 1
 													},
 													"enableStaging": false,
 													"translator": {
