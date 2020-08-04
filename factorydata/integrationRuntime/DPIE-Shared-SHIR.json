@@ -1,0 +1,12 @@
+{
+	"name": "DPIE-Shared-SHIR",
+	"properties": {
+		"type": "SelfHosted",
+		"typeProperties": {
+			"linkedInfo": {
+				"resourceId": "/subscriptions/5cceed1f-a9dc-4534-b8c3-ecc724bbe1a0/resourceGroups/dpe-info-mgmt-prod-rg/providers/Microsoft.DataFactory/factories/dpe-im-prod-df001/integrationruntimes/SelfHostedIntegrationRuntime",
+				"authorizationType": "Rbac"
+			}
+		}
+	}
+}

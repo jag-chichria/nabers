@@ -1,0 +1,16 @@
+{
+	"name": "NABERS_TEST",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=False;data source=UVVMSDB4202;initial catalog=NABERSDB_V2;user id=NABERSDB_RW",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJmYmQ4YzVmNi1iMGI2LTRjNjktOTMwNi02ZGQ2OTQ4MDA3ZDEiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "DPIE-Shared-SHIR",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
