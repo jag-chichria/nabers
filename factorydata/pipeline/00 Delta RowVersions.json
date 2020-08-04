@@ -23,7 +23,7 @@
 					"sink": {
 						"type": "AzureSqlSink",
 						"writeBatchSize": 500,
-						"preCopyScript": "TRUNCATE TABLE RatingHeader_RowVersions_Transient",
+						"preCopyScript": "TRUNCATE TABLE RatingHeaderRowVersionsStage",
 						"maxConcurrentConnections": 2,
 						"disableMetricsCollection": true
 					},
