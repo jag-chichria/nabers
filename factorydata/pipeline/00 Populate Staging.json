@@ -3077,6 +3077,151 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "copyFoodCourt",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "Select * from (\nSELECT\n       rh.RatingHeaderID\n      \n\t   --AreaTable\n\t   --ShopArea\n\t   \t,ps.d.value('(@FoodCrtID)[1]', 'float') AS FoodCourtID\n\t\t,ps.d.value('FoodCrtDesc[1]', 'varchar(max)') AS FoodCourtDesc\n\t\t,ps.d.value('NumberSeats[1]', 'float') AS NumberSeats\n\t\t,ps.d.value('NumberSeatsOutOfSvcGT4Weeks[1]', 'float') AS NumberSeatsOutOfSvcGT4Weeks\n\t\t,ps.d.value('OutOfServiceWeeks[1]', 'float') AS OutOfServiceWeeks\n\t\t,ps.d.value('RatedNumberSeats[1]', 'float') AS RatedNumberSeats\n\t\t, @{pipeline().parameters.pBatchId} as batch_id\n\n\t--into FoodCourtStage\nFROM PVBMSDB4202.NABERSDB.dbo.tblRatingData rd\n\tINNER JOIN PVBMSDB4202.NABERSDB.dbo.tblRatingHeader rh ON rd.RatingHeaderID = rh.RatingHeaderID\n\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/GeneralEnvelope/GeneralSinglePages/FoodCourtPage/FoodCourts/FoodCourt') ps(d)\n\n\t\nWHERE rh.PremiseTypeID = 55 \nand rh.RatingStatusID in (157,158)\t\t\t--Certified Current/Expired\nand rh.RatingHeaderId in (@{pipeline().parameters.pDeltaRatingHeaderIds})\n\n\t) as InnerQuery\n\tWhere FoodCourtId is not null\norder by RatingHeaderID, FoodCourtID\n",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "RatingHeaderID",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "RatingHeaderID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "FoodCourtID",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "FoodCourtID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "FoodCourtDesc",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "FoodCourtDesc",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "NumberSeats",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "NumberSeats",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "NumberSeatsOutOfSvcGT4Weeks",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "NumberSeatsOutOfSvcGT4Weeks",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "OutOfServiceWeeks",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "OutOfServiceWeeks",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "RatedNumberSeats",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "RatedNumberSeats",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "batch_id",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "batch_id",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "db_source_rating_rowversions",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "db_stage_food_courts",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"parameters": {
