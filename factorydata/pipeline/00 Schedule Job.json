@@ -142,18 +142,6 @@
 				}
 			}
 		],
-		"parameters": {
-			"pStartDate": {
-				"type": "string"
-			},
-			"pEndDate": {
-				"type": "string"
-			},
-			"pPremiseType": {
-				"type": "int",
-				"defaultValue": 55
-			}
-		},
 		"variables": {
 			"deltaRowHeaderIds": {
 				"type": "String"
