@@ -2313,6 +2313,18 @@
 						"mappings": [
 							{
 								"source": {
+									"name": "CustomerID",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "CustomerID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
 									"name": "RatingHeaderID",
 									"type": "Int32",
 									"physicalType": "int"
@@ -2325,12 +2337,216 @@
 							},
 							{
 								"source": {
-									"name": "AdministratorID",
+									"name": "CustomerContactID",
 									"type": "Int32",
 									"physicalType": "int"
 								},
 								"sink": {
-									"name": "AdministratorID",
+									"name": "CustomerContactID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "ContactID",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "ContactID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Position",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Position",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "RoleType",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "RoleType",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "StreetNumber",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "StreetNumber",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "StreetName",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "StreetName",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Suburb",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Suburb",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Postcode",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Postcode",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "State",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "State",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "phone",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "phone",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Mobile",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Mobile",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "fax",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "fax",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Email",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Email",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "AccountManagerFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
+								},
+								"sink": {
+									"name": "AccountManagerFlag",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "ManageRatingFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
+								},
+								"sink": {
+									"name": "ManageRatingFlag",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "ViewRatingFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
+								},
+								"sink": {
+									"name": "ViewRatingFlag",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "ManageCAFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
+								},
+								"sink": {
+									"name": "ManageCAFlag",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "ViewCAFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
+								},
+								"sink": {
+									"name": "ViewCAFlag",
 									"type": "String",
 									"physicalType": "nvarchar"
 								}
@@ -2361,288 +2577,24 @@
 							},
 							{
 								"source": {
-									"name": "FullName",
+									"name": "Title",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "FullName",
+									"name": "Title",
 									"type": "String",
 									"physicalType": "nvarchar"
 								}
 							},
 							{
 								"source": {
-									"name": "JobTitle",
+									"name": "LoginName",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "JobTitle",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "Phone",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Phone",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "Mobile",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Mobile",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "Fax",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Fax",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "Email",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Email",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "OtherContactType1",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "OtherContactType1",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "OtherContact1",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "OtherContact1",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "OtherContactType2",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "OtherContactType2",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "OtherContact2",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "OtherContact2",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "ProgramManagerFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								},
-								"sink": {
-									"name": "ProgramManagerFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "AccountManagerFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								},
-								"sink": {
-									"name": "AccountManagerFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "SystemAdministratorFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								},
-								"sink": {
-									"name": "SystemAdministratorFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "AssessorCustomerFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								},
-								"sink": {
-									"name": "AssessorCustomerFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "RatingFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								},
-								"sink": {
-									"name": "RatingFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "AuditFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								},
-								"sink": {
-									"name": "AuditFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "TrainingFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								},
-								"sink": {
-									"name": "TrainingFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "CAFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								},
-								"sink": {
-									"name": "CAFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "EnquiryFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								},
-								"sink": {
-									"name": "EnquiryFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "PaymentFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								},
-								"sink": {
-									"name": "PaymentFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "PrintFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								},
-								"sink": {
-									"name": "PrintFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "ResourceFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								},
-								"sink": {
-									"name": "ResourceFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "PublisherFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								},
-								"sink": {
-									"name": "PublisherFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "JoinedDate",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								},
-								"sink": {
-									"name": "JoinedDate",
+									"name": "LoginName",
 									"type": "String",
 									"physicalType": "nvarchar"
 								}
@@ -2675,7 +2627,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "db_stage_techofficer",
+						"referenceName": "db_stage_customer_contact",
 						"type": "DatasetReference"
 					}
 				]
