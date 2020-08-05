@@ -2631,6 +2631,452 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "copyHoursOfServiceStage",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "--HoursOfServicesStage\nSELECT\n       rh.RatingHeaderID\n\n\t   \t,lapsa.d.value('(@AreaID)[1]', 'float') AS AreaID\n\t\t,lapsa.d.value('TenancyName[1]', 'varchar(max)') AS TenancyName\n\t\t,lapsa.d.value('ListedArea[1]', 'varchar(max)') AS ListedArea\n\t\t,lova.blocknumber\n\t\t,case when lova.IsListedAsCentralServiced = 'no' then 0 else 1 end as IsListedAsCentralServiced\n\t\t,case when lova.TenancyServicingCheck = 'SVC' then 1 else 0 end as IsTenancyServicingCheck\n\t\t\t\n\n\t\t,case when nomo.IsAreaConfirmed = 'true' then 1 else 0 end as IsAreaConfirmed\n\t\t,case when nomo.IsCentralServicingResult = 'yes' then 1 else 0 end as IsCentralServicingResult\n\t\t,nomo.RatedCSArea\n\t\t,nomo.RatedGLAR\n\t\t,nomo.WeeksVacant\n\n\t\t, case when homo.ExtentedHours = 'true' then 1 else 0 end as ExtentedHours\n\t\t, homo.ExtentedHours\n\t\t, homo.Hours\n\t\t, homo.HoursArea\n\t\t, homo.IsExtendedHoursEnabled\n\t\t, homo.IsHoursEnabled\n\n\n\t\t, zomo.CoreHours\n\t\t, @{pipeline().parameters.pBatchId} as batch_id\n\n\t--into HoursOfServicesStage\nFROM PVBMSDB4202.NABERSDB.dbo.tblRatingData rd\n\tINNER JOIN PVBMSDB4202.NABERSDB.dbo.tblRatingHeader rh ON rd.RatingHeaderID = rh.RatingHeaderID\n\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/GeneralEnvelope/GeneralSinglePages/ListedAreaPage') lap(t)\n\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/GeneralEnvelope/GeneralSinglePages/ListedAreaPage/AreaTable/ShopArea')  lapsa(d)\n    OUTER APPLY rd.RatingDataXML.nodes('//NabersData/GeneralEnvelope/GeneralSinglePages/ListedAreaPage/AreaTable')  lapat(d)\n\t\n\tleft Join (Select rd.RatingDataID, \n\t\t\t\t\tca.d.value('(@AreaID)[1]', 'float') AS AreaID\n\t\t\t\t\t,ca.d.value('BlockNumber[1]', 'float') AS BlockNumber\n\t\t\t\t\t,ca.d.value('IsListedAsCentralServiced[1]', 'varchar(10)') as IsListedAsCentralServiced\n\t\t\t\t\t,ca.d.value('(TenancyServicingCheck/@Value)[1]', 'varchar(10)') AS TenancyServicingCheck\n\t\t\t\tFrom PVBMSDB4202.NABERSDB.dbo.tblRatingData rd \n\t\t\t\t\t\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/GeneralEnvelope/GeneralSinglePages/CentralServicePage/CentralSvcTable/CentralServicedArea')  ca(d)) as lova \n\t\ton lova.AreaID = lapsa.d.value('(@AreaID)[1]', 'float') and rd.RatingDataID = lova.RatingDataID\n\n\tleft Join (Select rd.RatingDataID, \n\t\t\t\t\tca.d.value('(@AreaID)[1]', 'float') AS AreaID\n\t\t\t\t\t,ca.d.value('WeeksVacant[1]', 'float') AS WeeksVacant\n\t\t\t\t\t,ca.d.value('RatedGLAR[1]', 'float') as RatedGLAR\n\t\t\t\t\t,ca.d.value('RatedCSArea[1]', 'float') AS RatedCSArea\n\t\t\t\t\t,ca.d.value('(AreaConfirmed/@xsi:nil)[1]', 'varchar(10)') AS IsAreaConfirmed\n\t\t\t\t\t,ca.d.value('(CentralServicingResult/@Value)[1]', 'varchar(10)') AS IsCentralServicingResult\t\t\n\t\t\t\tFrom PVBMSDB4202.NABERSDB.dbo.tblRatingData rd \n\t\t\t\t\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/GeneralEnvelope/GeneralSinglePages/ConfirmedAreaPage/ConfirmedAreaTable/ConfirmedArea')  ca(d)) as nomo \n\t\t\ton nomo.AreaID = lapsa.d.value('(@AreaID)[1]', 'float') and rd.RatingDataID = nomo.RatingDataID\n   \n\tleft Join (Select rd.RatingDataID\n\t\t\t\t\t--,xa.d.value('CoreHours[1]', 'float') AS CoreHours\n\t\t\t\t\t,ca.d.value('(@AreaID)[1]', 'float') AS AreaID\n\t\t\t\t\t,ca.d.value('ExtentedHours[1]', 'varchar(10)') AS ExtentedHours\n\t\t\t\t\t,ca.d.value('IsExtendedHoursEnabled[1]', 'varchar(10)') as IsExtendedHoursEnabled\n\t\t\t\t\t,ca.d.value('IsHoursEnabled[1]', 'varchar(10)') AS IsHoursEnabled\n\t\t\t\t\t,ca.d.value('Hours[1]', 'float') AS Hours\n\t\t\t\t\t,ca.d.value('HoursArea[1]', 'float') AS HoursArea\t\t\n\t\t\t\tFrom PVBMSDB4202.NABERSDB.dbo.tblRatingData rd \n\t\t\t\t\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/GeneralEnvelope/GeneralSinglePages/HoursofServicePage/HoursofServiceTable/HoursofService')  ca(d)) as homo \n\t\t\ton homo.AreaID = lapsa.d.value('(@AreaID)[1]', 'float') and rd.RatingDataID = homo.RatingDataID\n\n\tleft Join (Select rd.RatingDataID\n\t\t\t\t\t,ca.d.value('CoreHours[1]', 'float') AS CoreHours\n\t\t\t\tFrom PVBMSDB4202.NABERSDB.dbo.tblRatingData rd \n\t\t\t\t\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/GeneralEnvelope/GeneralSinglePages/HoursofServicePage')  ca(d)) as zomo \n\t\t\ton rd.RatingDataID = zomo.RatingDataID\n\n\n\nWHERE rh.PremiseTypeID = 55 \nand rh.RatingStatusID in (157,158)\t\t\t--Certified Current/Expired\nand rh.ratingHeaderId in (@{pipeline().parameters.pDeltaRatingHeaderIds})\n\norder by RatingHeaderID, AreaID",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "RatingHeaderID",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "RatingHeaderID",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "AreaID",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "AreaID",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "TenancyName",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "TenancyName",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "ListedArea",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "ListedArea",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "blocknumber",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "blocknumber",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "IsListedAsCentralServiced",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "IsListedAsCentralServiced",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "IsTenancyServicingCheck",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "IsTenancyServicingCheck",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "IsAreaConfirmed",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "IsAreaConfirmed",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "IsCentralServicingResult",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "IsCentralServicingResult",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "RatedCSArea",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "RatedCSArea",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "RatedGLAR",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "RatedGLAR",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "WeeksVacant",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "WeeksVacant",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "ExtentedHours",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "ExtentedHours",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Hours",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "Hours",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "HoursArea",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "HoursArea",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "IsExtendedHoursEnabled",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "IsExtendedHoursEnabled",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "IsHoursEnabled",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "IsHoursEnabled",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "CoreHours",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "CoreHours",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "batch_id",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "batch_id",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "db_source_rating_rowversions",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "db_stage_hours_Of_service",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "copyParkingSpace",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "SELECT\n       rh.RatingHeaderID\n     \n\t   \t,ps.d.value('(@BlockID)[1]', 'float') AS BlockID\n\t\t,ps.d.value('BlockDesc[1]', 'varchar(max)') AS BlockDesc\n\t\t,ps.d.value('(VentilationType/@Value)[1]', 'varchar(20)') AS VentilationType\n\t\t,ps.d.value('NumberParkingSpaces[1]', 'float') AS NumberParkingSpaces\n\t\t,ps.d.value('NumberOutOfSvcGT4Weeks[1]', 'float') AS NumberOutOfSvcGT4Weeks\n\t\t,ps.d.value('OutOfServiceWeeks[1]', 'float') AS OutOfServiceWeeks\n\t\t,ps.d.value('SpacesNatural[1]', 'float') AS SpacesNatural\n\t\t,ps.d.value('SpacesMechanical[1]', 'float') AS SpacesMechanical\t\n\t\t, @{pipeline().parameters.pBatchId} as batch_id\n\n\t--into ParkingSpaceStage\nFROM PVBMSDB4202.NABERSDB.dbo.tblRatingData rd\n\tINNER JOIN PVBMSDB4202.NABERSDB.dbo.tblRatingHeader rh ON rd.RatingHeaderID = rh.RatingHeaderID\n\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/GeneralEnvelope/GeneralSinglePages/ParkingPage/ParkingSpaces/ParkingBlock') ps(d)\n\n\t\nWHERE rh.PremiseTypeID = 55 \nand rh.RatingStatusID in (157,158)\t\t\t--Certified Current/Expired\n\nand rh.RatingheaderId in (@{pipeline().parameters.pDeltaRatingHeaderIds})\norder by RatingHeaderID, BlockID",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "RatingHeaderID",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "RatingHeaderID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "BlockID",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "BlockID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "BlockDesc",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "BlockDesc",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "VentilationType",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "VentilationType",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "NumberParkingSpaces",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "NumberParkingSpaces",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "NumberOutOfSvcGT4Weeks",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "NumberOutOfSvcGT4Weeks",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "OutOfServiceWeeks",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "OutOfServiceWeeks",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "SpacesNatural",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "SpacesNatural",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "SpacesMechanical",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "SpacesMechanical",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "batch_id",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "batch_id",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "db_source_rating_rowversions",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "db_stage_parking_space",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"parameters": {
