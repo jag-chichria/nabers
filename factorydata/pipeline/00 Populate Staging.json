@@ -1,5 +1,5 @@
 {
-	"name": "00 Schedule Job",
+	"name": "00 Populate Staging",
 	"properties": {
 		"activities": [
 			{
