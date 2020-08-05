@@ -398,8 +398,8 @@
 								},
 								"sink": {
 									"name": "RetailFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							},
 							{
@@ -410,8 +410,8 @@
 								},
 								"sink": {
 									"name": "HospitalFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							},
 							{
@@ -422,8 +422,8 @@
 								},
 								"sink": {
 									"name": "HotelFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							},
 							{
@@ -434,8 +434,8 @@
 								},
 								"sink": {
 									"name": "OfficeFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							},
 							{
@@ -446,8 +446,8 @@
 								},
 								"sink": {
 									"name": "ApartmentBuildingFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							},
 							{
