@@ -1048,7 +1048,7 @@
 					"source": {
 						"type": "SqlServerSource",
 						"sqlReaderQuery": {
-							"value": "Select \n\tdistinct \n\trh.RatingHeaderID,\n\trcc.companyid,\n\trc.RatingContractorID as AssessorId,\n\trcuser.UserID as UserId,\n\trcuser.FirstName, \n\trcuser.LastName, \n\ttc.ClassName as Title, \n\tmaddr.[StreetNumber] as Mailing_StreetNumber,\n    maddr.[StreetName] as Mailing_StreetName,\n    maddr.[Suburb] as Mailing_Suburb,\n    maddr.[Postcode] as Mailing_Postcode,\n\tmst.ClassName as Mailing_State,\n\n\tbaddr.[StreetNumber] as Billing_StreetNumber,\n    baddr.[StreetName] as Billing_StreetName,\n    baddr.[Suburb] as Billing_Suburb,\n    baddr.[Postcode] as Billing_Postcode,\n\tbst.ClassName as Billing_State,\n\tPhone,\n\tMobile,\n\tEmail,\n\tJoinedDate,\n\tAccreditationDate,\n\tAccreditationExpiryDate,\n\tAccreditationNumber,\n\tEnergyFlag, \n\tWaterFlag, \n\tWasteFlag\n\t, @{pipeline().parameters.pBatchId} as batch_id\n\t, RequireSupervisionSC\n\t, (select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crst.ClassCode as varchar(16)) FROM PVBMSDB4202.nabersdb.dbo.tblRatingContractorAvailability  rca \n\t\t\t\t\tINNER JOIN PVBMSDB4202.nabersdb.dbo.tblClassification crt on crt.ClassificationID = rca.AvailabilityTypeID\n\t\t\t\t\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification crst on crst.ClassificationID = rca.StateId\n\t\t\t\t\tand rca.RatingContractorID = rc.RatingContractorID and crt.ClassificationID = 459\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as Metropolitan\n\t, (select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crst.ClassCode as varchar(16)) FROM PVBMSDB4202.nabersdb.dbo.tblRatingContractorAvailability  rca \n\t\t\t\t\tINNER JOIN PVBMSDB4202.nabersdb.dbo.tblClassification crt on crt.ClassificationID = rca.AvailabilityTypeID\n\t\t\t\t\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification crst on crst.ClassificationID = rca.StateId\n\t\t\t\t\tand rca.RatingContractorID = rc.RatingContractorID and crt.ClassificationID = 460\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as Regional\n\t, case when RetailFlag is null then 0 else RetailFlag end as RetailFlag \n\t, case when HospitalFlag is null then 0 else HospitalFlag end as HospitalFlag \n\t, case when HotelFlag is null then 0 else HotelFlag end as HotelFlag \n\t, case when OfficeFlag is null then 0 else OfficeFlag end as OfficeFlag \n\t, case when ApartmentBuildingFlag is null then 0 else ApartmentBuildingFlag end as ApartmentBuildingFlag \n\t\n\t--into AssessorsStage\n\tfrom \n\t\tPVBMSDB4202.nabersdb.dbo.tblRatingHeader rh\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblUser rcuser on rcuser.UserID = rc.UserID\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification tc on tc.ClassificationID = TitleID\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblAddress maddr on maddr.AddressId = MailingAddressID\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblAddress baddr on baddr.AddressId = BillingAddressID\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification mst on mst.ClassificationID = maddr.StateId\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification bst on bst.ClassificationID = baddr.StateId\n\t\tinner join PVBMSDB4202.nabersdb.dbo.tblRatingContractorCompany rcc on rc.RatingContractorID = rcc.assessorid\n\t\t\n\tWhere rh.PremiseTypeID = 55 and \n\t(EndEffectiveDate is null or EndEffectiveDate > getdate())\n\tand RatingStatusID in (157,158)\t\t\t\n and rh.RatingHeaderId in (@{pipeline().parameters.pDeltaRatingHeaderIds})\n\torder by RatingHeaderID",
+							"value": "Select \n\tdistinct \n\trh.RatingHeaderID,\n\trcc.companyid,\n\trc.RatingContractorID as AssessorId,\n\trcuser.UserID as UserId,\n\trcuser.FirstName, \n\trcuser.LastName, \n\ttc.ClassName as Title, \n\tmaddr.[StreetNumber] as Mailing_StreetNumber,\n    maddr.[StreetName] as Mailing_StreetName,\n    maddr.[Suburb] as Mailing_Suburb,\n    maddr.[Postcode] as Mailing_Postcode,\n\tmst.ClassName as Mailing_State,\n\n\tbaddr.[StreetNumber] as Billing_StreetNumber,\n    baddr.[StreetName] as Billing_StreetName,\n    baddr.[Suburb] as Billing_Suburb,\n    baddr.[Postcode] as Billing_Postcode,\n\tbst.ClassName as Billing_State,\n\tPhone,\n\tMobile,\n\tEmail,\n\tJoinedDate,\n\tAccreditationDate,\n\tAccreditationExpiryDate,\n\tAccreditationNumber,\n\tEnergyFlag, \n\tWaterFlag, \n\tWasteFlag\n\t, @{pipeline().parameters.pBatchId} as batch_id\n\t, RequireSupervisionSC\n\t, (select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crst.ClassCode as varchar(16)) FROM PVBMSDB4202.nabersdb.dbo.tblRatingContractorAvailability  rca \n\t\t\t\t\tINNER JOIN PVBMSDB4202.nabersdb.dbo.tblClassification crt on crt.ClassificationID = rca.AvailabilityTypeID\n\t\t\t\t\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification crst on crst.ClassificationID = rca.StateId\n\t\t\t\t\tand rca.RatingContractorID = rc.RatingContractorID and crt.ClassificationID = 459\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as Metropolitan\n\t, (select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crst.ClassCode as varchar(16)) FROM PVBMSDB4202.nabersdb.dbo.tblRatingContractorAvailability  rca \n\t\t\t\t\tINNER JOIN PVBMSDB4202.nabersdb.dbo.tblClassification crt on crt.ClassificationID = rca.AvailabilityTypeID\n\t\t\t\t\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification crst on crst.ClassificationID = rca.StateId\n\t\t\t\t\tand rca.RatingContractorID = rc.RatingContractorID and crt.ClassificationID = 460\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as Regional\n\t, case when coalesce(RetailFlag, '') = '' then 0 else RetailFlag end as RetailFlag \n\t, case when coalesce(HospitalFlag, '') = '' then 0 else HospitalFlag end as HospitalFlag \n\t, case when coalesce(HotelFlag, '') = '' then 0 else HotelFlag end as HotelFlag \n\t, case when coalesce(OfficeFlag, '') = '' then 0 else OfficeFlag end as OfficeFlag \n\t, case when coalesce(ApartmentBuildingFlag , '') = '' then 0 else ApartmentBuildingFlag end as ApartmentBuildingFlag \n\t\n\t--into AssessorsStage\n\tfrom \n\t\tPVBMSDB4202.nabersdb.dbo.tblRatingHeader rh\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblUser rcuser on rcuser.UserID = rc.UserID\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification tc on tc.ClassificationID = TitleID\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblAddress maddr on maddr.AddressId = MailingAddressID\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblAddress baddr on baddr.AddressId = BillingAddressID\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification mst on mst.ClassificationID = maddr.StateId\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification bst on bst.ClassificationID = baddr.StateId\n\t\tinner join PVBMSDB4202.nabersdb.dbo.tblRatingContractorCompany rcc on rc.RatingContractorID = rcc.assessorid\n\t\t\n\tWhere rh.PremiseTypeID = 55 and \n\t(EndEffectiveDate is null or EndEffectiveDate > getdate())\n\tand RatingStatusID in (157,158)\t\t\t\n and rh.RatingHeaderId in (@{pipeline().parameters.pDeltaRatingHeaderIds})\n\torder by RatingHeaderID",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00"
@@ -1068,8 +1068,8 @@
 								},
 								"sink": {
 									"name": "RatingHeaderID",
-									"type": "String",
-									"physicalType": "nvarchar"
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							},
 							{
@@ -1080,8 +1080,8 @@
 								},
 								"sink": {
 									"name": "companyid",
-									"type": "String",
-									"physicalType": "nvarchar"
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							},
 							{
@@ -1092,8 +1092,8 @@
 								},
 								"sink": {
 									"name": "AssessorId",
-									"type": "String",
-									"physicalType": "nvarchar"
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							},
 							{
@@ -1104,8 +1104,8 @@
 								},
 								"sink": {
 									"name": "UserId",
-									"type": "String",
-									"physicalType": "nvarchar"
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							},
 							{
@@ -1117,7 +1117,7 @@
 								"sink": {
 									"name": "FirstName",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1129,7 +1129,7 @@
 								"sink": {
 									"name": "LastName",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1141,7 +1141,7 @@
 								"sink": {
 									"name": "Title",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1153,7 +1153,7 @@
 								"sink": {
 									"name": "Mailing_StreetNumber",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1165,7 +1165,7 @@
 								"sink": {
 									"name": "Mailing_StreetName",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1177,7 +1177,7 @@
 								"sink": {
 									"name": "Mailing_Suburb",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1189,7 +1189,7 @@
 								"sink": {
 									"name": "Mailing_Postcode",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1201,7 +1201,7 @@
 								"sink": {
 									"name": "Mailing_State",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1213,7 +1213,7 @@
 								"sink": {
 									"name": "Billing_StreetNumber",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1225,7 +1225,7 @@
 								"sink": {
 									"name": "Billing_StreetName",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1237,7 +1237,7 @@
 								"sink": {
 									"name": "Billing_Suburb",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1249,7 +1249,7 @@
 								"sink": {
 									"name": "Billing_Postcode",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1261,7 +1261,7 @@
 								"sink": {
 									"name": "Billing_State",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1273,7 +1273,7 @@
 								"sink": {
 									"name": "Phone",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1285,7 +1285,7 @@
 								"sink": {
 									"name": "Mobile",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1297,7 +1297,7 @@
 								"sink": {
 									"name": "Email",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1308,8 +1308,8 @@
 								},
 								"sink": {
 									"name": "JoinedDate",
-									"type": "String",
-									"physicalType": "nvarchar"
+									"type": "DateTime",
+									"physicalType": "datetime"
 								}
 							},
 							{
@@ -1320,8 +1320,8 @@
 								},
 								"sink": {
 									"name": "AccreditationDate",
-									"type": "String",
-									"physicalType": "nvarchar"
+									"type": "DateTime",
+									"physicalType": "datetime"
 								}
 							},
 							{
@@ -1332,8 +1332,8 @@
 								},
 								"sink": {
 									"name": "AccreditationExpiryDate",
-									"type": "String",
-									"physicalType": "nvarchar"
+									"type": "DateTime",
+									"physicalType": "datetime"
 								}
 							},
 							{
@@ -1345,7 +1345,7 @@
 								"sink": {
 									"name": "AccreditationNumber",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1356,8 +1356,8 @@
 								},
 								"sink": {
 									"name": "EnergyFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
+									"type": "Boolean",
+									"physicalType": "bit"
 								}
 							},
 							{
@@ -1368,8 +1368,8 @@
 								},
 								"sink": {
 									"name": "WaterFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
+									"type": "Boolean",
+									"physicalType": "bit"
 								}
 							},
 							{
@@ -1380,20 +1380,8 @@
 								},
 								"sink": {
 									"name": "WasteFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "batch_id",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "batch_id",
-									"type": "String",
-									"physicalType": "nvarchar"
+									"type": "Boolean",
+									"physicalType": "bit"
 								}
 							},
 							{
@@ -1404,8 +1392,8 @@
 								},
 								"sink": {
 									"name": "RequireSupervisionSC",
-									"type": "String",
-									"physicalType": "nvarchar"
+									"type": "Boolean",
+									"physicalType": "bit"
 								}
 							},
 							{
@@ -1417,7 +1405,7 @@
 								"sink": {
 									"name": "Metropolitan",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1429,7 +1417,7 @@
 								"sink": {
 									"name": "Regional",
 									"type": "String",
-									"physicalType": "nvarchar"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -1440,8 +1428,8 @@
 								},
 								"sink": {
 									"name": "RetailFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							},
 							{
@@ -1452,8 +1440,8 @@
 								},
 								"sink": {
 									"name": "HospitalFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							},
 							{
@@ -1464,8 +1452,8 @@
 								},
 								"sink": {
 									"name": "HotelFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							},
 							{
@@ -1476,8 +1464,8 @@
 								},
 								"sink": {
 									"name": "OfficeFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							},
 							{
@@ -1488,8 +1476,20 @@
 								},
 								"sink": {
 									"name": "ApartmentBuildingFlag",
-									"type": "String",
-									"physicalType": "nvarchar"
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "batch_id",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "batch_id",
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							}
 						],
