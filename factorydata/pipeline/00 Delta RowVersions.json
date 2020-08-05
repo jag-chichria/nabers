@@ -206,6 +206,31 @@
 								"type": "LinkedServiceReference"
 							}
 						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "00 Populate Staging",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "00 Populate Staging",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"pBatchId": {
+										"value": "@variables('vbatch_id')",
+										"type": "Expression"
+									},
+									"pDeltaRatingHeaderIds": {
+										"value": "@activity('Lookup1').output.firstRow.deltaRatingHeaderIds",
+										"type": "Expression"
+									}
+								}
+							}
+						}
 					]
 				}
 			},
@@ -271,9 +296,6 @@
 			}
 		],
 		"variables": {
-			"deltaRatingHeaderIds": {
-				"type": "String"
-			},
 			"vbatch_id": {
 				"type": "String"
 			}
