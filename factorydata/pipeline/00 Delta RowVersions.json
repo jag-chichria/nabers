@@ -23,7 +23,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "AzureSqlSource",
+						"type": "SqlServerSource",
 						"sqlReaderQuery": "Select RowTimestamp, rh.RatingHeaderID  from \ntblRatingHeader rh\nWhere rh.PremiseTypeID = 55 and RatingStatusID in (157,158)\t\t\t\norder by RatingHeaderID",
 						"queryTimeout": "02:00:00"
 					},
