@@ -241,6 +241,13 @@
 							"process_name": {
 								"type": "String",
 								"value": {
+									"value": "@pipeline().Pipeline",
+									"type": "Expression"
+								}
+							},
+							"process_id": {
+								"type": "String",
+								"value": {
 									"value": "@pipeline().RunId",
 									"type": "Expression"
 								}
