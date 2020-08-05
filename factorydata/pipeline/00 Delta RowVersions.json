@@ -175,7 +175,10 @@
 								"storedProcedureName": "[dbo].[usp_InsertDataSyncAnomalies]",
 								"storedProcedureParameters": {
 									"batch_id": {
-										"value": null,
+										"value": {
+											"value": "@variables('vbatch_id')",
+											"type": "Expression"
+										},
 										"type": "Int32"
 									},
 									"process_name": {
