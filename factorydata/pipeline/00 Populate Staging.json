@@ -3265,48 +3265,48 @@
 							},
 							{
 								"source": {
-									"name": "FoodCourtID",
+									"name": "CinemaID",
 									"type": "Double",
 									"physicalType": "float"
 								},
 								"sink": {
-									"name": "FoodCourtID",
+									"name": "CinemaID",
 									"type": "String",
 									"physicalType": "nvarchar"
 								}
 							},
 							{
 								"source": {
-									"name": "FoodCourtDesc",
+									"name": "CinemaDesc",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "FoodCourtDesc",
+									"name": "CinemaDesc",
 									"type": "String",
 									"physicalType": "nvarchar"
 								}
 							},
 							{
 								"source": {
-									"name": "NumberSeats",
+									"name": "NumberTheatrettes",
 									"type": "Double",
 									"physicalType": "float"
 								},
 								"sink": {
-									"name": "NumberSeats",
+									"name": "NumberTheatrettes",
 									"type": "String",
 									"physicalType": "nvarchar"
 								}
 							},
 							{
 								"source": {
-									"name": "NumberSeatsOutOfSvcGT4Weeks",
+									"name": "NumberOutOfSvcGT4Weeks",
 									"type": "Double",
 									"physicalType": "float"
 								},
 								"sink": {
-									"name": "NumberSeatsOutOfSvcGT4Weeks",
+									"name": "NumberOutOfSvcGT4Weeks",
 									"type": "String",
 									"physicalType": "nvarchar"
 								}
@@ -3325,12 +3325,12 @@
 							},
 							{
 								"source": {
-									"name": "RatedNumberSeats",
+									"name": "RatedNumberTheatrettes",
 									"type": "Double",
 									"physicalType": "float"
 								},
 								"sink": {
-									"name": "RatedNumberSeats",
+									"name": "RatedNumberTheatrettes",
 									"type": "String",
 									"physicalType": "nvarchar"
 								}
@@ -3363,7 +3363,164 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "db_stage_food_courts",
+						"referenceName": "db_stage_cinemas",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "copyGym",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "Select * from (\nSELECT\n       rh.RatingHeaderID\n      \n\t   \t,ps.d.value('(@GymID)[1]', 'float') AS GymID\n\t\t,ps.d.value('GymDesc[1]', 'varchar(max)') AS GymDesc\n\t\t,ps.d.value('ConfirmedArea[1]', 'float') AS ConfirmedArea\n\t\t,ps.d.value('IsEstimate[1]', 'varchar(max)') AS IsEstimate\n\t\t,ps.d.value('IsCentralServicing[1]', 'varchar(max)') AS IsCentralServicing\n\t\t,ps.d.value('OutOfServiceWeeks[1]', 'float') AS OutOfServiceWeeks\n\t\t,ps.d.value('RatedGymArea[1]', 'float') AS RatedGymArea\n\t\t, @{pipeline().parameters.pBatchId} as batch_id\n\n\t--into FoodCourtStage\nFROM PVBMSDB4202.NABERSDB.dbo.tblRatingData rd\n\tINNER JOIN PVBMSDB4202.NABERSDB.dbo.tblRatingHeader rh ON rd.RatingHeaderID = rh.RatingHeaderID\n\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/GeneralEnvelope/GeneralSinglePages/GymnasiumPage/Gymnasiums/Gymnasium') ps(d)\n\n\t\nWHERE rh.PremiseTypeID = 55 \nand rh.RatingStatusID in (157,158)\t\t\t--Certified Current/Expired\nand rh.RatingHeaderId in (@{pipeline().parameters.pDeltaRatingHeaderIds})\n\t) as InnerQuery\n\tWhere GymId is not null\norder by RatingHeaderID, GymID",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "RatingHeaderID",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "RatingHeaderID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "GymID",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "GymID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "GymDesc",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "GymDesc",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "ConfirmedArea",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "ConfirmedArea",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "IsEstimate",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "IsEstimate",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "IsCentralServicing",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "IsCentralServicing",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "OutOfServiceWeeks",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "OutOfServiceWeeks",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "RatedGymArea",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "RatedGymArea",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "batch_id",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "batch_id",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "db_source_rating_rowversions",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "db_stage_gymnasiums",
 						"type": "DatasetReference"
 					}
 				]
