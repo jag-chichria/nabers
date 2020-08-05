@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "copyRatings",
+				"name": "copyAssessor",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -17,7 +17,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderQuery": "Select distinct\n\trh.RatingHeaderID,\n\tRatingReferenceNumber,\n\trh.PremiseTypeID,\n\tpremiseType.ClassName as PremiseType,\n\trh.PremiseID,\n\tpremise.PremiseName as PremiseName,\n\tAssessorID,\n\trc.email as AssessorEmail,\n\tcustomer.RegisteredName as Customer_Name, \n\tcustomer.TradingName as Customer_TradingName,\n\tcmaddr.[StreetNumber] as [Customer_Mailing_StreetNumber],\n    cmaddr.[StreetName]  as [Customer_Mailing_StreetName],\n    cmaddr.[Suburb] as [Customer_Mailing_Suburb],\n    cmaddr.[Postcode] as [Customer_Mailing_Postcode],\n\tcmst.ClassName as [Customer_Mailing_State],\n\tcustomer.ABN as [Customer_ABN],\n\tcustomer.customerid as [customer_id],\n\tcorg.ClassName as [Customer_Organisation],\n\tcustomer.SAPNumber as Customer_SAP_Number,\n\n\tRatingPeriodFrom,\n\tRatingPeriodTo,\n\tPublicListingFlag,\n\tOfficerID,\n\tRatingStatusID,\n\trs.ClassName as RatingStatus,\n\tLodgedDate,\n\tPaymentStatusID,\n\tps.ClassName as PaymentStatus,\n\tPaidDate,\n\t--Certificate\n\tCertificateValidFrom,\n\tCertificateValidTo,\n\n\tPremisesName as PremiseNameOnCert,\n\tCustomerName as CustomerNameOnCert,\n\n\trh.DeliveryEmail  as Certificate_Customer_Email,\n\n\tLastActionDate, \n\n\tReplaceFlag,\n\tRenewFlag,\n\tPreviousRatingHeaderID,\n\tNewRatingHeaderID,\n\taddr.[StreetNumber],\n    addr.[StreetName],\n    addr.[Suburb],\n    addr.[Postcode],\n\tst.ClassName as [State],\n\t(select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crt.ClassName as varchar(16)) FROM tblRatingType rt \n\t\t\t\t\tINNER JOIN tblClassification crt on crt.ClassificationID = rt.RatingType\n\t\t\t\t\tand rt.RatingHeaderID = rh.RatingHeaderID\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as RatingTypes\n\n\n\n\t, scs.CinemaTheatres \n\t, scws.ShoppingCentreWaterSummaryID \n\t, scs.FloorConfiguration\n\t, scs.ParkingSpacesMechanical\n\t, scs.ParkingSpacesNatural \n\t, scs.TotalGymGLAR \n\t, scs.FoodCourtSeats \n\t, rad.conflictOfInterestFlag \n\t, Case when coalesce(rad.InComplianceWithCurrentRules , '') = '' then 0 else rad.InComplianceWithCurrentRules end as InComplianceWithCurrentRules \n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 57) as WaterStarRatingWRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithoutGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 57) as WaterStarRatingWoRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 56) as EnergyStarRatingWRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithoutGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 56) as EnergyStarRatingWoRecycle\n\t, isnull(sces.TotalElectricityUse * 3.6, 0) + isnull(sces.TotalGasUse, 0) + isnull(sces.TotalLPGUse * 25.7, 0) + isnull(sces.TotalOilUse * 38.6, 0) + isnull(sces.TotalCoalUse * 22.1, 0) as totalEnergyConsumption\n\t, scs.HoursOfService as WeeklyCoreHoursOfService \n\t, sces.TotalElectricityUse as TotalElectricityConsumption\n\t, sces.TotalOilUse as TotalDieselConsumption\n\t, scws.WaterConsumptionWoRW as WaterConsumption\n\t, scws.WaterUsePerSqmWoRW as RecycleNormalisedWaterConsumption\n\t, scws.WaterConsumptionWoRW as TotalWaterConsumption\n\t, scws.RecycledWaterPercent as TotalRecycledWaterPercent\n\t, sces.TotalGasUse as TotalGasConsumption\n\t, (select top 1 Amount from tblFinancialTransaction ft inner join tblRatingPayment rp on ft.RatingPaymentID = rp.RatingPaymentID\n\t\t\tand rp.RatingHeaderID = rh.RatingHeaderId\n\t\t\twhere FeeCategoryID = 244 -- Loedgement\n\t\t\t) as RatingLodgementFees\n\t, sces.PredictedGHGEmissionsPerSqm as PredictedGreenhouseGasIntensity\n\t, scws.PredictedWaterUsePerGLAR as PredictedAverageWaterUse\n\t, scs.TradingDays as NumberOfTradingDays\n\t, scws.PredictedWaterUsePerGLARWoRW as NoRecyclePredictedAverageWaterUse\n\t, sces.GHGEmissionsPerSqmGLARScope12WoGP as NoGreenPower_GHG_IntensityScope_12\n\t, sces.GHGEmissionsPerSqmGLARScope123WoGP as NoGreenPowerGHGIntensityScope123\n\t, sces.GHGEmissionsScope12WoGP as NoGreenPowerGHGEmissionsScope12\n\t, sces.GHGEmissionsScope123WoGP  as NoGreenPowerGHGEmissionsScope123\n\t, sces.GHGEmissionsPerSqmGLARScope123 as GreenhouseGasIntensityScope123\n\t, sces.GHGEmissionsScope123  as GreenhouseGasEmissionsScope123\n\t, sces.EnergyIntensity\n\t, rad.ComplianceExplanation as ExplainWhyNotCompliant \n\t, scs.IsSmallShoppingCentre\n\t, @{pipeline().parameters.pBatchId} as batch_id\n\t\nfrom tblRatingHeader rh\nleft join tblPremise premise on premise.PremiseID = rh.PremiseID\nleft join tblClassification premiseType on premiseType.ClassificationID = rh.PremiseTypeID\nleft join tblClassification rs on rs.ClassificationID = rh.RatingStatusID\nleft join tblClassification ps on ps.ClassificationID = rh.PaymentStatusID\nleft join tblAdministrator ad on ad.AdministratorID = rh.OfficerID\nleft join tblUser aduser on aduser.UserID = ad.UserID\nleft join tblCustomer customer on customer.CustomerID = rh.CustomerID\nleft join tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\nleft join tblUser rcuser on rcuser.UserID = rc.UserID\nleft join tblAddress addr on addr.AddressId = premise.PremiseAddressId\nleft join tblClassification st on st.ClassificationID = addr.StateId\nleft join tblAddress cmaddr on cmaddr.AddressId = customer.MailingAddressID\nleft join tblClassification cmst on cmst.ClassificationID = cmaddr.StateId\n\nleft join tblShoppingCentreSummary scs on scs.RatingHeaderID = rh.RatingHeaderID\nleft join tblShoppingCentreEnergySummary sces on sces.RatingHeaderID = rh.RatingHeaderID\nleft join tblShoppingCentreWaterSummary scws on scws.RatingHeaderID = rh.RatingHeaderID\n\nleft join tblAssessorDeclaration rad on rad.RatingHeaderID = rh.RatingHeaderID\n\nleft join tblClassification corg on corg.ClassificationID = customer.OrganisationTypeID\n\nWhere rh.PremiseTypeID = 55\nand RatingStatusID in (157,158)\t\t\t\nand rh.RatingHeaderID in (@{pipeline().parameters.pDeltaRatingHeaderIds})\norder by RatingHeaderID",
+						"sqlReaderQuery": {
+							"value": "Select \n\tdistinct \n\trh.RatingHeaderID,\n\trcc.companyid,\n\trc.RatingContractorID as AssessorId,\n\trcuser.UserID as UserId,\n\trcuser.FirstName, \n\trcuser.LastName, \n\ttc.ClassName as Title, \n\tmaddr.[StreetNumber] as Mailing_StreetNumber,\n    maddr.[StreetName] as Mailing_StreetName,\n    maddr.[Suburb] as Mailing_Suburb,\n    maddr.[Postcode] as Mailing_Postcode,\n\tmst.ClassName as Mailing_State,\n\n\tbaddr.[StreetNumber] as Billing_StreetNumber,\n    baddr.[StreetName] as Billing_StreetName,\n    baddr.[Suburb] as Billing_Suburb,\n    baddr.[Postcode] as Billing_Postcode,\n\tbst.ClassName as Billing_State,\n\tPhone,\n\tMobile,\n\tEmail,\n\tJoinedDate,\n\tAccreditationDate,\n\tAccreditationExpiryDate,\n\tAccreditationNumber,\n\tEnergyFlag, \n\tWaterFlag, \n\tWasteFlag\n\t, @{pipeline().parameters.pBatchId} as batch_id\n\t, RequireSupervisionSC\n\t, (select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crst.ClassCode as varchar(16)) FROM PVBMSDB4202.nabersdb.dbo.tblRatingContractorAvailability  rca \n\t\t\t\t\tINNER JOIN PVBMSDB4202.nabersdb.dbo.tblClassification crt on crt.ClassificationID = rca.AvailabilityTypeID\n\t\t\t\t\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification crst on crst.ClassificationID = rca.StateId\n\t\t\t\t\tand rca.RatingContractorID = rc.RatingContractorID and crt.ClassificationID = 459\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as Metropolitan\n\t, (select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crst.ClassCode as varchar(16)) FROM PVBMSDB4202.nabersdb.dbo.tblRatingContractorAvailability  rca \n\t\t\t\t\tINNER JOIN PVBMSDB4202.nabersdb.dbo.tblClassification crt on crt.ClassificationID = rca.AvailabilityTypeID\n\t\t\t\t\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification crst on crst.ClassificationID = rca.StateId\n\t\t\t\t\tand rca.RatingContractorID = rc.RatingContractorID and crt.ClassificationID = 460\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as Regional\n\t, case when RetailFlag is null then 0 else RetailFlag end as RetailFlag \n\t, case when HospitalFlag is null then 0 else HospitalFlag end as HospitalFlag \n\t, case when HotelFlag is null then 0 else HotelFlag end as HotelFlag \n\t, case when OfficeFlag is null then 0 else OfficeFlag end as OfficeFlag \n\t, case when ApartmentBuildingFlag is null then 0 else ApartmentBuildingFlag end as ApartmentBuildingFlag \n\t\n\t--into AssessorsStage\n\tfrom \n\t\tPVBMSDB4202.nabersdb.dbo.tblRatingHeader rh\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblUser rcuser on rcuser.UserID = rc.UserID\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification tc on tc.ClassificationID = TitleID\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblAddress maddr on maddr.AddressId = MailingAddressID\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblAddress baddr on baddr.AddressId = BillingAddressID\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification mst on mst.ClassificationID = maddr.StateId\n\t\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification bst on bst.ClassificationID = baddr.StateId\n\t\tinner join PVBMSDB4202.nabersdb.dbo.tblRatingContractorCompany rcc on rc.RatingContractorID = rcc.assessorid\n\t\t\n\tWhere rh.PremiseTypeID = 55 and \n\t(EndEffectiveDate is null or EndEffectiveDate > getdate())\n\tand RatingStatusID in (157,158)\t\t\t\n and rh.RatingHeaderId in (@{pipeline().parameters.pDeltaRatingHeaderIds})\n\torder by RatingHeaderID",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00"
 					},
 					"sink": {
@@ -35,968 +38,320 @@
 								},
 								"sink": {
 									"name": "RatingHeaderID",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "RatingReferenceNumber",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "RatingReferenceNumber",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "PremiseTypeID",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "PremiseTypeID",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "PremiseType",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "PremiseType",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "PremiseID",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "PremiseID",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "PremiseName",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "PremiseName",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "AssessorID",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "AssessorID",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "AssessorEmail",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "AssessorEmail",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "Customer_Name",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Customer_Name",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "Customer_TradingName",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Customer_TradingName",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "Customer_Mailing_StreetNumber",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Customer_Mailing_StreetNumber",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "Customer_Mailing_StreetName",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Customer_Mailing_StreetName",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "Customer_Mailing_Suburb",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Customer_Mailing_Suburb",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "Customer_Mailing_Postcode",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Customer_Mailing_Postcode",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "Customer_Mailing_State",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Customer_Mailing_State",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "Customer_ABN",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Customer_ABN",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "customer_id",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "customer_id",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "Customer_Organisation",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Customer_Organisation",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "Customer_SAP_Number",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Customer_SAP_Number",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "RatingPeriodFrom",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								},
-								"sink": {
-									"name": "RatingPeriodFrom",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								}
-							},
-							{
-								"source": {
-									"name": "RatingPeriodTo",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								},
-								"sink": {
-									"name": "RatingPeriodTo",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								}
-							},
-							{
-								"source": {
-									"name": "PublicListingFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								},
-								"sink": {
-									"name": "PublicListingFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								}
-							},
-							{
-								"source": {
-									"name": "OfficerID",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "OfficerID",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "RatingStatusID",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "RatingStatusID",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "RatingStatus",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "RatingStatus",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "LodgedDate",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								},
-								"sink": {
-									"name": "LodgedDate",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "PaymentStatusID",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "PaymentStatusID",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "PaymentStatus",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "PaymentStatus",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "PaidDate",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								},
-								"sink": {
-									"name": "PaidDate",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								}
-							},
-							{
-								"source": {
-									"name": "CertificateValidFrom",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								},
-								"sink": {
-									"name": "CertificateValidFrom",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								}
-							},
-							{
-								"source": {
-									"name": "CertificateValidTo",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								},
-								"sink": {
-									"name": "CertificateValidTo",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								}
-							},
-							{
-								"source": {
-									"name": "PremiseNameOnCert",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "PremiseNameOnCert",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "CustomerNameOnCert",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "CustomerNameOnCert",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "Certificate_Customer_Email",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Certificate_Customer_Email",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "LastActionDate",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								},
-								"sink": {
-									"name": "LastActionDate",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								}
-							},
-							{
-								"source": {
-									"name": "ReplaceFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								},
-								"sink": {
-									"name": "ReplaceFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								}
-							},
-							{
-								"source": {
-									"name": "RenewFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								},
-								"sink": {
-									"name": "RenewFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								}
-							},
-							{
-								"source": {
-									"name": "PreviousRatingHeaderID",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "PreviousRatingHeaderID",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "NewRatingHeaderID",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "NewRatingHeaderID",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "StreetNumber",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "StreetNumber",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "StreetName",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "StreetName",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "Suburb",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Suburb",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "Postcode",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "Postcode",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "State",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "State",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "RatingTypes",
-									"type": "String",
-									"physicalType": "nvarchar"
-								},
-								"sink": {
-									"name": "RatingTypes",
 									"type": "String",
 									"physicalType": "nvarchar"
 								}
 							},
 							{
 								"source": {
-									"name": "CinemaTheatres",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "CinemaTheatres",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "ShoppingCentreWaterSummaryID",
+									"name": "companyid",
 									"type": "Int32",
 									"physicalType": "int"
 								},
 								"sink": {
-									"name": "ShoppingCentreWaterSummaryID",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "FloorConfiguration",
+									"name": "companyid",
 									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "FloorConfiguration",
-									"type": "String",
-									"physicalType": "varchar"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
 								"source": {
-									"name": "ParkingSpacesMechanical",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "ParkingSpacesMechanical",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "ParkingSpacesNatural",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "ParkingSpacesNatural",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "TotalGymGLAR",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "TotalGymGLAR",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "FoodCourtSeats",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "FoodCourtSeats",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "conflictOfInterestFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								},
-								"sink": {
-									"name": "conflictOfInterestFlag",
-									"type": "Boolean",
-									"physicalType": "bit"
-								}
-							},
-							{
-								"source": {
-									"name": "InComplianceWithCurrentRules",
+									"name": "AssessorId",
 									"type": "Int32",
 									"physicalType": "int"
 								},
 								"sink": {
-									"name": "InComplianceWithCurrentRules",
+									"name": "AssessorId",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "UserId",
 									"type": "Int32",
 									"physicalType": "int"
+								},
+								"sink": {
+									"name": "UserId",
+									"type": "String",
+									"physicalType": "nvarchar"
 								}
 							},
 							{
 								"source": {
-									"name": "WaterStarRatingWRecycle",
+									"name": "FirstName",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "WaterStarRatingWRecycle",
+									"name": "FirstName",
 									"type": "String",
-									"physicalType": "varchar"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
 								"source": {
-									"name": "WaterStarRatingWoRecycle",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "WaterStarRatingWoRecycle",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "EnergyStarRatingWRecycle",
+									"name": "LastName",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "EnergyStarRatingWRecycle",
+									"name": "LastName",
 									"type": "String",
-									"physicalType": "varchar"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
 								"source": {
-									"name": "EnergyStarRatingWoRecycle",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "EnergyStarRatingWoRecycle",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "totalEnergyConsumption",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "totalEnergyConsumption",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "WeeklyCoreHoursOfService",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "WeeklyCoreHoursOfService",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "TotalElectricityConsumption",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "TotalElectricityConsumption",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "TotalDieselConsumption",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "TotalDieselConsumption",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "WaterConsumption",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "WaterConsumption",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "RecycleNormalisedWaterConsumption",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "RecycleNormalisedWaterConsumption",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "TotalWaterConsumption",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "TotalWaterConsumption",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "TotalRecycledWaterPercent",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "TotalRecycledWaterPercent",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "TotalGasConsumption",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "TotalGasConsumption",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "RatingLodgementFees",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "RatingLodgementFees",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "PredictedGreenhouseGasIntensity",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "PredictedGreenhouseGasIntensity",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "PredictedAverageWaterUse",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "PredictedAverageWaterUse",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "NumberOfTradingDays",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "NumberOfTradingDays",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "NoRecyclePredictedAverageWaterUse",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "NoRecyclePredictedAverageWaterUse",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "NoGreenPower_GHG_IntensityScope_12",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "NoGreenPower_GHG_IntensityScope_12",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "NoGreenPowerGHGIntensityScope123",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "NoGreenPowerGHGIntensityScope123",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "NoGreenPowerGHGEmissionsScope12",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "NoGreenPowerGHGEmissionsScope12",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "NoGreenPowerGHGEmissionsScope123",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "NoGreenPowerGHGEmissionsScope123",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "GreenhouseGasIntensityScope123",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "GreenhouseGasIntensityScope123",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "GreenhouseGasEmissionsScope123",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "GreenhouseGasEmissionsScope123",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "EnergyIntensity",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								},
-								"sink": {
-									"name": "EnergyIntensity",
-									"type": "Decimal",
-									"physicalType": "decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "ExplainWhyNotCompliant",
+									"name": "Title",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "ExplainWhyNotCompliant",
+									"name": "Title",
 									"type": "String",
-									"physicalType": "varchar"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
 								"source": {
-									"name": "IsSmallShoppingCentre",
+									"name": "Mailing_StreetNumber",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Mailing_StreetNumber",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Mailing_StreetName",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Mailing_StreetName",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Mailing_Suburb",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Mailing_Suburb",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Mailing_Postcode",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Mailing_Postcode",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Mailing_State",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Mailing_State",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_StreetNumber",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Billing_StreetNumber",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_StreetName",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Billing_StreetName",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_Suburb",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Billing_Suburb",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_Postcode",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Billing_Postcode",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Billing_State",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Billing_State",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Phone",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Phone",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Mobile",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Mobile",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Email",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Email",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "JoinedDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "JoinedDate",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "AccreditationDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "AccreditationDate",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "AccreditationExpiryDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "AccreditationExpiryDate",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "AccreditationNumber",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "AccreditationNumber",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "EnergyFlag",
 									"type": "Boolean",
 									"physicalType": "bit"
 								},
 								"sink": {
-									"name": "IsSmallShoppingCentre",
+									"name": "EnergyFlag",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "WaterFlag",
 									"type": "Boolean",
 									"physicalType": "bit"
+								},
+								"sink": {
+									"name": "WaterFlag",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "WasteFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
+								},
+								"sink": {
+									"name": "WasteFlag",
+									"type": "String",
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -1007,8 +362,104 @@
 								},
 								"sink": {
 									"name": "batch_id",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "RequireSupervisionSC",
+									"type": "Boolean",
+									"physicalType": "bit"
+								},
+								"sink": {
+									"name": "RequireSupervisionSC",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Metropolitan",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Metropolitan",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Regional",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Regional",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "RetailFlag",
 									"type": "Int32",
 									"physicalType": "int"
+								},
+								"sink": {
+									"name": "RetailFlag",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "HospitalFlag",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "HospitalFlag",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "HotelFlag",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "HotelFlag",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "OfficeFlag",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "OfficeFlag",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "ApartmentBuildingFlag",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "ApartmentBuildingFlag",
+									"type": "String",
+									"physicalType": "nvarchar"
 								}
 							}
 						],
@@ -1027,7 +478,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "cn_db_rating_stage",
+						"referenceName": "db_stage_assessors",
 						"type": "DatasetReference"
 					}
 				]
