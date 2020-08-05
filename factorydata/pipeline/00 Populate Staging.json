@@ -71,7 +71,7 @@
 				"typeProperties": {
 					"variableName": "deltaRowHeaderIds",
 					"value": {
-						"value": "@activity('00 Delta RowVersions').output.deltaRowHederIds",
+						"value": "@activity('Lookup1').output",
 						"type": "Expression"
 					}
 				}
