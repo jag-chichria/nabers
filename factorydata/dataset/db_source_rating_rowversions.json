@@ -2,11 +2,11 @@
 	"name": "db_source_rating_rowversions",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "NABERS_PROD_DUMMY",
+			"referenceName": "NABERS_PROD",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
-		"type": "AzureSqlTable",
+		"type": "SqlServerTable",
 		"schema": [
 			{
 				"name": "RatingHeaderID",

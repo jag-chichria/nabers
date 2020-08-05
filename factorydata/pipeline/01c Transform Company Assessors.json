@@ -50,9 +50,6 @@
 									"type": "Expression"
 								}
 							},
-							"getStageAssessors": {
-								"pBatch_Id": 1
-							},
 							"targetLookupSalesforceAssessor": {
 								"pbatch_id": 1
 							},

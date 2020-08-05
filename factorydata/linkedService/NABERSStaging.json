@@ -5,8 +5,8 @@
 		"annotations": [],
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
-			"connectionString": "integrated security=False;encrypt=True;connection timeout=30;data source=nabers-staging.database.windows.net;initial catalog=nabers-dm-staging;user id=nabers-sa",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIk5BQkVSUy1EQVRBLVNZTkNfZDNlNWE2NGEtOGVjNC00YjhmLWEyNDEtMzhkZjc4OTk5YWIxIg0KfQ=="
+			"connectionString": "integrated security=False;encrypt=True;connection timeout=30;data source=dpie-nabers-prod-srvr.database.windows.net;initial catalog=dpie-nabers-prod-db;user id=BI_Admin",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRQSUUtTkFCRVJTLURGLVBST0RfNzdlOTc4MjUtNmYyMS00MWIxLTk4ZTgtM2E3OWI5NmQ3NWY0Ig0KfQ=="
 		}
 	}
 }

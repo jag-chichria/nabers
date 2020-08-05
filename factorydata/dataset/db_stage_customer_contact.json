@@ -1,0 +1,117 @@
+{
+	"name": "db_stage_customer_contact",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CustomerID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RatingHeaderID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomerContactID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ContactID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Position",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RoleType",
+				"type": "nvarchar"
+			},
+			{
+				"name": "StreetNumber",
+				"type": "nvarchar"
+			},
+			{
+				"name": "StreetName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Suburb",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Postcode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "State",
+				"type": "nvarchar"
+			},
+			{
+				"name": "phone",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Mobile",
+				"type": "nvarchar"
+			},
+			{
+				"name": "fax",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Email",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountManagerFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ManageRatingFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ViewRatingFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ManageCAFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ViewCAFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FirstName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Title",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LoginName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "batch_id",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "CustomerContactStage"
+		}
+	}
+}

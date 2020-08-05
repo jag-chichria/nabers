@@ -302,10 +302,7 @@
 				"inputs": [
 					{
 						"referenceName": "db_stage_assessors",
-						"type": "DatasetReference",
-						"parameters": {
-							"pBatch_Id": "@pipeline().parameters.pbatch_id"
-						}
+						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
@@ -627,10 +624,7 @@
 				"inputs": [
 					{
 						"referenceName": "db_stage_assessors",
-						"type": "DatasetReference",
-						"parameters": {
-							"pBatch_Id": "@pipeline().parameters.pbatch_id"
-						}
+						"type": "DatasetReference"
 					}
 				],
 				"outputs": [

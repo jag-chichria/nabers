@@ -614,13 +614,7 @@
 								},
 								"dataset": {
 									"referenceName": "db_stage_assessors",
-									"type": "DatasetReference",
-									"parameters": {
-										"pBatch_Id": {
-											"value": "@pipeline().parameters.pbatch_id",
-											"type": "Expression"
-										}
-									}
+									"type": "DatasetReference"
 								},
 								"firstRowOnly": true
 							}

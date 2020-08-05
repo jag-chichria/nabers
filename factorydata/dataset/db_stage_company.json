@@ -1,0 +1,125 @@
+{
+	"name": "db_stage_company",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "RatingHeaderID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ABN",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CompanyName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CompanyID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CompanyStatusID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CompanyTypeID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CompanyURL",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MailingAddressID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Phone",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PIInsuranceExpiryDate",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PLInsuranceExpiryDate",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RatingParticipationFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SAPCustomerNo",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ShortName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SoleTraderFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Mailing_StreetNumber",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Mailing_StreetName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Mailing_Suburb",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Mailing_Postcode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Mailing_State",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Billing_StreetNumber",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Billing_StreetName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Billing_Suburb",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Billing_Postcode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Billing_State",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Type",
+				"type": "nvarchar"
+			},
+			{
+				"name": "batch_id",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "CompanyStage"
+		}
+	}
+}

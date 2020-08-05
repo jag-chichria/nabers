@@ -1,0 +1,138 @@
+{
+	"name": "db_stage_techofficer",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERSStaging",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "RatingHeaderID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AdministratorID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FirstName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FullName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "JobTitle",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Phone",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Mobile",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Fax",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Email",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OtherContactType1",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OtherContact1",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OtherContactType2",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OtherContact2",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ProgramManagerFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountManagerFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SystemAdministratorFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AssessorCustomerFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RatingFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AuditFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TrainingFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CAFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EnquiryFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PaymentFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PrintFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ResourceFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PublisherFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "JoinedDate",
+				"type": "nvarchar"
+			},
+			{
+				"name": "batch_id",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TechOfficersStage"
+		}
+	}
+}
