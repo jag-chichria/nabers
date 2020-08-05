@@ -121,6 +121,15 @@
 				}
 			}
 		],
+		"parameters": {
+			"pBatchId": {
+				"type": "string",
+				"defaultValue": "1"
+			},
+			"pDeltaRatingHeaderIds": {
+				"type": "string"
+			}
+		},
 		"variables": {
 			"deltaRowHeaderIds": {
 				"type": "String"
