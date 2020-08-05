@@ -1,0 +1,291 @@
+{
+	"name": "db_source_rating_rowversions",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NABERS_PROD_DUMMY",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "RatingHeaderID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RatingReferenceNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "PremiseStateID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PremiseTypeID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PremiseID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "TenancyFloorOrSuite",
+				"type": "varchar"
+			},
+			{
+				"name": "AssessorID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CustomerID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CustomerRoleID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RatingPeriodFrom",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "RatingPeriodTo",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "CAFlag",
+				"type": "bit"
+			},
+			{
+				"name": "CommitmentAgreementID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CitySwitchFlag",
+				"type": "bit"
+			},
+			{
+				"name": "CitySwitchVoucherID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ESCFlag",
+				"type": "bit"
+			},
+			{
+				"name": "ESSSignatoryID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ESSBaseLineRatingFlag",
+				"type": "bit"
+			},
+			{
+				"name": "CBDFlag",
+				"type": "bit"
+			},
+			{
+				"name": "PublicListingFlag",
+				"type": "bit"
+			},
+			{
+				"name": "ReportLocationID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "EmailReminderToAssessorFlag",
+				"type": "bit"
+			},
+			{
+				"name": "EmailReminderToCustomerFlag",
+				"type": "bit"
+			},
+			{
+				"name": "OfficerID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RatingStatusID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "LastActionID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "LastActionDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "LodgedDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "PaymentStatusID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PaidDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "CertificateValidFrom",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "CertificateValidTo",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "EmailCertificateToAssessorFlag",
+				"type": "bit"
+			},
+			{
+				"name": "EmailCertificateToCustomerFlag",
+				"type": "bit"
+			},
+			{
+				"name": "DeliveryAttentionTo",
+				"type": "varchar"
+			},
+			{
+				"name": "DeliveryEmail",
+				"type": "varchar"
+			},
+			{
+				"name": "DeliveryAddress1",
+				"type": "varchar"
+			},
+			{
+				"name": "DeliveryAddress2",
+				"type": "varchar"
+			},
+			{
+				"name": "DeliverySuburb",
+				"type": "varchar"
+			},
+			{
+				"name": "DeliveryState",
+				"type": "varchar"
+			},
+			{
+				"name": "DeliveryPostCode",
+				"type": "varchar"
+			},
+			{
+				"name": "ReminderEmail",
+				"type": "varchar"
+			},
+			{
+				"name": "CreatedDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "CreatedByID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "UpdatedDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "UpdatedByID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RowTimestamp",
+				"type": "timestamp"
+			},
+			{
+				"name": "PremisesName",
+				"type": "varchar"
+			},
+			{
+				"name": "CustomerName",
+				"type": "varchar"
+			},
+			{
+				"name": "ReplaceFlag",
+				"type": "bit"
+			},
+			{
+				"name": "RenewFlag",
+				"type": "bit"
+			},
+			{
+				"name": "PreviousRatingHeaderID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "NewRatingHeaderID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "POReferenceNo",
+				"type": "varchar"
+			},
+			{
+				"name": "CarbonNeutralFlag",
+				"type": "bit"
+			},
+			{
+				"name": "IsCoAssessMasterFlag",
+				"type": "bit"
+			},
+			{
+				"name": "CoAssessReferenceID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CoAssessReferenceNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "HasMaterialRecoveryScoreFlag",
+				"type": "bit"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tblRatingHeader"
+		}
+	}
+}
