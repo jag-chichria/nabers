@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "copyCompanyStage",
+				"name": "copyTechOfficerStage",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -18,7 +18,7 @@
 					"source": {
 						"type": "SqlServerSource",
 						"sqlReaderQuery": {
-							"value": "select \n\tdistinct \n\trh.RatingHeaderID,\n\tc.ABN, c.CompanyName, c.CompanyID, c.CompanyStatusID,\n\tc.CompanyTypeID, c.CompanyURL, c.MailingAddressID, c.Phone, \n\tc.PIInsuranceExpiryDate, c.PLInsuranceExpiryDate, c.RatingParticipationFlag,\n\tc.SAPCustomerNo, c.ShortName, c.SoleTraderFlag,\n\tmaddr.[StreetNumber] as Mailing_StreetNumber,\n    maddr.[StreetName] as Mailing_StreetName,\n    maddr.[Suburb] as Mailing_Suburb,\n    maddr.[Postcode] as Mailing_Postcode,\n\tmst.ClassName as Mailing_State,\n\n\tbaddr.[StreetNumber] as Billing_StreetNumber,\n    baddr.[StreetName] as Billing_StreetName,\n    baddr.[Suburb] as Billing_Suburb,\n    baddr.[Postcode] as Billing_Postcode,\n\tbst.ClassName as Billing_State,\n\t'Assessor' as Type\n\t, @{pipeline().parameters.pBatchId} as batch_id\n--into CompanyStage\nfrom  \n\tPVBMSDB4202.nabersdb.dbo.tblRatingHeader rh\n\tleft join PVBMSDB4202.nabersdb.dbo.tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\n\tinner join PVBMSDB4202.nabersdb.dbo.tblRatingContractorCompany rcc on rc.RatingContractorID = rcc.assessorid\n\tinner join PVBMSDB4202.nabersdb.dbo.tblCompany c on c.companyid = rcc.companyid\n\tleft join PVBMSDB4202.nabersdb.dbo.tblAddress maddr on maddr.AddressId = c.MailingAddressID\n\tleft join PVBMSDB4202.nabersdb.dbo.tblAddress baddr on baddr.AddressId = c.BillingAddressID\n\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification mst on mst.ClassificationID = maddr.StateId\n\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification bst on bst.ClassificationID = baddr.StateId\nWhere rh.PremiseTypeID = 55 \n\tand (EndEffectiveDate is null or EndEffectiveDate > getdate())\n\tand RatingStatusID in (157,158)\t\t\t--Certified Current/Expired\n\nand rh.RatingHeaderId In (@{pipeline().parameters.pDeltaRatingHeaderIds})\n\norder by RatingHeaderID",
+							"value": "Select distinct \n\t\trh.RatingHeaderID\n\t\t, a.AdministratorID\n\t\t, u.FirstName \n\t\t, u.LastName  \n\t\t, ag.FullName \n\t\t, a.JobTitle\n\t\t, a.Phone\n\t\t, a.Mobile\n\t\t, a.Fax\n\t\t, a.Email\n\t\t, oc1.ClassName as OtherContactType1\n\t\t, a.OtherContact1\n\t\t, oc2.ClassName as OtherContactType2\n\t\t, a.OtherContact2\n\t\t, a.ProgramManagerFlag\n\t\t, a.AccountManagerFlag\n\t\t, a.SystemAdministratorFlag\n\t\t, a.AssessorCustomerFlag\n\t\t, a.RatingFlag\n\t\t, a.AuditFlag\n\t\t, a.TrainingFlag\n\t\t, a.CAFlag\n\t\t, a.EnquiryFlag\n\t\t, a.PaymentFlag\n\t\t, a.PrintFlag\n\t\t, a.ResourceFlag\n\t\t, a.PublisherFlag\n\t\t, a.JoinedDate\n\t\t, @{pipeline().parameters.pBatchId} as batch_id\n--into TechOfficersStage\nfrom PVBMSDB4202.nabersdb.dbo.tblAdministrator a \n\tinner join PVBMSDB4202.nabersdb.dbo.tblRatingHeader rh on rh.OfficerID = a.AdministratorID\n\tinner join PVBMSDB4202.nabersdb.dbo.tblAgency ag on ag.AgencyID = a.AgencyID\n\tinner join PVBMSDB4202.nabersdb.dbo.tblUser u on u.UserID  = a.UserID\n\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification oc1 on oc1.ClassificationID = a.OtherContactTypeID1\n\tleft join PVBMSDB4202.nabersdb.dbo.tblClassification oc2 on oc2.ClassificationID = a.OtherContactTypeID2\nwhere PremiseTypeID = 55\nand RatingStatusID in (157,158)\t\t\t--Certified Current/Expired\n\nand rh.ratingheaderid in (@{pipeline().parameters.pDeltaRatingHeaderIds})\n\norder by RatingHeaderID",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00"
@@ -44,86 +44,62 @@
 							},
 							{
 								"source": {
-									"name": "ABN",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "ABN",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "CompanyName",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "CompanyName",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "CompanyID",
+									"name": "AdministratorID",
 									"type": "Int32",
 									"physicalType": "int"
 								},
 								"sink": {
-									"name": "CompanyID",
+									"name": "AdministratorID",
 									"type": "Int32",
 									"physicalType": "int"
 								}
 							},
 							{
 								"source": {
-									"name": "CompanyStatusID",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "CompanyStatusID",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "CompanyTypeID",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "CompanyTypeID",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "CompanyURL",
+									"name": "FirstName",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "CompanyURL",
+									"name": "FirstName",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "MailingAddressID",
-									"type": "Int32",
-									"physicalType": "int"
+									"name": "LastName",
+									"type": "String",
+									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "MailingAddressID",
-									"type": "Int32",
-									"physicalType": "int"
+									"name": "LastName",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "FullName",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "FullName",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "JobTitle",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "JobTitle",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -140,206 +116,254 @@
 							},
 							{
 								"source": {
-									"name": "PIInsuranceExpiryDate",
-									"type": "DateTime",
-									"physicalType": "datetime"
+									"name": "Mobile",
+									"type": "String",
+									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "PIInsuranceExpiryDate",
-									"type": "DateTime",
-									"physicalType": "datetime"
+									"name": "Mobile",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "PLInsuranceExpiryDate",
-									"type": "DateTime",
-									"physicalType": "datetime"
+									"name": "Fax",
+									"type": "String",
+									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "PLInsuranceExpiryDate",
-									"type": "DateTime",
-									"physicalType": "datetime"
+									"name": "Fax",
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "RatingParticipationFlag",
+									"name": "Email",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Email",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "OtherContactType1",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "OtherContactType1",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "OtherContact1",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "OtherContact1",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "OtherContactType2",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "OtherContactType2",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "OtherContact2",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "OtherContact2",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "ProgramManagerFlag",
 									"type": "Boolean",
 									"physicalType": "bit"
 								},
 								"sink": {
-									"name": "RatingParticipationFlag",
+									"name": "ProgramManagerFlag",
 									"type": "Boolean",
 									"physicalType": "bit"
 								}
 							},
 							{
 								"source": {
-									"name": "SAPCustomerNo",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "SAPCustomerNo",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "ShortName",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "ShortName",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "SoleTraderFlag",
+									"name": "AccountManagerFlag",
 									"type": "Boolean",
 									"physicalType": "bit"
 								},
 								"sink": {
-									"name": "SoleTraderFlag",
+									"name": "AccountManagerFlag",
 									"type": "Boolean",
 									"physicalType": "bit"
 								}
 							},
 							{
 								"source": {
-									"name": "Mailing_StreetNumber",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "SystemAdministratorFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								},
 								"sink": {
-									"name": "Mailing_StreetNumber",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "SystemAdministratorFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								}
 							},
 							{
 								"source": {
-									"name": "Mailing_StreetName",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "AssessorCustomerFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								},
 								"sink": {
-									"name": "Mailing_StreetName",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "AssessorCustomerFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								}
 							},
 							{
 								"source": {
-									"name": "Mailing_Suburb",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "RatingFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								},
 								"sink": {
-									"name": "Mailing_Suburb",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "RatingFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								}
 							},
 							{
 								"source": {
-									"name": "Mailing_Postcode",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "AuditFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								},
 								"sink": {
-									"name": "Mailing_Postcode",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "AuditFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								}
 							},
 							{
 								"source": {
-									"name": "Mailing_State",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "TrainingFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								},
 								"sink": {
-									"name": "Mailing_State",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "TrainingFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								}
 							},
 							{
 								"source": {
-									"name": "Billing_StreetNumber",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "CAFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								},
 								"sink": {
-									"name": "Billing_StreetNumber",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "CAFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								}
 							},
 							{
 								"source": {
-									"name": "Billing_StreetName",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "EnquiryFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								},
 								"sink": {
-									"name": "Billing_StreetName",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "EnquiryFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								}
 							},
 							{
 								"source": {
-									"name": "Billing_Suburb",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "PaymentFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								},
 								"sink": {
-									"name": "Billing_Suburb",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "PaymentFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								}
 							},
 							{
 								"source": {
-									"name": "Billing_Postcode",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "PrintFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								},
 								"sink": {
-									"name": "Billing_Postcode",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "PrintFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								}
 							},
 							{
 								"source": {
-									"name": "Billing_State",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "ResourceFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								},
 								"sink": {
-									"name": "Billing_State",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "ResourceFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								}
 							},
 							{
 								"source": {
-									"name": "Type",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "PublisherFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
 								},
 								"sink": {
-									"name": "Type",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "PublisherFlag",
+									"type": "Boolean",
+									"physicalType": "bit"
+								}
+							},
+							{
+								"source": {
+									"name": "JoinedDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "JoinedDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
 								}
 							},
 							{
@@ -370,7 +394,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "db_stage_company",
+						"referenceName": "db_stage_techofficer",
 						"type": "DatasetReference"
 					}
 				]
