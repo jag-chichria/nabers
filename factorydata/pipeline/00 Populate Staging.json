@@ -3524,6 +3524,223 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "copyConsumption",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "Select newId() AS unique_meter_id, * from (\n\t\t\t\t\tSELECT rh.RatingHeaderID \n\t   \t\t\t\t,ep.d.value('UniqueAccountID[1]', 'float') AS UniqueAccountID\n\t\t\t\t\t,ep.d.value('Supplier[1]', 'varchar(50)') AS Supplier\n\t\t\t\t\t,ep.d.value('AccountNumber[1]', 'varchar(50)') AS AccountNumber\n\t\t\t\t\t,ep.d.value('Nmi[1]', 'varchar(50)') AS Nmi\n\t\t\t\t\t,rtrim(ltrim(ep.d.value('Coverage[1]', 'varchar(50)'))) AS Coverage\n\t\t\t\t\t,ep.d.value('Start12MonthBillPeriod[1]', 'datetime') AS Start12MonthBillPeriod\n\t\t\t\t\t,ep.d.value('End12MonthBillPeriod[1]', 'datetime') AS End12MonthBillPeriod\n\t\t\t\t\t,'Utility Inclusion' as MeterType\n\t\t\t\t\t,'Electricity'  as Utility\n \t\t\t\t\t,ep.d.query('BillsTable[1]') AS BillsTable\n\t\t\t\t\t,ep.d.query('NonUtilMeterExclusionsTable[1]') as NonUtilMeterExclusionsTable\n\t\t\t\t\t, @{pipeline().parameters.pBatchId} as batch_id\n\n\t\t\t\t--into HoursOfServicesStage\n\t\t\tFROM PVBMSDB4202.NABERSDB.dbo.tblRatingData rd\n\t\t\t\tINNER JOIN PVBMSDB4202.NABERSDB.dbo.tblRatingHeader rh ON rd.RatingHeaderID = rh.RatingHeaderID\n\t\t\t\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/EnergyEnvelope/EnergyData/ElectricityPages/XmlElement/ElectricityPage') ep(d)\n\n\t\n\t\t\tWHERE rh.PremiseTypeID = 55 \n\t\t\tand rh.RatingStatusID in (157,158)\t\t\t--Certified Current/Expired\n\t\t\tand rh.RatingHeaderId in (@{pipeline().parameters.pDeltaRatingHeaderIds})\n\t\t\t\n\nUnion ALL\n-- No water found in Shopping centre.\nSelect * from (\n\t\t\t\t\tSELECT rh.RatingHeaderID \n\t   \t\t\t\t,ep.d.value('UniqueAccountID[1]', 'float') AS UniqueAccountID\n\t\t\t\t\t,ep.d.value('Supplier[1]', 'varchar(50)') AS Supplier\n\t\t\t\t\t,ep.d.value('AccountNumber[1]', 'varchar(50)') AS AccountNumber\n\t\t\t\t\t,'' AS Nmi\n\t\t\t\t\t,rtrim(ltrim(ep.d.value('Coverage[1]', 'varchar(50)'))) AS Coverage\n\t\t\t\t\t,ep.d.value('Start12MonthBillPeriod[1]', 'datetime') AS Start12MonthBillPeriod\n\t\t\t\t\t,ep.d.value('End12MonthBillPeriod[1]', 'datetime') AS End12MonthBillPeriod\n\t\t\t\t\t,'Utility Inclusion' as MeterType\n\t\t\t\t\t,'Water'  as Utility\n \t\t\t\t\t,ep.d.query('BillsTable[1]') AS BillsTable\n\t\t\t\t\t,ep.d.query('NonUtilMeterExclusionsTable[1]') as NonUtilMeterExclusionsTable\n\t\t\t\t\t, @{pipeline().parameters.pBatchId} as batch_id\n\t\t\tFROM PVBMSDB4202.NABERSDB.dbo.tblRatingData rd\n\t\t\t\tINNER JOIN PVBMSDB4202.NABERSDB.dbo.tblRatingHeader rh ON rd.RatingHeaderID = rh.RatingHeaderID\n\t\t\t\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/EnergyEnvelope/WaterData/WaterPages/XmlElement/WaterPage') ep(d)\n\n\t\n\t\t\tWHERE rh.PremiseTypeID = 55 \n\t\t\tand rh.RatingStatusID in (157,158)\t\t\t--Certified Current/Expired\n\t\t\tand rh.RatingHeaderId in (@{pipeline().parameters.pDeltaRatingHeaderIds})\n\t\t\t\n\t) as InnerQuery\n\tWhere BillsTable is not null and NonUtilMeterExclusionsTable is not null\n\nUnion ALL\n-- Gas\nSelect * from (\n\n\t\t\t\t\tSELECT rh.RatingHeaderID \n\t   \t\t\t\t,ep.d.value('UniqueAccountID[1]', 'float') AS UniqueAccountID\n\t\t\t\t\t,ep.d.value('Supplier[1]', 'varchar(50)') AS Supplier\n\t\t\t\t\t,ep.d.value('AccountNumber[1]', 'varchar(50)') AS AccountNumber\t\n\t\t\t\t\t,'' as Nmi\n\t\t\t\t\t,rtrim(ltrim(ep.d.value('Coverage[1]', 'varchar(50)'))) AS Coverage\n\t\t\t\t\t,ep.d.value('Start12MonthBillPeriod[1]', 'datetime') AS Start12MonthBillPeriod\n\t\t\t\t\t,ep.d.value('End12MonthBillPeriod[1]', 'datetime') AS End12MonthBillPeriod\n\t\t\t\t\t,'Utility Inclusion' as MeterType\n\t\t\t\t\t,'Gas' as Utility\n\t\t\t\t\t,ep.d.query('BillsTable[1]') AS BillsTable\n\t\t\t\t\t,ep.d.query('NonUtilMeterExclusionsTable[1]') as NonUtilMeterExclusionsTable\n\t\t\t\t\t, @{pipeline().parameters.pBatchId} as batch_id\n\n\n\t\t\tFROM PVBMSDB4202.NABERSDB.dbo.tblRatingData rd\n\t\t\t\tINNER JOIN PVBMSDB4202.NABERSDB.dbo.tblRatingHeader rh ON rd.RatingHeaderID = rh.RatingHeaderID\n\t\t\t\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/EnergyEnvelope/EnergyData/GasPages/XmlElement/GasPage') ep(d)\n\n\t\n\t\t\tWHERE rh.PremiseTypeID = 55 \n\t\t\tand rh.RatingStatusID in (157,158)\t\t\t--Certified Current/Expired\n\t\t\tand rh.RatingHeaderId in (@{pipeline().parameters.pDeltaRatingHeaderIds})\n\t) as InnerQuery\n\tWhere BillsTable is not null and NonUtilMeterExclusionsTable is not null\n\t\t\t\nunion all\n--'Electricity Non Utility Inclusion'\nSelect * from (\n\t\tSELECT rh.RatingHeaderID \n\t\t\t,'' UniqueAccountID\n\t\t\t,''Supplier\n\t\t\t,''AccountNumber\n\t\t\t,''Nmi\n\t\t\t, ''Coverage\n\t\t\t,ep.d.value('StartOfRatingPeriod[1]', 'datetime') AS Start12MonthBillPeriod\n\t\t\t,ep.d.value('EndOfRatingPeriod[1]', 'datetime') AS End12MonthBillPeriod\n\t\t\t,'Non Utility Inclusion' as MeterType\n\t\t\t,'Electricity'  as Utility\n \t\t\t,ep.d.query('ElecInclusionsTable[1]') AS BillsTable\n\t\t\t,es.d.query('ElectricityMetersTable[1]') as NonUtilMeterExclusionsTable\n\t\t\t, @{pipeline().parameters.pBatchId} as batch_id\n\n\n\tFROM PVBMSDB4202.NABERSDB.dbo.tblRatingData rd\n\t\tINNER JOIN PVBMSDB4202.NABERSDB.dbo.tblRatingHeader rh ON rd.RatingHeaderID = rh.RatingHeaderID\n\t\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/EnergyEnvelope/EnergyData/SinglePagesHolder/EnergySinglePages/NonUtilMeterInclusionPage') ep(d)\n\t\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/EnergyEnvelope/EnergyData/SinglePagesHolder/EnergySinglePages/NonUtilMeterValidationPage') es(d)\n\t\n\tWHERE rh.PremiseTypeID = 55 \n\tand rh.RatingStatusID in (157,158)\t\t\t--Certified Current/Expired\n\tand rh.RatingHeaderId in (@{pipeline().parameters.pDeltaRatingHeaderIds})\n\t\n\t) as InnerQuery\n\tWhere BillsTable is not null and NonUtilMeterExclusionsTable is not null\n\nUNION ALL \n-- 'Gas Non Utility Inclusion'\nSelect * from (\n\tSELECT rh.RatingHeaderID \n\t\t\t,'' UniqueAccountID\n\t\t\t,''Supplier\n\t\t\t,''AccountNumber\n\t\t\t,''Nmi\n\t\t\t, ''Coverage\n\t\t\t,ep.d.value('StartOfRatingPeriod[1]', 'datetime') AS Start12MonthBillPeriod\n\t\t\t,ep.d.value('EndOfRatingPeriod[1]', 'datetime') AS End12MonthBillPeriod\n\t\t\t,'Non Utility Inclusion' as MeterType\n\t\t\t,'Gas'  as Utility\n \t\t\t,ep.d.query('GasInclusionsTable[1]') AS BillsTable\n\t\t\t,es.d.query('GasMetersTable[1]') as NonUtilMeterExclusionsTable\n\t\t\t, @{pipeline().parameters.pBatchId} as batch_id\n\n\n\tFROM PVBMSDB4202.NABERSDB.dbo.tblRatingData rd\n\t\tINNER JOIN PVBMSDB4202.NABERSDB.dbo.tblRatingHeader rh ON rd.RatingHeaderID = rh.RatingHeaderID\n\t\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/EnergyEnvelope/EnergyData/SinglePagesHolder/EnergySinglePages/NonUtilMeterInclusionPage') ep(d)\n\t\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/EnergyEnvelope/EnergyData/SinglePagesHolder/NonUtilMeterValidationPage') es(d)\n\t\n\tWHERE rh.PremiseTypeID = 55 \n\tand rh.RatingStatusID in (157,158)\t\t\t--Certified Current/Expired\n\t\n\tand rh.RatingHeaderId in (@{pipeline().parameters.pDeltaRatingHeaderIds})\n\t) as InnerQuery\n\tWhere BillsTable is not null and NonUtilMeterExclusionsTable is not null\n\nUNION ALL\n\n--'Water Non Utility Inclusion'\nSelect * from (\nSELECT rh.RatingHeaderID \n\t\t\t,'' UniqueAccountID\n\t\t\t,''Supplier\n\t\t\t,''AccountNumber\n\t\t\t,''Nmi\n\t\t\t, ''Coverage\n\t\t\t,ep.d.value('StartOfRatingPeriod[1]', 'datetime') AS Start12MonthBillPeriod\n\t\t\t,ep.d.value('EndOfRatingPeriod[1]', 'datetime') AS End12MonthBillPeriod\n\t\t\t,'Non Utility Inclusion' as MeterType\n\t\t\t,'Water'  as Utility\n \t\t\t,ep.d.query('InclusionsTable[1]') AS BillsTable\n\t\t\t,es.d.query('WaterMetersTable[1]') as NonUtilMeterExclusionsTable\n\t\t\t, @{pipeline().parameters.pBatchId} as batch_id\n\n\n\tFROM PVBMSDB4202.NABERSDB.dbo.tblRatingData rd\n\t\tINNER JOIN PVBMSDB4202.NABERSDB.dbo.tblRatingHeader rh ON rd.RatingHeaderID = rh.RatingHeaderID\n\t\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/EnergyEnvelope/EnergyData/SinglePagesHolder/WaterSinglePages/NonUtilMeterInclusionPage') ep(d)\n\t\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/EnergyEnvelope/EnergyData/SinglePagesHolder/NonUtilMeterValidationPage') es(d)\n\t\n\tWHERE rh.PremiseTypeID = 55 \n\tand rh.RatingStatusID in (157,158)\t\t\t--Certified Current/Expired\n\tand rh.RatingHeaderId in (@{pipeline().parameters.pDeltaRatingHeaderIds})\n\t\n\t) as InnerQuery\n\tWhere UniqueAccountID is not null and Start12MonthBillPeriod is not null\n\nUnion ALL\n\nSelect * from (\nSELECT rh.RatingHeaderID \n\t\t\t,'' UniqueAccountID\n\t\t\t,''Supplier\n\t\t\t,''AccountNumber\n\t\t\t,''Nmi\n\t\t\t, ''Coverage\n\t\t\t, '' AS Start12MonthBillPeriod\n\t\t\t,'' AS End12MonthBillPeriod\n\t\t\t,'Small End Use Inclusion' as MeterType\n\t\t\t,'Electricity'  as Utility\n \t\t\t,ep.d.query('InclusionsTable[1]') AS BillsTable\n\t\t\t,'' as NonUtilMeterExclusionsTable\n\t\t\t, @{pipeline().parameters.pBatchId} as batch_id\n\n\n\tFROM PVBMSDB4202.NABERSDB.dbo.tblRatingData rd\n\t\tINNER JOIN PVBMSDB4202.NABERSDB.dbo.tblRatingHeader rh ON rd.RatingHeaderID = rh.RatingHeaderID\n\t\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/EnergyEnvelope/EnergyData/SinglePagesHolder/EnergySinglePages/SmallEndUseInclusionPage') ep(d)\n\t\n\tWHERE rh.PremiseTypeID = 55 \n\tand rh.RatingStatusID in (157,158)\t\t\t--Certified Current/Expired\n\tand rh.RatingHeaderId in (@{pipeline().parameters.pDeltaRatingHeaderIds})\n\t\t) as InnerQuery\n\tWhere BillsTable is not null and NonUtilMeterExclusionsTable is not null\n\n\nUNION All\n\nSelect * from (\nSELECT rh.RatingHeaderID \n\t\t\t, ep.d.value('UniqueAccountID[1]', 'varchar(15)')  as UniqueAccountID\n\t\t\t,'' Supplier\n\t\t\t, '' as AccountNumber\n\t\t\t,'' Nmi\n\t\t\t, '' as Coverage\n\t\t\t, '' AS Start12MonthBillPeriod\n\t\t\t,'' AS End12MonthBillPeriod\n\t\t\t, case when ep.d.value('(AdjustmentType/@Value)[1]', 'varchar(15)') = 'EXCLDE' then 'Standard Thermal Inclusion' else 'Standard Thermal Exclusion' end as MeterType\n\t\t\t,ep.d.value('(ExclusionTargetAccountOrMeter/UtilityType)[1]', 'varchar(15)')  as Utility\n \t\t\t,ep.d.query('ExclusionTargetAccountOrMeter[1]') AS BillsTable\n\t\t\t,'' as NonUtilMeterExclusionsTable\n\t\t\t, @{pipeline().parameters.pBatchId} as batch_id\n\t\t\t\n\n\n\tFROM PVBMSDB4202.NABERSDB.dbo.tblRatingData rd\n\t\tINNER JOIN PVBMSDB4202.NABERSDB.dbo.tblRatingHeader rh ON rd.RatingHeaderID = rh.RatingHeaderID\n\t\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/EnergyEnvelope/EnergyData/ThermalTranStdPages/XmlElement/StandardThermalTransferPage') ep(d)\n\t\n\tWHERE rh.PremiseTypeID = 55 \n\tand rh.RatingStatusID in (157,158)\t\t\t--Certified Current/Expired\n\tand rh.RatingHeaderId in (@{pipeline().parameters.pDeltaRatingHeaderIds})\n\t) as InnerQuery\n\tWhere UniqueAccountID is not null \n\n\nUNION ALL\n\nSelect * from (\nSELECT rh.RatingHeaderID \n\t\t\t, ep.d.value('UniqueAccountID[1]', 'varchar(15)')  as UniqueAccountID\n\t\t\t,'' Supplier\n\t\t\t, '' as AccountNumber\n\t\t\t,'' Nmi\n\t\t\t, '' as Coverage\n\t\t\t, '' AS Start12MonthBillPeriod\n\t\t\t,'' AS End12MonthBillPeriod\n\t\t\t, 'Financial Reconciliation Exclusion'as MeterType\n\t\t\t,ep.d.value('(UtilityAccount/UtilityType)[1]', 'varchar(15)')  as Utility\n \t\t\t,ep.d.query('UtilityAccount[1]') AS BillsTable\n\t\t\t,ep.d.query('FinRecSummary[1]') as NonUtilMeterExclusionsTable\n\t\t\t, @{pipeline().parameters.pBatchId} as batch_id\n\t\t\t\n\n\n\tFROM PVBMSDB4202.NABERSDB.dbo.tblRatingData rd\n\t\tINNER JOIN PVBMSDB4202.NABERSDB.dbo.tblRatingHeader rh ON rd.RatingHeaderID = rh.RatingHeaderID\n\t\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/EnergyEnvelope/EnergyData/FinRecPages/XmlElement/FinRecExclusionPage') ep(d)\n\t\n\tWHERE rh.PremiseTypeID = 55 \n\tand rh.RatingStatusID in (157,158)\t\t\t--Certified Current/Expired\n\t\n\t\n\t) as InnerQuery\n\tWhere UniqueAccountID is not null \n\nUNION ALL\n\nSelect * from (\nSELECT rh.RatingHeaderID \n\t\t\t, ep.d.value('UniqueAccountID[1]', 'varchar(15)')  as UniqueAccountID\n\t\t\t,'' Supplier\n\t\t\t, '' as AccountNumber\n\t\t\t,'' Nmi\n\t\t\t, ep.d.value('Coverage[1]', 'varchar(15)') as Coverage\n\t\t\t, '' AS Start12MonthBillPeriod\n\t\t\t,'' AS End12MonthBillPeriod\n\t\t\t, 'Diesel Tank'as MeterType\n\t\t\t, 'Diesel'  as Utility\n \t\t\t,ep.d.query('BillsTable[1]') AS BillsTable\n\t\t\t,ep.d.query('DieselSummary[1]') as NonUtilMeterExclusionsTable\n\t\t\t, @{pipeline().parameters.pBatchId} as batch_id\n\t\t\t\n\tFROM PVBMSDB4202.NABERSDB.dbo.tblRatingData rd\n\t\tINNER JOIN PVBMSDB4202.NABERSDB.dbo.tblRatingHeader rh ON rd.RatingHeaderID = rh.RatingHeaderID\n\t\tOUTER APPLY rd.RatingDataXML.nodes('//NabersData/EnergyEnvelope/EnergyData/DieselPages/XmlElement/DieselPage') ep(d)\n\t\n\tWHERE rh.PremiseTypeID = 55 \n\tand rh.RatingStatusID in (157,158)\t\t\t--Certified Current/Expired\n\t\n\t\n\t) as InnerQuery\n\tWhere UniqueAccountID is not null \n) as InnerQuery\nOrder by ratingheaderid, Utility, UniqueAccountID, MeterType, Start12MonthBillPeriod",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "unique_meter_id",
+									"type": "Guid",
+									"physicalType": "uniqueidentifier"
+								},
+								"sink": {
+									"name": "unique_meter_id",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "RatingHeaderID",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "RatingHeaderID",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "UniqueAccountID",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "UniqueAccountID",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "Supplier",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Supplier",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "AccountNumber",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "AccountNumber",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Nmi",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Nmi",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Coverage",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Coverage",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Start12MonthBillPeriod",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "Start12MonthBillPeriod",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							},
+							{
+								"source": {
+									"name": "End12MonthBillPeriod",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "End12MonthBillPeriod",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							},
+							{
+								"source": {
+									"name": "MeterType",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "MeterType",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Utility",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "utility",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "BillsTable",
+									"type": "String",
+									"physicalType": "xml"
+								},
+								"sink": {
+									"name": "BillsTable",
+									"type": "String",
+									"physicalType": "xml"
+								}
+							},
+							{
+								"source": {
+									"name": "NonUtilMeterExclusionsTable",
+									"type": "String",
+									"physicalType": "xml"
+								},
+								"sink": {
+									"name": "NonUtilMeterExclusionsTable",
+									"type": "String",
+									"physicalType": "xml"
+								}
+							},
+							{
+								"source": {
+									"name": "batch_id",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "batch_id",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "db_source_rating_rowversions",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "db_energy_meter",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"parameters": {
