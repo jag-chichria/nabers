@@ -213,7 +213,7 @@
 							"typeProperties": {
 								"variableName": "deltaRatingHeaderIds",
 								"value": {
-									"value": "@activity('Lookup1').output.firstrow.value",
+									"value": "@activity('Lookup1').output.firstRow.value",
 									"type": "Expression"
 								}
 							}
