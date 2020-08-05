@@ -241,7 +241,7 @@
 							"process_name": {
 								"type": "String",
 								"value": {
-									"value": "@pipeline().Pipeline",
+									"value": "@pipeline().RunId",
 									"type": "Expression"
 								}
 							}
