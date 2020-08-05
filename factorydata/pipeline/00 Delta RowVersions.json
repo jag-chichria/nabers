@@ -206,21 +206,6 @@
 								"type": "LinkedServiceReference"
 							}
 						}
-					],
-					"ifTrueActivities": [
-						{
-							"name": "Set variable1",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "deltaRatingHeaderIds",
-								"value": {
-									"value": "@activity('Lookup1').output.firstRow.deltaRatingHeaderIds",
-									"type": "Expression"
-								}
-							}
-						}
 					]
 				}
 			},
