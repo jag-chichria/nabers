@@ -11,6 +11,18 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'NABERSStaging'"
 		},
+		"NABERS_PROD_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'NABERS_PROD'"
+		},
+		"NABERS_PROD_DUMMY_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'NABERS_PROD_DUMMY'"
+		},
+		"NABERS_TEST_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'NABERS_TEST'"
+		},
 		"NabersOnline_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'NabersOnline'"
@@ -26,6 +38,10 @@
 		"NabersOnline_properties_typeProperties_username": {
 			"type": "string",
 			"defaultValue": "jag.chichria@nabers.gov.au.datamigdev"
+		},
+		"DPIE-Shared-SHIR_properties_typeProperties_linkedInfo_resourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/5cceed1f-a9dc-4534-b8c3-ecc724bbe1a0/resourceGroups/dpe-info-mgmt-prod-rg/providers/Microsoft.DataFactory/factories/dpe-im-prod-df001/integrationruntimes/SelfHostedIntegrationRuntime"
 		},
 		"containerUri": {
 			"type": "string",
@@ -56,6 +72,12 @@
 					},
 					"NABERSStaging_connectionString": {
 						"value": "[parameters('NABERSStaging_connectionString')]"
+					},
+					"NABERS_PROD_DUMMY_connectionString": {
+						"value": "[parameters('NABERS_PROD_DUMMY_connectionString')]"
+					},
+					"DPIE-Shared-SHIR_properties_typeProperties_linkedInfo_resourceId": {
+						"value": "[parameters('DPIE-Shared-SHIR_properties_typeProperties_linkedInfo_resourceId')]"
 					}
 				}
 			},
@@ -74,6 +96,12 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"NABERS_PROD_connectionString": {
+						"value": "[parameters('NABERS_PROD_connectionString')]"
+					},
+					"NABERS_TEST_connectionString": {
+						"value": "[parameters('NABERS_TEST_connectionString')]"
 					},
 					"NabersOnline_password": {
 						"value": "[parameters('NabersOnline_password')]"

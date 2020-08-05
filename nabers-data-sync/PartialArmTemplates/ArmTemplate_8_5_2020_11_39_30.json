@@ -1,0 +1,1188 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "nabers-data-sync"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/00 Delta RowVersions')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Batch Id",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "Select RowTimestamp, rh.RatingHeaderID  from \ntblRatingHeader rh\nWhere rh.PremiseTypeID = 55 and RatingStatusID in (157,158)\t\t\t\norder by RatingHeaderID",
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBatchSize": 500,
+								"preCopyScript": "TRUNCATE TABLE RatingHeaderRowVersionsStage",
+								"maxConcurrentConnections": 2,
+								"disableMetricsCollection": true
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "RowTimestamp",
+											"physicalType": "timestamp"
+										},
+										"sink": {
+											"name": "prod_timestamp",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "RatingHeaderID",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "RatingHeaderID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "db_source_rating_rowversions",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "db_target_rating_rowversions_stage",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "detectUnmatched",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Copy data1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_RatingHeaderRowVersionMergeData]"
+						},
+						"linkedServiceName": {
+							"referenceName": "NABERSStaging",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "detectUnmatched",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT STRING_AGG(RatingHeaderID, ', ') as deltaRatingHeaderIds\nFROM RatingHeader_RowVersions\nwhere status in ('new', 'delta')",
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "db_target_rating_rowversions_stage",
+								"type": "DatasetReference"
+							},
+							"firstRowOnly": true
+						}
+					},
+					{
+						"name": "If Condition1",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Lookup1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@contains(string(activity('Lookup1').output), 'firstRow')",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "Insert Anomaly",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[[dbo].[usp_InsertDataSyncAnomalies]",
+										"storedProcedureParameters": {
+											"batch_id": {
+												"value": {
+													"value": "@variables('vbatch_id')",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"process_name": {
+												"value": {
+													"value": "@pipeline().Pipeline",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"anomaly_desc": {
+												"value": {
+													"value": "No Ratings found.",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"anomaly_type": {
+												"value": "Warning",
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "NABERSStaging",
+										"type": "LinkedServiceReference"
+									}
+								}
+							],
+							"ifTrueActivities": [
+								{
+									"name": "00 Populate Staging",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "00 Populate Staging",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"pBatchId": {
+												"value": "@variables('vbatch_id')",
+												"type": "Expression"
+											},
+											"pDeltaRatingHeaderIds": {
+												"value": "@activity('Lookup1').output.firstRow.deltaRatingHeaderIds",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "usp_StartBatch",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_StartBatch]",
+								"storedProcedureParameters": {
+									"process_name": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().Pipeline",
+											"type": "Expression"
+										}
+									},
+									"process_id": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "db_members_rating",
+								"type": "DatasetReference"
+							}
+						}
+					},
+					{
+						"name": "Batch Id",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "usp_StartBatch",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "vbatch_id",
+							"value": {
+								"value": "@string(activity('usp_StartBatch').output.firstRow.NewBatchId)",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"variables": {
+					"vbatch_id": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/db_source_rating_rowversions')]",
+				"[concat(variables('factoryId'), '/datasets/db_target_rating_rowversions_stage')]",
+				"[concat(variables('factoryId'), '/pipelines/00 Populate Staging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/00 Populate Staging')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copyRatings",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "Select distinct\n\trh.RatingHeaderID,\n\tRatingReferenceNumber,\n\trh.PremiseTypeID,\n\tpremiseType.ClassName as PremiseType,\n\trh.PremiseID,\n\tpremise.PremiseName as PremiseName,\n\tAssessorID,\n\trc.email as AssessorEmail,\n\tcustomer.RegisteredName as Customer_Name, \n\tcustomer.TradingName as Customer_TradingName,\n\tcmaddr.[StreetNumber] as [Customer_Mailing_StreetNumber],\n    cmaddr.[StreetName]  as [Customer_Mailing_StreetName],\n    cmaddr.[Suburb] as [Customer_Mailing_Suburb],\n    cmaddr.[Postcode] as [Customer_Mailing_Postcode],\n\tcmst.ClassName as [Customer_Mailing_State],\n\tcustomer.ABN as [Customer_ABN],\n\tcustomer.customerid as [customer_id],\n\tcorg.ClassName as [Customer_Organisation],\n\tcustomer.SAPNumber as Customer_SAP_Number,\n\n\tRatingPeriodFrom,\n\tRatingPeriodTo,\n\tPublicListingFlag,\n\tOfficerID,\n\tRatingStatusID,\n\trs.ClassName as RatingStatus,\n\tLodgedDate,\n\tPaymentStatusID,\n\tps.ClassName as PaymentStatus,\n\tPaidDate,\n\t--Certificate\n\tCertificateValidFrom,\n\tCertificateValidTo,\n\n\tPremisesName as PremiseNameOnCert,\n\tCustomerName as CustomerNameOnCert,\n\n\trh.DeliveryEmail  as Certificate_Customer_Email,\n\n\tLastActionDate, \n\n\tReplaceFlag,\n\tRenewFlag,\n\tPreviousRatingHeaderID,\n\tNewRatingHeaderID,\n\taddr.[StreetNumber],\n    addr.[StreetName],\n    addr.[Suburb],\n    addr.[Postcode],\n\tst.ClassName as [State],\n\t(select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crt.ClassName as varchar(16)) FROM tblRatingType rt \n\t\t\t\t\tINNER JOIN tblClassification crt on crt.ClassificationID = rt.RatingType\n\t\t\t\t\tand rt.RatingHeaderID = rh.RatingHeaderID\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as RatingTypes\n\n\n\n\t, scs.CinemaTheatres \n\t, scws.ShoppingCentreWaterSummaryID \n\t, scs.FloorConfiguration\n\t, scs.ParkingSpacesMechanical\n\t, scs.ParkingSpacesNatural \n\t, scs.TotalGymGLAR \n\t, scs.FoodCourtSeats \n\t, rad.conflictOfInterestFlag \n\t, rad.InComplianceWithCurrentRules \n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 57) as WaterStarRatingWRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithoutGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 57) as WaterStarRatingWoRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 56) as EnergyStarRatingWRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithoutGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 56) as EnergyStarRatingWoRecycle\n\t, isnull(sces.TotalElectricityUse * 3.6, 0) + isnull(sces.TotalGasUse, 0) + isnull(sces.TotalLPGUse * 25.7, 0) + isnull(sces.TotalOilUse * 38.6, 0) + isnull(sces.TotalCoalUse * 22.1, 0) as totalEnergyConsumption\n\t, scs.HoursOfService as WeeklyCoreHoursOfService \n\t, sces.TotalElectricityUse as TotalElectricityConsumption\n\t, sces.TotalOilUse as TotalDieselConsumption\n\t, scws.WaterConsumptionWoRW as WaterConsumption\n\t, scws.WaterUsePerSqmWoRW as RecycleNormalisedWaterConsumption\n\t, scws.WaterConsumptionWoRW as TotalWaterConsumption\n\t, scws.RecycledWaterPercent as TotalRecycledWaterPercent\n\t, sces.TotalGasUse as TotalGasConsumption\n\t, (select top 1 Amount from tblFinancialTransaction ft inner join tblRatingPayment rp on ft.RatingPaymentID = rp.RatingPaymentID\n\t\t\tand rp.RatingHeaderID = rh.RatingHeaderId\n\t\t\twhere FeeCategoryID = 244 -- Loedgement\n\t\t\t) as RatingLodgementFees\n\t, sces.PredictedGHGEmissionsPerSqm as PredictedGreenhouseGasIntensity\n\t, scws.PredictedWaterUsePerGLAR as PredictedAverageWaterUse\n\t, scs.TradingDays as NumberOfTradingDays\n\t, scws.PredictedWaterUsePerGLARWoRW as NoRecyclePredictedAverageWaterUse\n\t, sces.GHGEmissionsPerSqmGLARScope12WoGP as NoGreenPower_GHG_IntensityScope_12\n\t, sces.GHGEmissionsPerSqmGLARScope123WoGP as NoGreenPowerGHGIntensityScope123\n\t, sces.GHGEmissionsScope12WoGP as NoGreenPowerGHGEmissionsScope12\n\t, sces.GHGEmissionsScope123WoGP  as NoGreenPowerGHGEmissionsScope123\n\t, sces.GHGEmissionsPerSqmGLARScope123 as GreenhouseGasIntensityScope123\n\t, sces.GHGEmissionsScope123  as GreenhouseGasEmissionsScope123\n\t, sces.EnergyIntensity\n\t, rad.ComplianceExplanation as ExplainWhyNotCompliant \n\t, scs.IsSmallShoppingCentre\n\t, @{pipeline().parameters.pBatchId} as batch_id\n\t\nfrom tblRatingHeader rh\nleft join tblPremise premise on premise.PremiseID = rh.PremiseID\nleft join tblClassification premiseType on premiseType.ClassificationID = rh.PremiseTypeID\nleft join tblClassification rs on rs.ClassificationID = rh.RatingStatusID\nleft join tblClassification ps on ps.ClassificationID = rh.PaymentStatusID\nleft join tblAdministrator ad on ad.AdministratorID = rh.OfficerID\nleft join tblUser aduser on aduser.UserID = ad.UserID\nleft join tblCustomer customer on customer.CustomerID = rh.CustomerID\nleft join tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\nleft join tblUser rcuser on rcuser.UserID = rc.UserID\nleft join tblAddress addr on addr.AddressId = premise.PremiseAddressId\nleft join tblClassification st on st.ClassificationID = addr.StateId\nleft join tblAddress cmaddr on cmaddr.AddressId = customer.MailingAddressID\nleft join tblClassification cmst on cmst.ClassificationID = cmaddr.StateId\n\nleft join tblShoppingCentreSummary scs on scs.RatingHeaderID = rh.RatingHeaderID\nleft join tblShoppingCentreEnergySummary sces on sces.RatingHeaderID = rh.RatingHeaderID\nleft join tblShoppingCentreWaterSummary scws on scws.RatingHeaderID = rh.RatingHeaderID\n\nleft join tblAssessorDeclaration rad on rad.RatingHeaderID = rh.RatingHeaderID\n\nleft join tblClassification corg on corg.ClassificationID = customer.OrganisationTypeID\n\nWhere rh.PremiseTypeID = 55\nand RatingStatusID in (157,158)\t\t\t\nand RatingHeaderID in (@{pipeline().parameters.pDeltaRatingHeaderIds})\norder by RatingHeaderID",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "AzureSqlSink"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "db_source_rating_rowversions",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "cn_db_rating_stage",
+								"type": "DatasetReference"
+							}
+						]
+					}
+				],
+				"parameters": {
+					"pBatchId": {
+						"type": "string",
+						"defaultValue": "1"
+					},
+					"pDeltaRatingHeaderIds": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"deltaRowHeaderIds": {
+						"type": "String"
+					},
+					"newBatchId": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/db_source_rating_rowversions')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/00 Start Batch')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Batch Id",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "usp_StartBatch",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "vbatch_id",
+							"value": "@string(activity('usp_StartBatch').output.firstRow.NewBatchId)"
+						}
+					},
+					{
+						"name": "01 Pull From Staging",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Batch Id",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01 Pull Members Data",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@activity('usp_StartBatch').output.firstRow.NewBatchId",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "02 Transform Ratings",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01a Create Building",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "01d Create Assessors",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "01c Create Customer Contact",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "01a Transform Hours of Service",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Data Consumption",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "02 Transform Ratings",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "01a Create Building",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01 Pull From Staging",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01a Create Building In Salesforce",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "03 Create Ratings",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "02 Transform Ratings",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "03 Create Ratings",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "03a Junction Building Rating",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "03 Create Ratings",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "03a Junction Building Rating",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "01d Create Assessors",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01c Transform Company Assessor",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01d Create Assessors In Salesforce",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "01b Create Company",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01a Transform Country in master entities",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01b Create Assessors Company In Salesforce",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "01c Transform Company Assessor",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01b Create Company",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01c Transform Company Assessors",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "01a Transform Country in master entities",
+						"description": "Placeholder for missing mailing and billing country",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01 Pull From Staging",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01b Transform Country in master entities",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "01b Create Customers",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01a Transform Country in master entities",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01b Create Customer In Salesforce",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "01c Create Customer Contact",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01b Create Customers",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01c Create Customer Contact In Salesforce",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "01a Transform Hours of Service",
+						"description": "",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01 Pull From Staging",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01a Transform Rating Attributes",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"pbatch_id": {
+									"value": "@variables('vbatch_id')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Data Consumption",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "01 Pull From Staging",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "dbo.usp_FormulateConsumption",
+							"storedProcedureParameters": {
+								"batch_id": {
+									"value": {
+										"value": "@variables('vbatch_id')",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "NABERSStaging",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "usp_StartBatch",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_StartBatch]",
+								"storedProcedureParameters": {
+									"process_name": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().Pipeline",
+											"type": "Expression"
+										}
+									},
+									"process_id": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "db_members_rating",
+								"type": "DatasetReference"
+							}
+						}
+					}
+				],
+				"parameters": {
+					"pBatchId": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"vbatch_id": {
+						"type": "String",
+						"defaultValue": "1"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/db_source_rating_rowversions')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERS_PROD_DUMMY",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "RatingHeaderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RatingReferenceNumber",
+						"type": "varchar"
+					},
+					{
+						"name": "PremiseStateID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "PremiseTypeID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "PremiseID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TenancyFloorOrSuite",
+						"type": "varchar"
+					},
+					{
+						"name": "AssessorID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CustomerID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CustomerRoleID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RatingPeriodFrom",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "RatingPeriodTo",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CAFlag",
+						"type": "bit"
+					},
+					{
+						"name": "CommitmentAgreementID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CitySwitchFlag",
+						"type": "bit"
+					},
+					{
+						"name": "CitySwitchVoucherID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ESCFlag",
+						"type": "bit"
+					},
+					{
+						"name": "ESSSignatoryID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ESSBaseLineRatingFlag",
+						"type": "bit"
+					},
+					{
+						"name": "CBDFlag",
+						"type": "bit"
+					},
+					{
+						"name": "PublicListingFlag",
+						"type": "bit"
+					},
+					{
+						"name": "ReportLocationID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "EmailReminderToAssessorFlag",
+						"type": "bit"
+					},
+					{
+						"name": "EmailReminderToCustomerFlag",
+						"type": "bit"
+					},
+					{
+						"name": "OfficerID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RatingStatusID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "LastActionID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "LastActionDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "LodgedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "PaymentStatusID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "PaidDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CertificateValidFrom",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CertificateValidTo",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "EmailCertificateToAssessorFlag",
+						"type": "bit"
+					},
+					{
+						"name": "EmailCertificateToCustomerFlag",
+						"type": "bit"
+					},
+					{
+						"name": "DeliveryAttentionTo",
+						"type": "varchar"
+					},
+					{
+						"name": "DeliveryEmail",
+						"type": "varchar"
+					},
+					{
+						"name": "DeliveryAddress1",
+						"type": "varchar"
+					},
+					{
+						"name": "DeliveryAddress2",
+						"type": "varchar"
+					},
+					{
+						"name": "DeliverySuburb",
+						"type": "varchar"
+					},
+					{
+						"name": "DeliveryState",
+						"type": "varchar"
+					},
+					{
+						"name": "DeliveryPostCode",
+						"type": "varchar"
+					},
+					{
+						"name": "ReminderEmail",
+						"type": "varchar"
+					},
+					{
+						"name": "CreatedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CreatedByID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "UpdatedByID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RowTimestamp",
+						"type": "timestamp"
+					},
+					{
+						"name": "PremisesName",
+						"type": "varchar"
+					},
+					{
+						"name": "CustomerName",
+						"type": "varchar"
+					},
+					{
+						"name": "ReplaceFlag",
+						"type": "bit"
+					},
+					{
+						"name": "RenewFlag",
+						"type": "bit"
+					},
+					{
+						"name": "PreviousRatingHeaderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "NewRatingHeaderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "POReferenceNo",
+						"type": "varchar"
+					},
+					{
+						"name": "CarbonNeutralFlag",
+						"type": "bit"
+					},
+					{
+						"name": "IsCoAssessMasterFlag",
+						"type": "bit"
+					},
+					{
+						"name": "CoAssessReferenceID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CoAssessReferenceNumber",
+						"type": "varchar"
+					},
+					{
+						"name": "HasMaterialRecoveryScoreFlag",
+						"type": "bit"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tblRatingHeader"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/db_target_rating_rowversions_stage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "RowTimestamp",
+						"type": "nvarchar"
+					},
+					{
+						"name": "RatingHeaderID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "status",
+						"type": "varchar"
+					},
+					{
+						"name": "new_rowtimestamp",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "RatingHeaderRowVersionsStage"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

@@ -8,6 +8,15 @@
 		"NABERSStaging_connectionString": {
 			"value": ""
 		},
+		"NABERS_PROD_connectionString": {
+			"value": ""
+		},
+		"NABERS_PROD_DUMMY_connectionString": {
+			"value": ""
+		},
+		"NABERS_TEST_connectionString": {
+			"value": ""
+		},
 		"NabersOnline_password": {
 			"value": ""
 		},
@@ -19,6 +28,9 @@
 		},
 		"NabersOnline_properties_typeProperties_username": {
 			"value": "jag.chichria@nabers.gov.au.datamigdev"
+		},
+		"DPIE-Shared-SHIR_properties_typeProperties_linkedInfo_resourceId": {
+			"value": "/subscriptions/5cceed1f-a9dc-4534-b8c3-ecc724bbe1a0/resourceGroups/dpe-info-mgmt-prod-rg/providers/Microsoft.DataFactory/factories/dpe-im-prod-df001/integrationruntimes/SelfHostedIntegrationRuntime"
 		},
 		"containerUri": {
 			"value": ""

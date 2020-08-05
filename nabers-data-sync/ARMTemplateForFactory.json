@@ -11,6 +11,18 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'NABERSStaging'"
 		},
+		"NABERS_PROD_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'NABERS_PROD'"
+		},
+		"NABERS_PROD_DUMMY_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'NABERS_PROD_DUMMY'"
+		},
+		"NABERS_TEST_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'NABERS_TEST'"
+		},
 		"NabersOnline_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'NabersOnline'"
@@ -26,6 +38,10 @@
 		"NabersOnline_properties_typeProperties_username": {
 			"type": "string",
 			"defaultValue": "jag.chichria@nabers.gov.au.datamigdev"
+		},
+		"DPIE-Shared-SHIR_properties_typeProperties_linkedInfo_resourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/5cceed1f-a9dc-4534-b8c3-ecc724bbe1a0/resourceGroups/dpe-info-mgmt-prod-rg/providers/Microsoft.DataFactory/factories/dpe-im-prod-df001/integrationruntimes/SelfHostedIntegrationRuntime"
 		}
 	},
 	"variables": {
@@ -33,15 +49,22 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/00 Schedule Job')]",
+			"name": "[concat(parameters('factoryName'), '/00 Delta RowVersions')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "copyRatings",
+						"name": "Copy data1",
 						"type": "Copy",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Batch Id",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -53,18 +76,44 @@
 						"typeProperties": {
 							"source": {
 								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "Select Top 20\n\trh.RatingHeaderID,\n\tRatingReferenceNumber,\n\trh.PremiseTypeID,\n\tpremiseType.ClassName as PremiseType,\n\trh.PremiseID,\n\tpremise.PremiseName as PremiseName,\n\tAssessorID,\n\trc.email as AssessorEmail,\n\tcustomer.RegisteredName as Customer_Name, \n\tcustomer.TradingName as Customer_TradingName,\n\tcmaddr.[StreetNumber] as [Customer_Mailing_StreeNumber],\n    cmaddr.[StreetName]  as [Customer_Mailing_StreetName],\n    cmaddr.[Suburb] as [Customer_Mailing_Suburb],\n    cmaddr.[Postcode] as [Customer_Mailing_Postcode],\n\tcmst.ClassName as [Customer_Mailing_State],\n\n\tRatingPeriodFrom,\n\tRatingPeriodTo,\n\tPublicListingFlag,\n\tOfficerID,\n\tRatingStatusID,\n\trs.ClassName as RatingStatus,\n\tLodgedDate,\n\tPaymentStatusID,\n\tps.ClassName as PaymentStatus,\n\tPaidDate,\n\t--Certificate\n\tCertificateValidFrom,\n\tCertificateValidTo,\n\n\tPremisesName as PremiseNameOnCert,\n\tCustomerName as CustomerNameOnCert,\n\n\trh.DeliveryEmail  as Certificate_Customer_Email,\n\n\tLastActionDate, \n\n\tReplaceFlag,\n\tRenewFlag,\n\tPreviousRatingHeaderID,\n\tNewRatingHeaderID,\n\taddr.[StreetNumber],\n    addr.[StreetName],\n    addr.[Suburb],\n    addr.[Postcode],\n\tst.ClassName as [State],\n\t(select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crt.ClassName as varchar(16)) FROM tblRatingType rt \n\t\t\t\t\tINNER JOIN tblClassification crt on crt.ClassificationID = rt.RatingType\n\t\t\t\t\tand rt.RatingHeaderID = rh.RatingHeaderID\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as RatingTypes\n\n\n\n\t, scs.CinemaTheatres \n\t, scws.ShoppingCentreWaterSummaryID \n\t, scs.FloorConfiguration\n\t, scs.ParkingSpacesMechanical\n\t, scs.ParkingSpacesNatural \n\t, scs.TotalGymGLAR \n\t, scs.FoodCourtSeats \n\t, rad.conflictOfInterestFlag \n\t, rad.InComplianceWithCurrentRules \n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 57) as WaterStarRatingWRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithoutGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 57) as WaterStarRatingWoRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 56) as EnergyStarRatingWRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithoutGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 56) as EnergyStarRatingWoRecycle\n\t, isnull(sces.TotalElectricityUse * 3.6, 0) + isnull(sces.TotalGasUse, 0) + isnull(sces.TotalLPGUse * 25.7, 0) + isnull(sces.TotalOilUse * 38.6, 0) + isnull(sces.TotalCoalUse * 22.1, 0) as totalEnergyConsumption\n\t, scs.HoursOfService as WeeklyCoreHoursOfService \n\t, sces.TotalElectricityUse as TotalElectricityConsumption\n\t, sces.TotalOilUse as TotalDieselConsumption\n\t, scws.WaterConsumptionWoRW as WaterConsumption\n\t, scws.WaterUsePerSqmWoRW as RecycleNormalisedWaterConsumption\n\t, scws.WaterConsumptionWoRW as TotalWaterConsumption\n\t, scws.RecycledWaterPercent as TotalRecycledWaterPercent\n\t, sces.TotalGasUse as TotalGasConsumption\n\t, (select Amount from tblFinancialTransaction ft inner join tblRatingPayment rp on ft.RatingPaymentID = rp.RatingPaymentID\n\t\t\tand rp.RatingHeaderID = rh.RatingHeaderId\n\t\t\twhere FeeCategoryID = 244 -- Loedgement\n\t\t\t) as RatingLodgementFees\n\t, sces.PredictedGHGEmissionsPerSqm as PredictedGreenhouseGasIntensity\n\t, scws.PredictedWaterUsePerGLAR as PredictedAverageWaterUse\n\t, scs.TradingDays as NumberOfTradingDays\n\t, scws.PredictedWaterUsePerGLARWoRW as NoRecyclePredictedAverageWaterUse\n\t, sces.GHGEmissionsPerSqmGLARScope12WoGP as NoGreenPower_GHG_IntensityScope_12\n\t, sces.GHGEmissionsPerSqmGLARScope123WoGP as NoGreenPowerGHGIntensityScope123\n\t, sces.GHGEmissionsScope12WoGP as NoGreenPowerGHGEmissionsScope12\n\t, sces.GHGEmissionsScope123WoGP  as NoGreenPowerGHGEmissionsScope123\n\t, sces.GHGEmissionsPerSqmGLARScope123 as GreenhouseGasIntensityScope123\n\t, sces.GHGEmissionsScope123  as GreenhouseGasEmissionsScope123\n\t, sces.EnergyIntensity\n\t, rad.ComplianceExplanation as ExplainWhyNotCompliant \n\t, scs.IsSmallShoppingCentre\n\t, 1 as batch_id\n\n--into RatingHeaderStage\nfrom tblRatingHeader rh\nleft join tblPremise premise on premise.PremiseID = rh.PremiseID\nleft join tblClassification premiseType on premiseType.ClassificationID = rh.PremiseTypeID\nleft join tblClassification rs on rs.ClassificationID = rh.RatingStatusID\nleft join tblClassification ps on ps.ClassificationID = rh.PaymentStatusID\nleft join tblAdministrator ad on ad.AdministratorID = rh.OfficerID\nleft join tblUser aduser on aduser.UserID = ad.UserID\nleft join tblCustomer customer on customer.CustomerID = rh.CustomerID\nleft join tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\nleft join tblUser rcuser on rcuser.UserID = rc.UserID\nleft join tblAddress addr on addr.AddressId = premise.PremiseAddressId\nleft join tblClassification st on st.ClassificationID = addr.StateId\nleft join tblAddress cmaddr on cmaddr.AddressId = customer.MailingAddressID\nleft join tblClassification cmst on cmst.ClassificationID = cmaddr.StateId\n\nleft join tblShoppingCentreSummary scs on scs.RatingHeaderID = rh.RatingHeaderID\nleft join tblShoppingCentreEnergySummary sces on sces.RatingHeaderID = rh.RatingHeaderID\nleft join tblShoppingCentreWaterSummary scws on scws.RatingHeaderID = rh.RatingHeaderID\n\nleft join tblAssessorDeclaration rad on rad.RatingHeaderID = rh.RatingHeaderID\n\nWhere rh.PremiseTypeID = @{pipeline().parameters.pPremiseType}\nand ((rh.CreatedDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}') OR (rh.LastActionDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}'))\norder by RatingHeaderID",
-									"type": "Expression"
-								},
+								"sqlReaderQuery": "Select RowTimestamp, rh.RatingHeaderID  from \ntblRatingHeader rh\nWhere rh.PremiseTypeID = 55 and RatingStatusID in (157,158)\t\t\t\norder by RatingHeaderID",
 								"queryTimeout": "02:00:00"
 							},
 							"sink": {
-								"type": "AzureSqlSink"
+								"type": "AzureSqlSink",
+								"writeBatchSize": 500,
+								"preCopyScript": "TRUNCATE TABLE RatingHeaderRowVersionsStage",
+								"maxConcurrentConnections": 2,
+								"disableMetricsCollection": true
 							},
 							"enableStaging": false,
 							"translator": {
 								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "RowTimestamp",
+											"physicalType": "timestamp"
+										},
+										"sink": {
+											"name": "prod_timestamp",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "RatingHeaderID",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "RatingHeaderID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									}
+								],
 								"typeConversion": true,
 								"typeConversionSettings": {
 									"allowDataTruncation": true,
@@ -74,23 +123,30 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "db_company",
+								"referenceName": "db_source_rating_rowversions",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
 						],
 						"outputs": [
 							{
-								"referenceName": "cn_db_rating_stage",
+								"referenceName": "db_target_rating_rowversions_stage",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
 						]
 					},
 					{
-						"name": "copyAccessors",
-						"type": "Copy",
-						"dependsOn": [],
+						"name": "detectUnmatched",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Copy data1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -100,46 +156,24 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "Select Top 20\n\trcc.companyid,\n\trc.RatingContractorID as AssessorId,\n\trcuser.UserID as UserId,\n\trcuser.FirstName, \n\trcuser.LastName, \n\ttc.ClassName as Title, \n\tmaddr.[StreetNumber] as Mailing_StreetNumber,\n    maddr.[StreetName] as Mailing_StreetName,\n    maddr.[Suburb] as Mailing_Suburb,\n    maddr.[Postcode] as Mailing_Postcode,\n\tmst.ClassName as Mailing_State,\n\n\tbaddr.[StreetNumber] as Billing_StreetNumber,\n    baddr.[StreetName] as Billing_StreetName,\n    baddr.[Suburb] as Billing_Suburb,\n    baddr.[Postcode] as Billing_Postcode,\n\tbst.ClassName as Billing_State,\n\tPhone,\n\tEmail,\n\tJoinedDate,\n\tAccreditationDate,\n\tAccreditationExpiryDate,\n\tAccreditationNumber,\n\tEnergyFlag, \n\tWaterFlag, \n\tWasteFlag\n\t, 1 as batch_id\n\t, RequireSupervisionSC\n\t, (select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crst.ClassCode as varchar(16)) FROM tblRatingContractorAvailability  rca \n\t\t\t\t\tINNER JOIN tblClassification crt on crt.ClassificationID = rca.AvailabilityTypeID\n\t\t\t\t\tleft join tblClassification crst on crst.ClassificationID = rca.StateId\n\t\t\t\t\tand rca.RatingContractorID = rc.RatingContractorID and crt.ClassificationID = 459\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as Metropolitan\n\t, (select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crst.ClassCode as varchar(16)) FROM tblRatingContractorAvailability  rca \n\t\t\t\t\tINNER JOIN tblClassification crt on crt.ClassificationID = rca.AvailabilityTypeID\n\t\t\t\t\tleft join tblClassification crst on crst.ClassificationID = rca.StateId\n\t\t\t\t\tand rca.RatingContractorID = rc.RatingContractorID and crt.ClassificationID = 460\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as Regional\n\t, case when RetailFlag is null then 0 else RetailFlag end as RetailFlag \n\t, case when HospitalFlag is null then 0 else HospitalFlag end as HospitalFlag \n\t, case when HotelFlag is null then 0 else HotelFlag end as HotelFlag \n\t, case when OfficeFlag is null then 0 else OfficeFlag end as OfficeFlag \n\t, case when ApartmentBuildingFlag is null then 0 else ApartmentBuildingFlag end as ApartmentBuildingFlag \n\n\t--into AssessorsStage\n\tfrom \n\t\ttblRatingHeader rh\n\t\tleft join tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\n\t\tleft join tblUser rcuser on rcuser.UserID = rc.UserID\n\t\tleft join tblClassification tc on tc.ClassificationID = TitleID\n\t\tleft join tblAddress maddr on maddr.AddressId = MailingAddressID\n\t\tleft join tblAddress baddr on baddr.AddressId = BillingAddressID\n\t\tleft join tblClassification mst on mst.ClassificationID = maddr.StateId\n\t\tleft join tblClassification bst on bst.ClassificationID = baddr.StateId\n\t\tinner join tblRatingContractorCompany rcc on rc.RatingContractorID = rcc.assessorid\n\t\t\n\tWhere rh.PremiseTypeID = @{pipeline().parameters.pPremiseType} and \n\t(EndEffectiveDate is null or EndEffectiveDate > getdate())\nand ((rh.CreatedDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}') OR (rh.LastActionDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}'))\n\torder by RatingHeaderID",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"sink": {
-								"type": "AzureSqlSink"
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
+							"storedProcedureName": "[[dbo].[usp_RatingHeaderRowVersionMergeData]"
 						},
-						"inputs": [
-							{
-								"referenceName": "db_company",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "cn_db_rating_stage",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
+						"linkedServiceName": {
+							"referenceName": "NABERSStaging",
+							"type": "LinkedServiceReference"
+						}
 					},
 					{
-						"name": "copyCompany",
-						"type": "Copy",
-						"dependsOn": [],
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "detectUnmatched",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -151,115 +185,110 @@
 						"typeProperties": {
 							"source": {
 								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "select top 20 \n\tc.ABN,c.CompanyName, c.CompanyID, c.CompanyStatusID,\n\tc.CompanyTypeID, c.CompanyURL, c.MailingAddressID, c.Phone, \n\tc.PIInsuranceExpiryDate, c.PLInsuranceExpiryDate, c.RatingParticipationFlag,\n\tc.SAPCustomerNo, c.ShortName, c.SoleTraderFlag,\n\tmaddr.[StreetNumber] as Mailing_StreetNumber,\n    maddr.[StreetName] as Mailing_StreetName,\n    maddr.[Suburb] as Mailing_Suburb,\n    maddr.[Postcode] as Mailing_Postcode,\n\tmst.ClassName as Mailing_State,\n\n\tbaddr.[StreetNumber] as Billing_StreetNumber,\n    baddr.[StreetName] as Billing_StreetName,\n    baddr.[Suburb] as Billing_Suburb,\n    baddr.[Postcode] as Billing_Postcode,\n\tbst.ClassName as Billing_State,\n\t'Assessor' as Type\n\t, 1 as batch_id\ninto CompanyStage\nfrom  \n\ttblRatingHeader rh\n\tleft join tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\n\tinner join tblRatingContractorCompany rcc on rc.RatingContractorID = rcc.assessorid\n\tinner join tblCompany c on c.companyid = rcc.companyid\n\tleft join tblAddress maddr on maddr.AddressId = c.MailingAddressID\n\tleft join tblAddress baddr on baddr.AddressId = c.BillingAddressID\n\tleft join tblClassification mst on mst.ClassificationID = maddr.StateId\n\tleft join tblClassification bst on bst.ClassificationID = baddr.StateId\nWhere rh.PremiseTypeID = @{pipeline().parameters.pPremiseType}\n\tand (EndEffectiveDate is null or EndEffectiveDate > getdate())\nand ((rh.CreatedDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}') OR (rh.LastActionDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}'))\n\torder by RatingHeaderID",
-									"type": "Expression"
-								},
+								"sqlReaderQuery": "SELECT STRING_AGG(RatingHeaderID, ', ') as deltaRatingHeaderIds\nFROM RatingHeader_RowVersions\nwhere status in ('new', 'delta')",
 								"queryTimeout": "02:00:00"
 							},
-							"sink": {
-								"type": "AzureSqlSink"
+							"dataset": {
+								"referenceName": "db_target_rating_rowversions_stage",
+								"type": "DatasetReference",
+								"parameters": {}
 							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "db_company",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "cn_db_rating_stage",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
+							"firstRowOnly": true
+						}
 					},
 					{
-						"name": "copyBuilding",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "select top 20 \n\tc.ABN,c.CompanyName, c.CompanyID, c.CompanyStatusID,\n\tc.CompanyTypeID, c.CompanyURL, c.MailingAddressID, c.Phone, \n\tc.PIInsuranceExpiryDate, c.PLInsuranceExpiryDate, c.RatingParticipationFlag,\n\tc.SAPCustomerNo, c.ShortName, c.SoleTraderFlag,\n\tmaddr.[StreetNumber] as Mailing_StreetNumber,\n    maddr.[StreetName] as Mailing_StreetName,\n    maddr.[Suburb] as Mailing_Suburb,\n    maddr.[Postcode] as Mailing_Postcode,\n\tmst.ClassName as Mailing_State,\n\n\tbaddr.[StreetNumber] as Billing_StreetNumber,\n    baddr.[StreetName] as Billing_StreetName,\n    baddr.[Suburb] as Billing_Suburb,\n    baddr.[Postcode] as Billing_Postcode,\n\tbst.ClassName as Billing_State,\n\t'Assessor' as Type\n\t, 1 as batch_id\ninto CompanyStage\nfrom  \n\ttblRatingHeader rh\n\tleft join tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\n\tinner join tblRatingContractorCompany rcc on rc.RatingContractorID = rcc.assessorid\n\tinner join tblCompany c on c.companyid = rcc.companyid\n\tleft join tblAddress maddr on maddr.AddressId = c.MailingAddressID\n\tleft join tblAddress baddr on baddr.AddressId = c.BillingAddressID\n\tleft join tblClassification mst on mst.ClassificationID = maddr.StateId\n\tleft join tblClassification bst on bst.ClassificationID = baddr.StateId\nWhere rh.PremiseTypeID = @{pipeline().parameters.pPremiseType}\n\tand (EndEffectiveDate is null or EndEffectiveDate > getdate())\nand ((rh.CreatedDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}') OR (rh.LastActionDate between '@{pipeline().parameters.pStartDate}' and '@{pipeline().parameters.pEndDate}'))\n\torder by RatingHeaderID",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00"
-							},
-							"sink": {
-								"type": "AzureSqlSink"
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
+						"name": "If Condition1",
+						"type": "IfCondition",
+						"dependsOn": [
 							{
-								"referenceName": "db_company",
-								"type": "DatasetReference",
-								"parameters": {}
+								"activity": "Lookup1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
 							}
 						],
-						"outputs": [
-							{
-								"referenceName": "cn_db_rating_stage",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"parameters": {
-					"pStartDate": {
-						"type": "string"
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@contains(string(activity('Lookup1').output), 'firstRow')",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "Insert Anomaly",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[[dbo].[usp_InsertDataSyncAnomalies]",
+										"storedProcedureParameters": {
+											"batch_id": {
+												"value": {
+													"value": "@variables('vbatch_id')",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"process_name": {
+												"value": {
+													"value": "@pipeline().Pipeline",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"anomaly_desc": {
+												"value": {
+													"value": "No Ratings found.",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"anomaly_type": {
+												"value": "Warning",
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "NABERSStaging",
+										"type": "LinkedServiceReference"
+									}
+								}
+							],
+							"ifTrueActivities": [
+								{
+									"name": "00 Populate Staging",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "00 Populate Staging",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"pBatchId": {
+												"value": "@variables('vbatch_id')",
+												"type": "Expression"
+											},
+											"pDeltaRatingHeaderIds": {
+												"value": "@activity('Lookup1').output.firstRow.deltaRatingHeaderIds",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
 					},
-					"pEndDate": {
-						"type": "string"
-					},
-					"pPremiseType": {
-						"type": "int",
-						"defaultValue": 55
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/db_company')]",
-				"[concat(variables('factoryId'), '/datasets/cn_db_rating_stage')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/00 Start Batch')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
 					{
 						"name": "usp_StartBatch",
 						"type": "Lookup",
@@ -281,6 +310,13 @@
 										"type": "String",
 										"value": {
 											"value": "@pipeline().Pipeline",
+											"type": "Expression"
+										}
+									},
+									"process_id": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().RunId",
 											"type": "Expression"
 										}
 									}
@@ -312,6 +348,125 @@
 								"value": "@string(activity('usp_StartBatch').output.firstRow.NewBatchId)",
 								"type": "Expression"
 							}
+						}
+					}
+				],
+				"variables": {
+					"vbatch_id": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/db_source_rating_rowversions')]",
+				"[concat(variables('factoryId'), '/datasets/db_target_rating_rowversions_stage')]",
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
+				"[concat(variables('factoryId'), '/datasets/db_members_rating')]",
+				"[concat(variables('factoryId'), '/pipelines/00 Populate Staging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/00 Populate Staging')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copyRatings",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "Select distinct\n\trh.RatingHeaderID,\n\tRatingReferenceNumber,\n\trh.PremiseTypeID,\n\tpremiseType.ClassName as PremiseType,\n\trh.PremiseID,\n\tpremise.PremiseName as PremiseName,\n\tAssessorID,\n\trc.email as AssessorEmail,\n\tcustomer.RegisteredName as Customer_Name, \n\tcustomer.TradingName as Customer_TradingName,\n\tcmaddr.[StreetNumber] as [Customer_Mailing_StreetNumber],\n    cmaddr.[StreetName]  as [Customer_Mailing_StreetName],\n    cmaddr.[Suburb] as [Customer_Mailing_Suburb],\n    cmaddr.[Postcode] as [Customer_Mailing_Postcode],\n\tcmst.ClassName as [Customer_Mailing_State],\n\tcustomer.ABN as [Customer_ABN],\n\tcustomer.customerid as [customer_id],\n\tcorg.ClassName as [Customer_Organisation],\n\tcustomer.SAPNumber as Customer_SAP_Number,\n\n\tRatingPeriodFrom,\n\tRatingPeriodTo,\n\tPublicListingFlag,\n\tOfficerID,\n\tRatingStatusID,\n\trs.ClassName as RatingStatus,\n\tLodgedDate,\n\tPaymentStatusID,\n\tps.ClassName as PaymentStatus,\n\tPaidDate,\n\t--Certificate\n\tCertificateValidFrom,\n\tCertificateValidTo,\n\n\tPremisesName as PremiseNameOnCert,\n\tCustomerName as CustomerNameOnCert,\n\n\trh.DeliveryEmail  as Certificate_Customer_Email,\n\n\tLastActionDate, \n\n\tReplaceFlag,\n\tRenewFlag,\n\tPreviousRatingHeaderID,\n\tNewRatingHeaderID,\n\taddr.[StreetNumber],\n    addr.[StreetName],\n    addr.[Suburb],\n    addr.[Postcode],\n\tst.ClassName as [State],\n\t(select  stuff(list,1,1,'')\n\t\tfrom  (( Select ';' + cast(crt.ClassName as varchar(16)) FROM tblRatingType rt \n\t\t\t\t\tINNER JOIN tblClassification crt on crt.ClassificationID = rt.RatingType\n\t\t\t\t\tand rt.RatingHeaderID = rh.RatingHeaderID\n\t\t\t\t\tfor     xml path(''))) as Sub(list)) as RatingTypes\n\n\n\n\t, scs.CinemaTheatres \n\t, scws.ShoppingCentreWaterSummaryID \n\t, scs.FloorConfiguration\n\t, scs.ParkingSpacesMechanical\n\t, scs.ParkingSpacesNatural \n\t, scs.TotalGymGLAR \n\t, scs.FoodCourtSeats \n\t, rad.conflictOfInterestFlag \n\t, rad.InComplianceWithCurrentRules \n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 57) as WaterStarRatingWRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithoutGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 57) as WaterStarRatingWoRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 56) as EnergyStarRatingWRecycle\n\t, (Select top 1 wsrcl.classname from tblRatingType wsr left join tblClassification wsrcl on wsrcl.ClassificationID = wsr.StarRatingWithoutGreenPowerID and wsr.RatingHeaderID = rh.RatingHeaderID and wsr.RatingType = 56) as EnergyStarRatingWoRecycle\n\t, isnull(sces.TotalElectricityUse * 3.6, 0) + isnull(sces.TotalGasUse, 0) + isnull(sces.TotalLPGUse * 25.7, 0) + isnull(sces.TotalOilUse * 38.6, 0) + isnull(sces.TotalCoalUse * 22.1, 0) as totalEnergyConsumption\n\t, scs.HoursOfService as WeeklyCoreHoursOfService \n\t, sces.TotalElectricityUse as TotalElectricityConsumption\n\t, sces.TotalOilUse as TotalDieselConsumption\n\t, scws.WaterConsumptionWoRW as WaterConsumption\n\t, scws.WaterUsePerSqmWoRW as RecycleNormalisedWaterConsumption\n\t, scws.WaterConsumptionWoRW as TotalWaterConsumption\n\t, scws.RecycledWaterPercent as TotalRecycledWaterPercent\n\t, sces.TotalGasUse as TotalGasConsumption\n\t, (select top 1 Amount from tblFinancialTransaction ft inner join tblRatingPayment rp on ft.RatingPaymentID = rp.RatingPaymentID\n\t\t\tand rp.RatingHeaderID = rh.RatingHeaderId\n\t\t\twhere FeeCategoryID = 244 -- Loedgement\n\t\t\t) as RatingLodgementFees\n\t, sces.PredictedGHGEmissionsPerSqm as PredictedGreenhouseGasIntensity\n\t, scws.PredictedWaterUsePerGLAR as PredictedAverageWaterUse\n\t, scs.TradingDays as NumberOfTradingDays\n\t, scws.PredictedWaterUsePerGLARWoRW as NoRecyclePredictedAverageWaterUse\n\t, sces.GHGEmissionsPerSqmGLARScope12WoGP as NoGreenPower_GHG_IntensityScope_12\n\t, sces.GHGEmissionsPerSqmGLARScope123WoGP as NoGreenPowerGHGIntensityScope123\n\t, sces.GHGEmissionsScope12WoGP as NoGreenPowerGHGEmissionsScope12\n\t, sces.GHGEmissionsScope123WoGP  as NoGreenPowerGHGEmissionsScope123\n\t, sces.GHGEmissionsPerSqmGLARScope123 as GreenhouseGasIntensityScope123\n\t, sces.GHGEmissionsScope123  as GreenhouseGasEmissionsScope123\n\t, sces.EnergyIntensity\n\t, rad.ComplianceExplanation as ExplainWhyNotCompliant \n\t, scs.IsSmallShoppingCentre\n\t, @{pipeline().parameters.pBatchId} as batch_id\n\t\nfrom tblRatingHeader rh\nleft join tblPremise premise on premise.PremiseID = rh.PremiseID\nleft join tblClassification premiseType on premiseType.ClassificationID = rh.PremiseTypeID\nleft join tblClassification rs on rs.ClassificationID = rh.RatingStatusID\nleft join tblClassification ps on ps.ClassificationID = rh.PaymentStatusID\nleft join tblAdministrator ad on ad.AdministratorID = rh.OfficerID\nleft join tblUser aduser on aduser.UserID = ad.UserID\nleft join tblCustomer customer on customer.CustomerID = rh.CustomerID\nleft join tblRatingContractor rc on rc.RatingContractorID = rh.AssessorID\nleft join tblUser rcuser on rcuser.UserID = rc.UserID\nleft join tblAddress addr on addr.AddressId = premise.PremiseAddressId\nleft join tblClassification st on st.ClassificationID = addr.StateId\nleft join tblAddress cmaddr on cmaddr.AddressId = customer.MailingAddressID\nleft join tblClassification cmst on cmst.ClassificationID = cmaddr.StateId\n\nleft join tblShoppingCentreSummary scs on scs.RatingHeaderID = rh.RatingHeaderID\nleft join tblShoppingCentreEnergySummary sces on sces.RatingHeaderID = rh.RatingHeaderID\nleft join tblShoppingCentreWaterSummary scws on scws.RatingHeaderID = rh.RatingHeaderID\n\nleft join tblAssessorDeclaration rad on rad.RatingHeaderID = rh.RatingHeaderID\n\nleft join tblClassification corg on corg.ClassificationID = customer.OrganisationTypeID\n\nWhere rh.PremiseTypeID = 55\nand RatingStatusID in (157,158)\t\t\t\nand RatingHeaderID in (@{pipeline().parameters.pDeltaRatingHeaderIds})\norder by RatingHeaderID",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "AzureSqlSink"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "db_source_rating_rowversions",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "cn_db_rating_stage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"parameters": {
+					"pBatchId": {
+						"type": "string",
+						"defaultValue": "1"
+					},
+					"pDeltaRatingHeaderIds": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"deltaRowHeaderIds": {
+						"type": "String"
+					},
+					"newBatchId": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/db_source_rating_rowversions')]",
+				"[concat(variables('factoryId'), '/datasets/cn_db_rating_stage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/00 Start Batch')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Batch Id",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "usp_StartBatch",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "vbatch_id",
+							"value": "@string(activity('usp_StartBatch').output.firstRow.NewBatchId)"
 						}
 					},
 					{
@@ -687,8 +842,54 @@
 							"referenceName": "NABERSStaging",
 							"type": "LinkedServiceReference"
 						}
+					},
+					{
+						"name": "usp_StartBatch",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[usp_StartBatch]",
+								"storedProcedureParameters": {
+									"process_name": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().Pipeline",
+											"type": "Expression"
+										}
+									},
+									"process_id": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										}
+									}
+								},
+								"queryTimeout": "02:00:00"
+							},
+							"dataset": {
+								"referenceName": "db_members_rating",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
 					}
 				],
+				"parameters": {
+					"pBatchId": {
+						"type": "string"
+					}
+				},
 				"variables": {
 					"vbatch_id": {
 						"type": "String",
@@ -698,7 +899,6 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/db_members_rating')]",
 				"[concat(variables('factoryId'), '/pipelines/01 Pull Members Data')]",
 				"[concat(variables('factoryId'), '/pipelines/02 Transform Ratings')]",
 				"[concat(variables('factoryId'), '/pipelines/01a Create Building In Salesforce')]",
@@ -711,7 +911,8 @@
 				"[concat(variables('factoryId'), '/pipelines/01b Create Customer In Salesforce')]",
 				"[concat(variables('factoryId'), '/pipelines/01c Create Customer Contact In Salesforce')]",
 				"[concat(variables('factoryId'), '/pipelines/01a Transform Rating Attributes')]",
-				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]",
+				"[concat(variables('factoryId'), '/datasets/db_members_rating')]"
 			]
 		},
 		{
@@ -9792,6 +9993,302 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/db_source_rating_rowversions')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERS_PROD_DUMMY",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "RatingHeaderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RatingReferenceNumber",
+						"type": "varchar"
+					},
+					{
+						"name": "PremiseStateID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "PremiseTypeID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "PremiseID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TenancyFloorOrSuite",
+						"type": "varchar"
+					},
+					{
+						"name": "AssessorID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CustomerID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CustomerRoleID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RatingPeriodFrom",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "RatingPeriodTo",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CAFlag",
+						"type": "bit"
+					},
+					{
+						"name": "CommitmentAgreementID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CitySwitchFlag",
+						"type": "bit"
+					},
+					{
+						"name": "CitySwitchVoucherID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ESCFlag",
+						"type": "bit"
+					},
+					{
+						"name": "ESSSignatoryID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ESSBaseLineRatingFlag",
+						"type": "bit"
+					},
+					{
+						"name": "CBDFlag",
+						"type": "bit"
+					},
+					{
+						"name": "PublicListingFlag",
+						"type": "bit"
+					},
+					{
+						"name": "ReportLocationID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "EmailReminderToAssessorFlag",
+						"type": "bit"
+					},
+					{
+						"name": "EmailReminderToCustomerFlag",
+						"type": "bit"
+					},
+					{
+						"name": "OfficerID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RatingStatusID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "LastActionID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "LastActionDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "LodgedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "PaymentStatusID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "PaidDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CertificateValidFrom",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CertificateValidTo",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "EmailCertificateToAssessorFlag",
+						"type": "bit"
+					},
+					{
+						"name": "EmailCertificateToCustomerFlag",
+						"type": "bit"
+					},
+					{
+						"name": "DeliveryAttentionTo",
+						"type": "varchar"
+					},
+					{
+						"name": "DeliveryEmail",
+						"type": "varchar"
+					},
+					{
+						"name": "DeliveryAddress1",
+						"type": "varchar"
+					},
+					{
+						"name": "DeliveryAddress2",
+						"type": "varchar"
+					},
+					{
+						"name": "DeliverySuburb",
+						"type": "varchar"
+					},
+					{
+						"name": "DeliveryState",
+						"type": "varchar"
+					},
+					{
+						"name": "DeliveryPostCode",
+						"type": "varchar"
+					},
+					{
+						"name": "ReminderEmail",
+						"type": "varchar"
+					},
+					{
+						"name": "CreatedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CreatedByID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "UpdatedByID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RowTimestamp",
+						"type": "timestamp"
+					},
+					{
+						"name": "PremisesName",
+						"type": "varchar"
+					},
+					{
+						"name": "CustomerName",
+						"type": "varchar"
+					},
+					{
+						"name": "ReplaceFlag",
+						"type": "bit"
+					},
+					{
+						"name": "RenewFlag",
+						"type": "bit"
+					},
+					{
+						"name": "PreviousRatingHeaderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "NewRatingHeaderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "POReferenceNo",
+						"type": "varchar"
+					},
+					{
+						"name": "CarbonNeutralFlag",
+						"type": "bit"
+					},
+					{
+						"name": "IsCoAssessMasterFlag",
+						"type": "bit"
+					},
+					{
+						"name": "CoAssessReferenceID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CoAssessReferenceNumber",
+						"type": "varchar"
+					},
+					{
+						"name": "HasMaterialRecoveryScoreFlag",
+						"type": "bit"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tblRatingHeader"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERS_PROD_DUMMY')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/db_stage_assessors')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -10327,6 +10824,44 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "ParkingSpaceStage"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NABERSStaging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/db_target_rating_rowversions_stage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NABERSStaging",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "RowTimestamp",
+						"type": "nvarchar"
+					},
+					{
+						"name": "RatingHeaderID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "status",
+						"type": "varchar"
+					},
+					{
+						"name": "new_rowtimestamp",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "RatingHeaderRowVersionsStage"
 				}
 			},
 			"dependsOn": [
@@ -11067,6 +11602,57 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/NABERS_PROD')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('NABERS_PROD_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "DPIE-Shared-SHIR",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/DPIE-Shared-SHIR')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NABERS_PROD_DUMMY')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('NABERS_PROD_DUMMY_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NABERS_TEST')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('NABERS_TEST_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "DPIE-Shared-SHIR",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/DPIE-Shared-SHIR')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/NabersOnline')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -11095,6 +11681,21 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DPIE-Shared-SHIR')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {
+					"linkedInfo": {
+						"resourceId": "[parameters('DPIE-Shared-SHIR_properties_typeProperties_linkedInfo_resourceId')]",
+						"authorizationType": "Rbac"
+					}
+				}
+			},
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
